@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,9 +22,27 @@ namespace LanMonitor
     /// </summary>
     public partial class MainWindow : Window
     {
+        private NetworkManager networkManager;
+
         public MainWindow()
         {
+            networkManager = new NetworkManager();
+
+            DataContext = networkManager;
+
             InitializeComponent();
+
+            networkManager.Start();
+        }
+
+        private void Border_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Close();
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
         }
     }
 }

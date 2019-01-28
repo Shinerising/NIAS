@@ -5,8 +5,204 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LanMonitor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="网络监控" Width="200" MinWidth="200" MaxWidth="200" Foreground="#FF35383C" WindowStyle="None" AllowsTransparency="True" Topmost="True" SizeToContent="Height" SnapsToDevicePixels="True" FontFamily="Menlo, Microsoft YaHei" Background="{x:Null}" ShowInTaskbar="False">
+    <Window.Resources>
+        <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
+            <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" />
+                <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Style="{DynamicResource ScrollBarStyle}"/>
+            </Grid>
+        </ControlTemplate>
+        <Style x:Key="ScrollBarStyle" TargetType="{x:Type ScrollBar}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="MinWidth" Value="8"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid x:Name="Bg" Background="Transparent" SnapsToDevicePixels="true">
+                            <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Style>
+                                            <Style TargetType="Thumb">
+                                                <Setter Property="OverridesDefaultStyle" Value="true"/>
+                                                <Setter Property="IsTabStop" Value="false"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Thumb">
+                                                            <Rectangle Height="25" Width="8" Fill="#FF0B4E7C"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Thumb.Style>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="Bg" Value="#80156CA8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Border CornerRadius="3" BorderThickness="1" BorderBrush="#FF2981C9">
+        <Border.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FF3AC0FF" Offset="1"/>
+                <GradientStop Color="#FFBAE3FF"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Polygon Points="{Binding GraphPointCollection}" Fill="#602679CB"/>
+            <Border Width="18" Height="18" CornerRadius="8" Margin="1" Panel.ZIndex="10" HorizontalAlignment="Right" VerticalAlignment="Top" MouseLeftButtonUp="Border_MouseUp">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Opacity" Value="0.6"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFD2EAFF"/>
+                                <Setter Property="BorderBrush" Value="#FF286BAE"/>
+                                <Setter Property="Opacity" Value="1"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Path Data="M 3 4 L 6 7 L 3 10 L 4 11 L 7 8 L 10 11 L 11 10 L 8 7 L 11 4 L 10 3 L 7 6 L 4 3 Z" Stroke="#FF656D80" Fill="#FF656D80" StrokeThickness="2" StrokeLineJoin="Round" Width="14" Height="14"/>
+            </Border>
+            <Border Grid.Row="0" Padding="3,2" MouseLeftButtonDown="Window_MouseDown">
+                <StackPanel Orientation="Horizontal">
+                    <Path Data="M 6 3 L 10 9 L 2 9 Z" Stroke="#FFFF3764" Fill="#FFFF3764" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="12" Height="12"/>
+                    <TextBlock ToolTip="上传速度" Text="{Binding GlobalUploadSpeed, FallbackValue=128KB/s}" FontSize="12" Width="70" Height="14" Margin="2,1"/>
+                    <Path Data="M 2 3 L 10 3 L 6 9 Z" Stroke="#FF1D8B40" Fill="#FF1D8B40" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="12" Height="12"/>
+                    <TextBlock ToolTip="下载速度" Text="{Binding GlobalDownloadSpeed, FallbackValue=128KB/s}" FontSize="12" Width="70" Height="14" Margin="2,1"/>
+                </StackPanel>
+            </Border>
+            <Grid Grid.Row="1" Background="#20000000">
+                <ListBox BorderThickness="0" MaxHeight="160" MouseLeftButtonDown="Window_MouseDown" Background="Transparent" Foreground="#FF496274" ItemsSource="{Binding NetworkCollection}">
+                    <ListBox.Style>
+                        <Style TargetType="ListBox">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBox}">
+                                        <Grid>
+                                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" Template="{DynamicResource ScrollViewerControlTemplate}">
+                                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            </ScrollViewer>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.Style>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Height="16" Width="192" ToolTip="{Binding ToolTip}">
+                                <Path DockPanel.Dock="Left" Margin="2" Grid.Column="0" StrokeLineJoin="Round" Width="12" Height="12">
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="StrokeThickness" Value="1"/>
+                                            <Setter Property="Stroke" Value="#FFDE5F5F"/>
+                                            <Setter Property="Fill" Value="#FFDE5F5F"/>
+                                            <Setter Property="Data" Value="M 3 1 L 9 1 L 9 3 L 11 3 L 11 11 L 10 11 L 10 5 L 8 5 L 8 10 L 7 10 L 7 5 L 5 5 L 5 10 L 4 10 L 4 5 L 3 5 L 2 5 L 2 11 L 1 11 L 1 3 L 3 3 Z"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                                    <Setter Property="Stroke" Value="#FF2CA65E"/>
+                                                    <Setter Property="Fill" Value="#FF2CA65E"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Type}" Value="71">
+                                                    <Setter Property="StrokeThickness" Value="1.3"/>
+                                                    <Setter Property="Data" Value="M 1 5 C 3 1 9 1 11 5 L 10.5 5.5 C 9 1.6 3 1.6 1.5 5.5 L 1 5 Z M 3 7 C 4.5 4.2 7.5 4.2 9 7 L 8.5 7.5 C 7 5.5 5 5.5 3.5 7.5 L 3 7 Z M 5.3 9 C 6 8 6 8 6.7 9 C 6 9.6 6 9.6 5.3 9 Z"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                    <TextBlock Text="{Binding DownloadSpeed}" FontSize="12" Height="14" LineHeight="14"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding Name}" FontSize="12" Height="14" LineHeight="14" Margin="2,0"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <Grid Grid.Row="2" Background="#40000000">
+                <ListBox BorderThickness="0" MaxHeight="160" Background="Transparent" Foreground="#FFBCD2E2" ItemsSource="{Binding ComputerCollection}">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.Style>
+                        <Style TargetType="ListBox">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBox}">
+                                        <Grid>
+                                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" Template="{DynamicResource ScrollViewerControlTemplate}">
+                                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            </ScrollViewer>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.Style>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Height="16" Width="192" ToolTip="{Binding ToolTip}">
+                                <Path DockPanel.Dock="Left" Margin="2" Grid.Column="0" StrokeLineJoin="Round" Width="12" Height="12">
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="StrokeThickness" Value="1"/>
+                                            <Setter Property="Stroke" Value="#FFDE5F5F"/>
+                                            <Setter Property="Fill" Value="#FFDE5F5F"/>
+                                            <Setter Property="Data" Value="M 1 2 L 11 2 L 11 8 L 8 8 L 8 10 L 10 10 L 10 10.5 L 2 10.5 L 2 10 L 4 10 L 4 8 L 1 8 L 1 2 L 1.5 2 L 1.5 7.5 L 10.5 7.5 L 10.5 2.5 L 1.5 2.5 Z"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                                    <Setter Property="Stroke" Value="#FF2CA65E"/>
+                                                    <Setter Property="Fill" Value="#FF2CA65E"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                    <TextBlock Text="{Binding Latency}" FontSize="12" Height="14" LineHeight="14"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding Name}" FontSize="12" Height="14" LineHeight="14" Margin="2,0"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>
