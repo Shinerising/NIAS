@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 
@@ -28,6 +27,26 @@ namespace LanMonitor
                 Environment.Exit(0);
                 return;
             }
+
+            List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>();
+            foreach (ResourceDictionary dictionary in Current.Resources.MergedDictionaries)
+            {
+                dictionaryList.Add(dictionary);
+            }
+            string requestedCulture = string.Format(@"StringResource.{0}.xaml", CultureInfo.CurrentCulture.ToString());
+            ResourceDictionary resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString.Equals(requestedCulture));
+            if (resourceDictionary == null)
+            {
+                requestedCulture = @"StringResource.xaml";
+                resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString.Equals(requestedCulture));
+            }
+            if (resourceDictionary != null)
+            {
+                Current.Resources.MergedDictionaries.Remove(resourceDictionary);
+                Current.Resources.MergedDictionaries.Add(resourceDictionary);
+            }
+            
+            base.OnStartup(e);
         }
     }
 }

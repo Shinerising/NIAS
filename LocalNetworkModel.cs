@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Windows;
 
 namespace LanMonitor
 {
@@ -64,7 +65,7 @@ namespace LanMonitor
                 catch
                 {
                 }
-                return "不可用";
+                return Application.Current.FindResource("UnknownIP").ToString();
             }
         }
         public string MACAddress => string.Join(":", (from c in networkInterface?.GetPhysicalAddress().GetAddressBytes() select c.ToString("X2")).ToArray());

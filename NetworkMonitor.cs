@@ -487,7 +487,7 @@ namespace LanMonitor
 
             Latency = computer.Latency == -1 ? "..." : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
 
-            ToolTip = string.Format("计算机名称：{1}{0}IP地址：{2}{0}网络延迟：{3}",
+            ToolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(),
                 Environment.NewLine, Name, IPAddress, Latency);
         }
 
@@ -499,7 +499,7 @@ namespace LanMonitor
 
             string latency = computer.Latency == -1 ? "..." : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
 
-            string toolTip = string.Format("计算机名称：{1}{0}IP地址：{2}{0}网络延迟：{3}",
+            string toolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(),
                 Environment.NewLine, Name, IPAddress, Latency);
 
             if (Name != name)
@@ -550,7 +550,7 @@ namespace LanMonitor
             DownloadSpeed = adapter.DownloadSpeedString;
             UploadSpeed = adapter.UploadSpeedString;
 
-            ToolTip = string.Format("网卡名称：{1}{0}IP地址：{2}{0}MAC地址：{3}{0}带宽：{4}",
+            ToolTip = string.Format(Application.Current.FindResource("NetworkToolTip").ToString(),
                 Environment.NewLine, adapter.Description, adapter.IPAddress, adapter.MACAddress, adapter.MaxSpeed);
         }
 
@@ -561,7 +561,7 @@ namespace LanMonitor
             string type = adapter.Type.ToString();
             string downloadSpeed = adapter.DownloadSpeedString;
             string uploadSpeed = adapter.UploadSpeedString;
-            string toolTip = string.Format("网卡名称：{1}{0}IP地址：{2}{0}MAC地址：{3}{0}带宽：{4}",
+            string toolTip = string.Format(Application.Current.FindResource("NetworkToolTip").ToString(),
                 Environment.NewLine, adapter.Description, adapter.IPAddress, adapter.MACAddress, adapter.MaxSpeed);
 
             if (Name != name)

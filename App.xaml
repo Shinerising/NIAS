@@ -4,6 +4,13 @@
              xmlns:local="clr-namespace:LanMonitor"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="StringResource.xaml" />
+                <ResourceDictionary Source="StringResource.zh-CN.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        
     </Application.Resources>
 </Application>
