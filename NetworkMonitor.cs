@@ -5,12 +5,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.DirectoryServices;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -88,14 +88,24 @@ namespace LanMonitor
             Task.Factory.StartNew(NetworkMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(NetworkAdapterMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(LocalNetworkMonitoring, TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(LocalComputerMonitoring, TaskCreationOptions.LongRunning);
         }
 
         private void NetworkAdapterMonitoring()
         {
             while (true)
             {
-                Thread.Sleep(5000);
                 networkMoniter.EnumerateNetworkAdapters();
+                Thread.Sleep(5000);
+            }
+        }
+
+        private void LocalComputerMonitoring()
+        {
+            while (true)
+            {
+                lanMonitor.ListLANComputers();
+                Thread.Sleep(1000);
             }
         }
 
@@ -103,21 +113,33 @@ namespace LanMonitor
         {
             while (true)
             {
-                List<LocalNetworkComputer> computerList = lanMonitor.EnumerateLANComputers();
-
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                List<LocalNetworkComputer> computerList = lanMonitor.TestLANComputers();
                 {
-                    ComputerCollection.Clear();
-                    for (int i = 0; i < computerList.Count; i += 1)
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        ComputerCollection.Add(new LANComputerModelView(computerList[i]));
-                    }
-                }));
+                        int i = 0;
+                        for (; i < computerList.Count; i += 1)
+                        {
+                            if (ComputerCollection.Count <= i)
+                            {
+                                ComputerCollection.Add(new LANComputerModelView(computerList[i]));
+                            }
+                            else
+                            {
+                                ComputerCollection[i].Resolve(computerList[i]);
+                            }
+                        }
+                        while (ComputerCollection.Count > i)
+                        {
+                            ComputerCollection.RemoveAt(i);
+                        }
+                    }));
+                }
 
-                Thread.Sleep(5000);
+                Thread.Sleep(1000);
             }
         }
-
+        
         private void NetworkMonitoring()
         {
             while (true)
@@ -129,13 +151,25 @@ namespace LanMonitor
                     long uploadSpeed = 0;
                     long downloadSpeed = 0;
 
-                    NetworkCollection.Clear();
-                    for (int i = 0; i < adapters.Count; i += 1)
+                    int i = 0;
+                    for (; i < adapters.Count; i += 1)
                     {
                         uploadSpeed += adapters[i].UploadSpeed;
                         downloadSpeed += adapters[i].downloadSpeed;
 
-                        NetworkCollection.Add(new NetworkModelView(adapters[i]));
+                        if (NetworkCollection.Count <= i)
+                        {
+                            NetworkCollection.Add(new NetworkModelView(adapters[i]));
+                        }
+                        else
+                        {
+                            NetworkCollection[i].Resolve(adapters[i]);
+                        }
+                    }
+
+                    while (NetworkCollection.Count > i)
+                    {
+                        NetworkCollection.RemoveAt(i);
                     }
 
                     speedQueue.Enqueue(uploadSpeed + downloadSpeed);
@@ -160,36 +194,94 @@ namespace LanMonitor
 
     public class LocalNetworkManager
     {
-        private List<LocalNetworkComputer> computerList;
+        private readonly List<LocalNetworkComputer> computerList;
+        private readonly Ping pinger;
 
         public LocalNetworkManager()
         {
             computerList = new List<LocalNetworkComputer>();
+
+            pinger = new Ping();
+
+            pinger.PingCompleted += Pinger_PingCompleted;
         }
 
-        public List<LocalNetworkComputer> EnumerateLANComputers()
+        private void Pinger_PingCompleted(object sender, PingCompletedEventArgs e)
         {
-            computerList.Clear();
+            LocalNetworkComputer computer = e.UserState as LocalNetworkComputer;
 
+            int result = -1;
+            int latency = -1;
+            if (e.Cancelled || e.Error != null)
+            {
+                result = 10;
+                latency = 1000;
+            }
+            else
+            {
+                result = (int)e.Reply.Status;
+                latency = result == 0 ? (int)e.Reply.RoundtripTime : 1000;
+            }
+            computer.Status = result;
+            computer.Latency = latency;
+            if (computer.IPAddress == string.Empty)
+            {
+                computer.IPAddress = e.Reply.Address.ToString();
+            }
+        }
+
+        public void Dispose()
+        {
+            pinger.Dispose();
+            computerList.Clear();
+        }
+
+        public List<LocalNetworkComputer> TestLANComputers()
+        {
+            computerList.Sort((LocalNetworkComputer x, LocalNetworkComputer y) => x?.Status > y?.Status ? 1 : -1);
+
+            return computerList;
+        }
+
+        public void ListLANComputers()
+        {
             DirectoryEntry root = new DirectoryEntry("WinNT:");
 
-            Ping pinger = new Ping();
             foreach (DirectoryEntry computers in root.Children)
             {
                 foreach (DirectoryEntry computer in computers.Children)
                 {
                     if (computer.Name != "Schema")
                     {
-                        int result = -1;
-                        int latency = 0;
-                        string macAddress = string.Empty;
+                        LocalNetworkComputer activeComputer = null;
+                        foreach (LocalNetworkComputer item in computerList)
+                        {
+                            if (item.UID == computer.Path)
+                            {
+                                activeComputer = item;
+                                break;
+                            }
+                        }
+
+                        if (activeComputer == null)
+                        {
+                            activeComputer = new LocalNetworkComputer(); ;
+                            computerList.Add(activeComputer);
+                        }
+
+                        activeComputer.Name = computer.Name;
+                        activeComputer.UID = computer.Path;
+                        activeComputer.Updated = true;
+                        
                         string ipAddress = string.Empty;
+
                         try
                         {
                             IPAddress ipv4 = null;
                             IPAddress ipv6 = null;
 
                             IPHostEntry ipHost = Dns.GetHostEntry(computer.Name);
+
                             foreach (IPAddress ip in ipHost.AddressList)
                             {
                                 if (ip.AddressFamily == AddressFamily.InterNetwork)
@@ -201,58 +293,61 @@ namespace LanMonitor
                                     ipv6 = ip;
                                 }
                             }
-
-                            PingReply reply;
+                            
                             if (ipv4 != null)
                             {
-                                reply = pinger.Send(ipv4, 1000);
                                 ipAddress = ipv4.ToString();
-
+                                pinger.SendAsync(ipv4, 1000, activeComputer);
                             }
                             else if (ipv6 != null)
                             {
-                                reply = pinger.Send(ipv6, 1000);
                                 ipAddress = ipv6.ToString();
+                                pinger.SendAsync(ipv6, 1000, activeComputer);
                             }
                             else
                             {
-                                reply = pinger.Send(computer.Name, 1000);
-                                ipAddress = reply.Address.ToString();
+                                pinger.SendAsync(computer.Name, 1000, activeComputer);
                             }
-                            
-                            result = (int)reply.Status;
-                            latency = result == 0 ? (int)reply.RoundtripTime : 1000;
+
                         }
                         catch
                         {
                         }
-                        computerList.Add(new LocalNetworkComputer()
-                        {
-                            Name = computer.Name,
-                            IPAddress = ipAddress,
-                            MacAddress = macAddress,
-                            Status = result,
-                            Latency = latency
-                        });
+                        activeComputer.IPAddress = ipAddress;
                     }
                 }
             }
-            pinger.Dispose();
-            return computerList;
+
+            computerList.RemoveAll(computer =>
+            {
+                if (computer.Updated)
+                {
+                    computer.Updated = false;
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            });
+
+            root.Dispose();
         }
     }
 
     public class LocalNetworkComputer
     {
+        public string UID;
         public string Name;
         public string IPAddress;
         public string Type;
         public string MacAddress;
-        public int Status;
-        public int Latency;
+        public int Status = -1;
+        public int Latency = -1;
+        public bool Updated = false;
     }
 
-    public class LANComputerModelView
+    public class LANComputerModelView : CustomINotifyPropertyChanged
     {
         public string Name { get; set; }
         public string IPAddress { get; set; }
@@ -267,15 +362,53 @@ namespace LanMonitor
             Name = computer.Name;
             Status = computer.Status.ToString();
             IPAddress = computer.IPAddress;
-            MacAddress = computer.MacAddress;
-            Latency = computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms";
+
+            Latency = computer.Latency == -1 ? "..." : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
 
             ToolTip = string.Format("计算机名称：{1}{0}IP地址：{2}{0}网络延迟：{3}",
                 Environment.NewLine, Name, IPAddress, Latency);
         }
+
+        public void Resolve(LocalNetworkComputer computer)
+        {
+            string name = computer.Name;
+            string status = computer.Status.ToString();
+            string ipAddress = computer.IPAddress;
+
+            string latency = computer.Latency == -1 ? "..." : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
+
+            string toolTip = string.Format("计算机名称：{1}{0}IP地址：{2}{0}网络延迟：{3}",
+                Environment.NewLine, Name, IPAddress, Latency);
+
+            if (Name != name)
+            {
+                Name = name;
+                Notify(() => Name);
+            }
+            if (Status != status)
+            {
+                Status = status;
+                Notify(() => Status);
+            }
+            if (IPAddress != ipAddress)
+            {
+                IPAddress = ipAddress;
+                Notify(() => IPAddress);
+            }
+            if (Latency != latency)
+            {
+                Latency = latency;
+                Notify(() => Latency);
+            }
+            if (ToolTip != toolTip)
+            {
+                ToolTip = toolTip;
+                Notify(() => ToolTip);
+            }
+        }
     }
 
-    public class NetworkModelView
+    public class NetworkModelView : CustomINotifyPropertyChanged
     {
         public string Name { get; set; }
         public string IPAddress { get; set; }
@@ -297,6 +430,48 @@ namespace LanMonitor
 
             ToolTip = string.Format("网卡名称：{1}{0}IP地址：{2}{0}MAC地址：{3}{0}带宽：{4}",
                 Environment.NewLine, adapter.Description, adapter.IPAddress, adapter.MACAddress, adapter.MaxSpeed);
+        }
+
+        public void Resolve(NetworkAdapter adapter)
+        {
+            string name = adapter.Name;
+            string status = adapter.Status.ToString();
+            string type = adapter.Type.ToString();
+            string downloadSpeed = adapter.DownloadSpeedString;
+            string uploadSpeed = adapter.UploadSpeedString;
+            string toolTip = string.Format("网卡名称：{1}{0}IP地址：{2}{0}MAC地址：{3}{0}带宽：{4}",
+                Environment.NewLine, adapter.Description, adapter.IPAddress, adapter.MACAddress, adapter.MaxSpeed);
+
+            if (Name != name)
+            {
+                Name = name;
+                Notify(() => Name);
+            }
+            if (Status != status)
+            {
+                Status = status;
+                Notify(() => Status);
+            }
+            if (Type != type)
+            {
+                Type = type;
+                Notify(() => type);
+            }
+            if (DownloadSpeed != downloadSpeed)
+            {
+                DownloadSpeed = downloadSpeed;
+                Notify(() => DownloadSpeed);
+            }
+            if (UploadSpeed != uploadSpeed)
+            {
+                UploadSpeed = uploadSpeed;
+                Notify(() => UploadSpeed);
+            }
+            if (ToolTip != toolTip)
+            {
+                ToolTip = toolTip;
+                Notify(() => ToolTip);
+            }
         }
     }
 
@@ -431,6 +606,10 @@ namespace LanMonitor
             {
                 return string.Format("{0:G4}{1}", speed / 1000.0, "KB/s");
             }
+            else if (speed < 0)
+            {
+                return "0B/s";
+            }
             else
             {
                 return speed + "B/s";
@@ -448,7 +627,6 @@ namespace LanMonitor
         public NetworkMonitor()
         {
             adapterList = new List<NetworkAdapter>();
-            EnumerateNetworkAdapters();
         }
 
         public void EnumerateNetworkAdapters()
@@ -461,6 +639,7 @@ namespace LanMonitor
                 IEnumerable networkCollection = NetworkInterface
                     .GetAllNetworkInterfaces()
                     .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback && nic.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                    .OrderBy(nic => nic.OperationalStatus != OperationalStatus.Up)
                     .Select(nic => nic);
 
                 int index = 0;
