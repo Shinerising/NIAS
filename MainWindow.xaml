@@ -93,9 +93,9 @@
             </Border>
             <Border Grid.Row="0" Padding="3,2" MouseLeftButtonDown="Window_MouseDown">
                 <StackPanel Orientation="Horizontal">
-                    <Path Data="M 6 3 L 10 9 L 2 9 Z" Stroke="#FFFF3764" Fill="#FFFF3764" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="12" Height="12"/>
+                    <Path Data="M 6 3 L 10 9 L 2 9 Z" Stroke="#0277BD" Fill="#0277BD" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="12" Height="12"/>
                     <TextBlock ToolTip="{StaticResource UploadSpeed}" Text="{Binding GlobalUploadSpeed, FallbackValue=128KB/s}" FontSize="12" Width="70" LineHeight="14" Height="14" Margin="2,0"/>
-                    <Path Data="M 2 3 L 10 3 L 6 9 Z" Stroke="#FF1D8B40" Fill="#FF1D8B40" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="12" Height="12"/>
+                    <Path Data="M 2 3 L 10 3 L 6 9 Z" Stroke="#2E7D32" Fill="#2E7D32" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="12" Height="12"/>
                     <TextBlock ToolTip="{StaticResource DownloadSpeed}" Text="{Binding GlobalDownloadSpeed, FallbackValue=128KB/s}" FontSize="12" Width="70" LineHeight="14" Height="14" Margin="2,0"/>
                 </StackPanel>
             </Border>
@@ -128,13 +128,13 @@
                                     <Path.Style>
                                         <Style TargetType="Path">
                                             <Setter Property="StrokeThickness" Value="1"/>
-                                            <Setter Property="Stroke" Value="#FFDE5F5F"/>
-                                            <Setter Property="Fill" Value="#FFDE5F5F"/>
+                                            <Setter Property="Stroke" Value="#C62828"/>
+                                            <Setter Property="Fill" Value="#C62828"/>
                                             <Setter Property="Data" Value="M 3 1 L 9 1 L 9 3 L 11 3 L 11 11 L 10 11 L 10 5 L 8 5 L 8 10 L 7 10 L 7 5 L 5 5 L 5 10 L 4 10 L 4 5 L 3 5 L 2 5 L 2 11 L 1 11 L 1 3 L 3 3 Z"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Status}" Value="1">
-                                                    <Setter Property="Stroke" Value="#FF2CA65E"/>
-                                                    <Setter Property="Fill" Value="#FF2CA65E"/>
+                                                    <Setter Property="Stroke" Value="#2E7D32"/>
+                                                    <Setter Property="Fill" Value="#2E7D32"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding Type}" Value="71">
                                                     <Setter Property="StrokeThickness" Value="1.3"/>
@@ -182,13 +182,13 @@
                                     <Path.Style>
                                         <Style TargetType="Path">
                                             <Setter Property="StrokeThickness" Value="1"/>
-                                            <Setter Property="Stroke" Value="#FFDE5F5F"/>
-                                            <Setter Property="Fill" Value="#FFDE5F5F"/>
+                                            <Setter Property="Stroke" Value="#C62828"/>
+                                            <Setter Property="Fill" Value="#C62828"/>
                                             <Setter Property="Data" Value="M 1 2 L 11 2 L 11 8 L 8 8 L 8 10 L 10 10 L 10 10.5 L 2 10.5 L 2 10 L 4 10 L 4 8 L 1 8 L 1 2 L 1.5 2 L 1.5 7.5 L 10.5 7.5 L 10.5 2.5 L 1.5 2.5 Z"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Status}" Value="0">
-                                                    <Setter Property="Stroke" Value="#FF2CA65E"/>
-                                                    <Setter Property="Fill" Value="#FF2CA65E"/>
+                                                    <Setter Property="Stroke" Value="#2E7D32"/>
+                                                    <Setter Property="Fill" Value="#2E7D32"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding Status}" Value="-1">
                                                     <Setter Property="Stroke" Value="#FFAAAAAA"/>
