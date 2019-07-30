@@ -55,10 +55,9 @@ namespace LanMonitor
                     new Point(0, 20)
                 };
                 int x = 0;
-                long y = 0;
                 foreach (long speed in speedQueue)
                 {
-                    y = (1000000 - speed) * 20 / 1000000;
+                    long y = (1000000 - speed) * 20 / 1000000;
                     collection.Add(new Point(x, y));
                     x += 1;
                 }
@@ -121,7 +120,7 @@ namespace LanMonitor
             while (true)
             {
                 lanMonitor.ListLANComputers();
-                Thread.Sleep(1000);
+                Thread.Sleep(5000);
             }
         }
 
@@ -225,9 +224,8 @@ namespace LanMonitor
         private void Pinger_PingCompleted(object sender, PingCompletedEventArgs e)
         {
             LocalNetworkComputer computer = e.UserState as LocalNetworkComputer;
-
-            int result = -1;
-            int latency = -1;
+            int result;
+            int latency;
             if (e.Cancelled || e.Error != null)
             {
                 result = 10;
