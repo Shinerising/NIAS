@@ -7,7 +7,26 @@
     <system:String x:Key="UploadSpeed">Upload Speed</system:String>
     <system:String x:Key="DownloadSpeed">Download Speed</system:String>
     <system:String x:Key="UnknownIP">Unknown</system:String>
-    <system:String x:Key="ComputerToolTip">Computer Name: {1}{0}IP Address: {2}{0}Network Latency: {3}</system:String>
-    <system:String x:Key="NetworkToolTip">Network Adapter: {1}{0}IP Address: {2}{0}Mac Address: {3}{0}Bandwidth: {4}</system:String>
+    <system:String x:Key="Port_Default">Unknown</system:String>
+    <system:String x:Key="Port_Established">Established</system:String>
+    <system:String x:Key="Port_Listening">Listening</system:String>
+    <system:String x:Key="Port_CloseWait">Close Wait</system:String>
+    <system:String x:Key="Port_TimeWait">Time Wait</system:String>
+    <system:String x:Key="Port_SynSent">Requesting</system:String>
+    <system:String x:Key="ComputerToolTip">Name: {1}{0}IP Address: {2}{0}Network Path: {3}</system:String>
+    <system:String x:Key="PortToolTip">Protocol Type: {1}{0}Local Endpoint: {2}{0}Remote Endpoint: {3}</system:String>
+    <system:String x:Key="NetworkToolTip">Adapter Name: {1}{0}IP Address: {2}{0}Mac Address: {3}{0}Bandwidth: {4}</system:String>
+    <system:String x:Key="Text_Graph">Data Usage</system:String>
+    <system:String x:Key="Row_Adapter">Network Adapters</system:String>
+    <system:String x:Key="Row_Port">Active Ports</system:String>
+    <system:String x:Key="Row_LAN">Local Network</system:String>
+    <system:String x:Key="Tip_ComputerName">Computer Name</system:String>
+    <system:String x:Key="Tip_SystemName">System Name</system:String>
+    <system:String x:Key="Tip_DomainName">Domain Name</system:String>
+    <system:String x:Key="Tip_WorkGroup">Work Group Name</system:String>
+    <system:String x:Key="Tip_Graph">Network Graph (2min)</system:String>
+    <system:String x:Key="Tip_User">User Name</system:String>
+    <system:String x:Key="Tip_Port">Port State</system:String>
+    <system:String x:Key="Tip_Latency">Network Latency</system:String>
 
 </ResourceDictionary>
