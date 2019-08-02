@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -6,6 +7,14 @@ using System.Windows;
 
 namespace LanMonitor
 {
+    public class ActivePort
+    {
+        public string Type;
+        public string LocalEndPoint;
+        public string RemoteEndPoint;
+        public string State;
+    }
+
     public class LocalNetworkComputer
     {
         public string UID;
@@ -54,13 +63,10 @@ namespace LanMonitor
             {
                 try
                 {
-                    foreach (UnicastIPAddressInformation ip in networkInterface?.GetIPProperties().UnicastAddresses)
-                    {
-                        if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
-                        {
-                            return ip.Address.ToString();
-                        }
-                    }
+                    IEnumerable<string> ipList = networkInterface?.GetIPProperties().UnicastAddresses
+                        .Where((ip) => ip.Address.AddressFamily == AddressFamily.InterNetwork)
+                        .Select((ip) => ip.Address.ToString()).Cast<string>();
+                    return string.Join(",", ipList);
                 }
                 catch
                 {
@@ -69,7 +75,7 @@ namespace LanMonitor
             }
         }
         public string MACAddress => string.Join(":", (from c in networkInterface?.GetPhysicalAddress().GetAddressBytes() select c.ToString("X2")).ToArray());
-        public string MaxSpeed => GetSpeedString((long)networkInterface?.Speed);
+        public string MaxSpeed => GetLegacySpeedString((long)networkInterface?.Speed);
         public int Status => (int)networkInterface?.OperationalStatus;
         public int Type => (int)networkInterface?.NetworkInterfaceType;
 
@@ -137,17 +143,17 @@ namespace LanMonitor
 
         public static string GetSpeedString(long speed)
         {
-            if (speed > 1000000000)
+            if (speed > 1073741824)
             {
                 return ">1GB/s";
             }
-            else if (speed > 1000000)
+            else if (speed > 1048576)
             {
-                return string.Format("{0:G4}{1}", speed / 1000000.0, "MB/s");
+                return string.Format("{0:G4}{1}", speed / 1048576.0, "MB/s");
             }
-            else if (speed > 1000)
+            else if (speed > 1024)
             {
-                return string.Format("{0:G4}{1}", speed / 1000.0, "KB/s");
+                return string.Format("{0:G4}{1}", speed / 1024.0, "KB/s");
             }
             else if (speed < 0)
             {
@@ -156,6 +162,34 @@ namespace LanMonitor
             else
             {
                 return speed + "B/s";
+            }
+        }
+
+        public static string GetLegacySpeedString(long speed)
+        {
+            if (speed > 1000000000000)
+            {
+                return ">1Tbps";
+            }
+            else if (speed >= 1000000000)
+            {
+                return string.Format("{0:G4}{1}", speed / 1000000000.0, "Gbps");
+            }
+            else if (speed >= 1000000)
+            {
+                return string.Format("{0:G4}{1}", speed / 1000000.0, "Mbps");
+            }
+            else if (speed >= 1000)
+            {
+                return string.Format("{0:G4}{1}", speed / 1000.0, "Kbps");
+            }
+            else if (speed < 0)
+            {
+                return "0bps";
+            }
+            else
+            {
+                return speed + "bps";
             }
         }
 

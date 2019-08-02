@@ -9,6 +9,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="StringResource.xaml" />
                 <ResourceDictionary Source="StringResource.zh-CN.xaml" />
+
+                <ResourceDictionary Source="Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
         

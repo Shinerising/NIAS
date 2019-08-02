@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Management;
 
 namespace LanMonitor
 {
@@ -34,51 +35,205 @@ namespace LanMonitor
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((propertyExpression.Body as MemberExpression).Member.Name));
         }
     }
-    
+
+    public class NetworkManager_Test
+    {
+        public static NetworkManager_Test Instance = new NetworkManager_Test();
+        public static ObservableCollection<NetworkModelView> NetworkCollection { get; set; } = new ObservableCollection<NetworkModelView> {
+            new NetworkModelView()
+            {
+                Name = "测试名称",
+                Status = "",
+                Type = "",
+                DownloadSpeed = "2Mbps",
+                UploadSpeed = "1Mbps",
+
+                ToolTip = "DFAEFAEFEFAEFEF"
+            }
+        };
+
+        public ObservableCollection<LANComputerModelView> ComputerCollection { get; set; } = new ObservableCollection<LANComputerModelView>
+        {
+            new LANComputerModelView()
+            {
+                Name = "LAN Computer",
+                Status = "",
+                IPAddress = "192.168.1.45",
+                Latency = "365ms",
+                ToolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(), Environment.NewLine, "LAN Computer", "192.168.1.45", "365ms")
+            }
+        };
+        public ObservableCollection<PortModelView> PortCollection { get; set; } = new ObservableCollection<PortModelView>
+        {
+            new PortModelView()
+            {
+                Type = "TCP",
+                LocalEndPoint = "10.211.55.3:52940",
+                RemoteEndPoint = "40.90.189.152:443",
+                State = "Established",
+                ToolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(), Environment.NewLine, "TCP", "10.211.55.3:52940", "40.90.189.152:443")
+            }
+        };
+    }
+
     public class NetworkManager : CustomINotifyPropertyChanged, IDisposable
     {
         public ObservableCollection<NetworkModelView> NetworkCollection { get; set; }
+        public ObservableCollection<PortModelView> PortCollection { get; set; }
         public ObservableCollection<LANComputerModelView> ComputerCollection { get; set; }
 
         private readonly NetworkMonitor networkMoniter;
         private readonly LocalNetworkManager lanMonitor;
+        private readonly PortMonitor portMonitor;
 
         public string GlobalUploadSpeed { get; set; }
         public string GlobalDownloadSpeed { get; set; }
 
-        public PointCollection GraphPointCollection
+        public PointCollection UploadPointGraph
         {
             get
             {
                 PointCollection collection = new PointCollection
                 {
-                    new Point(0, 20)
+                    new Point(0, 100),
+                    new Point(0, 0),
+                    new Point(0, 100)
                 };
                 int x = 0;
-                foreach (long speed in speedQueue)
+                long max = 0;
+                for (int i = 0; i < 120 - uploadSpeedQueue.Count(); i += 1)
                 {
-                    long y = (1000000 - speed) * 20 / 1000000;
-                    collection.Add(new Point(x, y));
+                    collection.Add(new Point(x, 100));
                     x += 1;
                 }
-                collection.Add(new Point(x, 20));
+                foreach (long speed in uploadSpeedQueue)
+                {
+                    double y = (speedGraphLimit - speed) * 100.0 / speedGraphLimit;
+                    collection.Add(new Point(x, y));
+                    if (speed > max)
+                    {
+                        max = speed;
+                    }
+                    x += 1;
+                }
+                if (max < 1000)
+                {
+                    max = 1000;
+                }
+                while (speedGraphLimit < max)
+                {
+                    speedGraphLimit *= 2;
+                }
+                while (speedGraphLimit > max * 2)
+                {
+                    speedGraphLimit /= 2;
+                }
+                collection.Add(new Point(x - 1, 100));
+                return collection;
+            }
+        }
+        public PointCollection DownloadPointGraph
+        {
+            get
+            {
+                PointCollection collection = new PointCollection
+                {
+                    new Point(0, 100),
+                    new Point(0, 0),
+                    new Point(0, 100)
+                };
+                int x = 0;
+                long max = 0;
+                for (int i = 0; i < 120 - downloadSpeedQueue.Count(); i += 1)
+                {
+                    collection.Add(new Point(x, 100));
+                    x += 1;
+                }
+                foreach (long speed in downloadSpeedQueue)
+                {
+                    double y = (speedGraphLimit - speed) * 100.0 / speedGraphLimit;
+                    collection.Add(new Point(x, y));
+                    if (speed > max)
+                    {
+                        max = speed;
+                    }
+                    x += 1;
+                }
+                if (max < 1000)
+                {
+                    max = 1000;
+                }
+                while (speedGraphLimit < max)
+                {
+                    speedGraphLimit *= 2;
+                }
+                while (speedGraphLimit > max * 2)
+                {
+                    speedGraphLimit /= 2;
+                }
+                collection.Add(new Point(x - 1, 100));
                 return collection;
             }
         }
 
-        private readonly Queue<long> speedQueue;
+        public string SpeedLimit => NetworkAdapter.GetSpeedString(speedGraphLimit);
+
+        private readonly Queue<long> uploadSpeedQueue;
+        private readonly Queue<long> downloadSpeedQueue;
+
+        private long speedGraphLimit = 1024;
+
+        public string ComputerName => Environment.MachineName;
+        public string SystemName
+        {
+            get
+            {
+                object name = (from x in new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem").Get().Cast<ManagementObject>()
+                               select x.GetPropertyValue("Caption")).FirstOrDefault();
+                return name != null ? name.ToString() : "Unknown";
+            }
+        }
+        public string MachineType
+        {
+            get
+            {
+                object name0 = (from x in new ManagementObjectSearcher("SELECT Caption FROM Win32_Battery").Get().Cast<ManagementObject>()
+                               select x.GetPropertyValue("Caption")).FirstOrDefault();
+                object name1 = (from x in new ManagementObjectSearcher("SELECT Caption FROM Win32_PortableBattery").Get().Cast<ManagementObject>()
+                                select x.GetPropertyValue("Caption")).FirstOrDefault();
+                return (name0 != null || name1 != null) ? "Laptop" : "Desktop";
+            }
+        }
+
+        public string WorkGroup
+        {
+            get
+            {
+                object name = (from x in new ManagementObjectSearcher("SELECT Workgroup FROM Win32_ComputerSystem").Get().Cast<ManagementObject>()
+                               select x.GetPropertyValue("Workgroup")).FirstOrDefault();
+                return name != null ? name.ToString() : "Unknown";
+            }
+        }
+
+        public string DomainName => Environment.UserDomainName;
+        public string UserName => Environment.UserName;
 
         public NetworkManager()
         {
-            speedQueue = new Queue<long>();
+            uploadSpeedQueue = new Queue<long>();
+            downloadSpeedQueue = new Queue<long>();
 
             NetworkCollection = new ObservableCollection<NetworkModelView>();
 
             ComputerCollection = new ObservableCollection<LANComputerModelView>();
 
+            PortCollection = new ObservableCollection<PortModelView>();
+
             networkMoniter = new NetworkMonitor();
 
             lanMonitor = new LocalNetworkManager();
+
+            portMonitor = new PortMonitor();
         }
 
         public void Start()
@@ -87,6 +242,7 @@ namespace LanMonitor
             Task.Factory.StartNew(NetworkAdapterMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(LocalNetworkMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(LocalComputerMonitoring, TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(ActivePortMonitoring, TaskCreationOptions.LongRunning);
         }
 
         public void Dispose()
@@ -123,33 +279,61 @@ namespace LanMonitor
                 Thread.Sleep(5000);
             }
         }
+        private void ActivePortMonitoring()
+        {
+            while (true)
+            {
+                List<ActivePort> portList = portMonitor.ListActivePort();
+
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    int i = 0;
+                    for (; i < portList.Count; i += 1)
+                    {
+                        if (PortCollection.Count <= i)
+                        {
+                            PortCollection.Add(new PortModelView(portList[i]));
+                        }
+                        else
+                        {
+                            PortCollection[i].Resolve(portList[i]);
+                        }
+                    }
+                    while (PortCollection.Count > i)
+                    {
+                        PortCollection.RemoveAt(i);
+                    }
+                }));
+
+                Thread.Sleep(1000);
+            }
+        }
 
         private void LocalNetworkMonitoring()
         {
             while (true)
             {
                 List<LocalNetworkComputer> computerList = lanMonitor.TestLANComputers();
+
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    int i = 0;
+                    for (; i < computerList.Count; i += 1)
                     {
-                        int i = 0;
-                        for (; i < computerList.Count; i += 1)
+                        if (ComputerCollection.Count <= i)
                         {
-                            if (ComputerCollection.Count <= i)
-                            {
-                                ComputerCollection.Add(new LANComputerModelView(computerList[i]));
-                            }
-                            else
-                            {
-                                ComputerCollection[i].Resolve(computerList[i]);
-                            }
+                            ComputerCollection.Add(new LANComputerModelView(computerList[i]));
                         }
-                        while (ComputerCollection.Count > i)
+                        else
                         {
-                            ComputerCollection.RemoveAt(i);
+                            ComputerCollection[i].Resolve(computerList[i]);
                         }
-                    }));
-                }
+                    }
+                    while (ComputerCollection.Count > i)
+                    {
+                        ComputerCollection.RemoveAt(i);
+                    }
+                }));
 
                 Thread.Sleep(1000);
             }
@@ -187,11 +371,16 @@ namespace LanMonitor
                         NetworkCollection.RemoveAt(i);
                     }
 
-                    speedQueue.Enqueue(uploadSpeed + downloadSpeed);
+                    uploadSpeedQueue.Enqueue(uploadSpeed);
+                    downloadSpeedQueue.Enqueue(downloadSpeed);
 
-                    while (speedQueue.Count > 200)
+                    while (uploadSpeedQueue.Count > 120)
                     {
-                        speedQueue.Dequeue();
+                        uploadSpeedQueue.Dequeue();
+                    }
+                    while (downloadSpeedQueue.Count > 120)
+                    {
+                        downloadSpeedQueue.Dequeue();
                     }
 
                     GlobalUploadSpeed = NetworkAdapter.GetSpeedString(uploadSpeed);
@@ -199,7 +388,9 @@ namespace LanMonitor
 
                     Notify(() => GlobalUploadSpeed);
                     Notify(() => GlobalDownloadSpeed);
-                    Notify(() => GraphPointCollection);
+                    Notify(() => UploadPointGraph);
+                    Notify(() => DownloadPointGraph);
+                    Notify(() => SpeedLimit);
                 }));
 
                 Thread.Sleep(1000);
@@ -361,6 +552,46 @@ namespace LanMonitor
         }
     }
     
+    public class PortMonitor
+    {
+        public List<ActivePort> ListActivePort()
+        {
+            List<ActivePort> portList = new List<ActivePort>();
+            IPGlobalProperties iPGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+            foreach (TcpConnectionInformation connection in iPGlobalProperties.GetActiveTcpConnections())
+            {
+                portList.Add(new ActivePort
+                {
+                    Type = "TCP",
+                    LocalEndPoint = connection.LocalEndPoint.ToString(),
+                    RemoteEndPoint = connection.RemoteEndPoint.ToString(),
+                    State = connection.State.ToString()
+                });
+            }
+            foreach (IPEndPoint endpoint in iPGlobalProperties.GetActiveTcpListeners())
+            {
+                portList.Add(new ActivePort
+                {
+                    Type = "TCP",
+                    LocalEndPoint = endpoint.ToString(),
+                    RemoteEndPoint = "",
+                    State = TcpState.Listen.ToString()
+                });
+            }
+            foreach (IPEndPoint endpoint in iPGlobalProperties.GetActiveUdpListeners())
+            {
+                portList.Add(new ActivePort
+                {
+                    Type = "UDP",
+                    LocalEndPoint = endpoint.ToString(),
+                    RemoteEndPoint = "",
+                    State = ""
+                });
+            }
+            return portList;
+        }
+    }
+
     public class NetworkMonitor
     {               
         private readonly List<NetworkAdapter> adapterList;
@@ -474,19 +705,25 @@ namespace LanMonitor
         public string Type { get; set; }
         public string MacAddress { get; set; }
         public string Status { get; set; }
+        public string UID { get; set; }
         public string Latency { get; set; }
         public string ToolTip { get; set; }
+
+        public LANComputerModelView()
+        {
+
+        }
 
         public LANComputerModelView(LocalNetworkComputer computer)
         {
             Name = computer.Name;
             Status = computer.Status.ToString();
             IPAddress = computer.IPAddress;
-
-            Latency = computer.Latency == -1 ? "..." : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
+            UID = computer.UID;
+            Latency = computer.Latency == -1 ? "???" : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
 
             ToolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(),
-                Environment.NewLine, Name, IPAddress, Latency);
+                Environment.NewLine, Name, IPAddress, UID);
         }
 
         public void Resolve(LocalNetworkComputer computer)
@@ -494,11 +731,11 @@ namespace LanMonitor
             string name = computer.Name;
             string status = computer.Status.ToString();
             string ipAddress = computer.IPAddress;
-
-            string latency = computer.Latency == -1 ? "..." : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
+            string uid = computer.UID;
+            string latency = computer.Latency == -1 ? "???" : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
 
             string toolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(),
-                Environment.NewLine, Name, IPAddress, Latency);
+                Environment.NewLine, name, ipAddress, uid);
 
             if (Name != name)
             {
@@ -514,6 +751,11 @@ namespace LanMonitor
             {
                 IPAddress = ipAddress;
                 Notify(() => IPAddress);
+            }
+            if (UID != uid)
+            {
+                UID = uid;
+                Notify(() => UID);
             }
             if (Latency != latency)
             {
@@ -539,6 +781,11 @@ namespace LanMonitor
         public string ToolTip { get; set; }
         public string DownloadSpeed { get; set; }
         public string UploadSpeed { get; set; }
+
+        public NetworkModelView()
+        {
+
+        }
 
         public NetworkModelView(NetworkAdapter adapter)
         {
@@ -593,5 +840,96 @@ namespace LanMonitor
                 Notify(() => ToolTip);
             }
         }
+    }
+
+    public class PortModelView : CustomINotifyPropertyChanged
+    {
+        public string Type { get; set; }
+        public string LocalEndPoint { get; set; }
+        public string RemoteEndPoint { get; set; }
+
+        public string State { get; set; }
+        public string ToolTip { get; set; }
+
+        public string StateText
+        {
+            get
+            {
+                switch (State)
+                {
+                    case "Established":
+                        return Application.Current.FindResource("Port_Established").ToString();
+                    case "Listen":
+                        return Application.Current.FindResource("Port_Listening").ToString();
+                    case "CloseWait":
+                        return Application.Current.FindResource("Port_CloseWait").ToString();
+                    case "TimeWait":
+                        return Application.Current.FindResource("Port_TimeWait").ToString();
+                    case "SynSent":
+                        return Application.Current.FindResource("Port_SynSent").ToString();
+                    case "":
+                    default:
+                        return Application.Current.FindResource("Port_Default").ToString();
+                }
+            }
+        }
+
+        public PortModelView()
+        {
+
+        }
+        public PortModelView(ActivePort port)
+        {
+            Type = port.Type;
+            State = port.State;
+            LocalEndPoint = port.LocalEndPoint;
+            RemoteEndPoint = port.RemoteEndPoint;
+
+            ToolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(),
+                Environment.NewLine, Type, LocalEndPoint, RemoteEndPoint);
+        }
+
+        public void Resolve(ActivePort port)
+        {
+            string type = port.Type;
+            string state = port.State;
+            if (state != "" && state != "Listen" && state != "CloseWait" && state != "TimeWait" && state != "Established")
+            {
+                var a = state;
+            }
+            string localEndPoint = port.LocalEndPoint;
+            string remoteEndPoint = port.RemoteEndPoint;
+
+            string toolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(),
+                Environment.NewLine, type, localEndPoint, remoteEndPoint);
+
+            if (Type != type)
+            {
+                Type = type;
+                Notify(() => Type);
+            }
+            if (State != state)
+            {
+                State = state;
+                Notify(() => State);
+                Notify(() => StateText);
+            }
+            if (LocalEndPoint != localEndPoint)
+            {
+                LocalEndPoint = localEndPoint;
+                Notify(() => LocalEndPoint);
+            }
+            if (RemoteEndPoint != remoteEndPoint)
+            {
+                RemoteEndPoint = remoteEndPoint;
+                Notify(() => RemoteEndPoint);
+            }
+            if (ToolTip != toolTip)
+            {
+                ToolTip = toolTip;
+                Notify(() => ToolTip);
+            }
+        }
+
     }
 }

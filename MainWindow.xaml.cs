@@ -9,7 +9,7 @@ namespace LanMonitor
     /// </summary>
     public partial class MainWindow : Window, IDisposable
     {
-        private NetworkManager networkManager;
+        private readonly NetworkManager networkManager;
 
         public MainWindow()
         {
@@ -20,6 +20,43 @@ namespace LanMonitor
             InitializeComponent();
 
             networkManager.Start();
+        }
+
+        private void WindowMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+        private void WindowMaximize_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+            }
+            else
+            {
+                WindowState = WindowState.Maximized;
+            }
+        }
+        private void WindowClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+        }
+
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
         }
 
         public void Dispose()
@@ -44,9 +81,9 @@ namespace LanMonitor
             Close();
         }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Network_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            DragMove();
+
         }
     }
 }

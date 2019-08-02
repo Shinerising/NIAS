@@ -3,11 +3,30 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xmlns:local="clr-namespace:LanMonitor">
 
-    <system:String x:Key="Title">网络监控</system:String>
+    <system:String x:Key="Title">局域网监控工具</system:String>
     <system:String x:Key="UploadSpeed">上传速度</system:String>
     <system:String x:Key="DownloadSpeed">下载速度</system:String>
     <system:String x:Key="UnknownIP">不可用</system:String>
-    <system:String x:Key="ComputerToolTip">计算机名称：{1}{0}IP地址：{2}{0}网络延迟：{3}</system:String>
+    <system:String x:Key="Port_Default">未知</system:String>
+    <system:String x:Key="Port_Established">已连接</system:String>
+    <system:String x:Key="Port_Listening">监听中</system:String>
+    <system:String x:Key="Port_CloseWait">关闭等待</system:String>
+    <system:String x:Key="Port_TimeWait">等待响应</system:String>
+    <system:String x:Key="Port_SynSent">请求连接</system:String>
+    <system:String x:Key="ComputerToolTip">计算机名称：{1}{0}IP地址：{2}{0}网络地址：{3}</system:String>
+    <system:String x:Key="PortToolTip">通讯协议：{1}{0}本地地址：{2}{0}远端地址：{3}</system:String>
     <system:String x:Key="NetworkToolTip">网卡名称：{1}{0}IP地址：{2}{0}MAC地址：{3}{0}带宽：{4}</system:String>
+    <system:String x:Key="Text_Graph">网络数据</system:String>
+    <system:String x:Key="Row_Adapter">网卡设备</system:String>
+    <system:String x:Key="Row_Port">活动端口</system:String>
+    <system:String x:Key="Row_LAN">局域网设备</system:String>
+    <system:String x:Key="Tip_ComputerName">计算机名称</system:String>
+    <system:String x:Key="Tip_SystemName">操作系统版本</system:String>
+    <system:String x:Key="Tip_DomainName">域名称</system:String>
+    <system:String x:Key="Tip_WorkGroup">工作组</system:String>
+    <system:String x:Key="Tip_Graph">网络流量图线(2分钟)</system:String>
+    <system:String x:Key="Tip_User">登录用户</system:String>
+    <system:String x:Key="Tip_Port">端口状态</system:String>
+    <system:String x:Key="Tip_Latency">网络延时</system:String>
     
 </ResourceDictionary>

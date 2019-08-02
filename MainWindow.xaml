@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LanMonitor"
         mc:Ignorable="d"
-        Title="{StaticResource Title}" Width="200" MinWidth="200" MaxWidth="200" Foreground="#FF35383C" WindowStyle="None" AllowsTransparency="True" Topmost="True" SizeToContent="Height" SnapsToDevicePixels="True" FontFamily="Menlo, Microsoft YaHei" Background="{x:Null}" ShowInTaskbar="False">
+        Title="{StaticResource Title}" Height="640" Width="560" MinWidth="560" MinHeight="360" MaxWidth="560"
+        MaxHeight="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenHeightKey}}"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}" FontFamily="Verdana, Microsoft YaHei">
     <Window.Resources>
         <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
             <Grid x:Name="Grid" Background="{TemplateBinding Background}">
@@ -21,8 +23,8 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
             <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
-            <Setter Property="Width" Value="8"/>
-            <Setter Property="MinWidth" Value="8"/>
+            <Setter Property="Width" Value="10"/>
+            <Setter Property="MinWidth" Value="10"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -38,7 +40,7 @@
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="Thumb">
-                                                            <Rectangle Height="25" Width="8" Fill="#FF0B4E7C"/>
+                                                            <Rectangle Height="25" Width="10" Fill="{StaticResource Color_ButtonBorder}"/>
                                                         </ControlTemplate>
                                                     </Setter.Value>
                                                 </Setter>
@@ -50,162 +52,349 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" TargetName="Bg" Value="#80156CA8"/>
+                                <Setter Property="Background" TargetName="Bg" Value="{StaticResource Color_ButtonBack}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="ListView">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListView">
+                        <Border>
+                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" Template="{DynamicResource ScrollViewerControlTemplate}">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ListViewItem">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
-    <Border CornerRadius="3" BorderThickness="1" BorderBrush="#FF2981C9">
-        <Border.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#FF3AC0FF" Offset="1"/>
-                <GradientStop Color="#FFBAE3FF"/>
-            </LinearGradientBrush>
-        </Border.Background>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="8" UseAeroCaptionButtons="False" CornerRadius="0"/>
+    </WindowChrome.WindowChrome>
+    <Border BorderThickness="1" Margin="6">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="Background" Value="{StaticResource Color_Window}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource Color_Border}"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect ShadowDepth="1" Direction="270" BlurRadius="8" Opacity=".3"/>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsActive}" Value="False">
+                        <Setter Property="Background" Value="{StaticResource Color_WindowLight}"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource Color_BorderLight}"/>
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect ShadowDepth="1" Direction="270" BlurRadius="4" Opacity=".2"/>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
-            <Polygon Points="{Binding GraphPointCollection}" Fill="#602679CB"/>
-            <Border Width="18" Height="18" CornerRadius="8" Margin="1" Panel.ZIndex="10" HorizontalAlignment="Right" VerticalAlignment="Top" MouseLeftButtonUp="Border_MouseUp">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="BorderBrush" Value="Transparent"/>
-                        <Setter Property="BorderThickness" Value="1"/>
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="Opacity" Value="0.6"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFD2EAFF"/>
-                                <Setter Property="BorderBrush" Value="#FF286BAE"/>
-                                <Setter Property="Opacity" Value="1"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <Path Data="M 3 4 L 6 7 L 3 10 L 4 11 L 7 8 L 10 11 L 11 10 L 8 7 L 11 4 L 10 3 L 7 6 L 4 3 Z" Stroke="#FF656D80" Fill="#FF656D80" StrokeThickness="2" StrokeLineJoin="Round" Width="14" Height="14"/>
-            </Border>
-            <Border Grid.Row="0" Padding="3,2" MouseLeftButtonDown="Window_MouseDown">
-                <StackPanel Orientation="Horizontal">
-                    <Path Data="M 6 3 L 10 9 L 2 9 Z" Stroke="#0277BD" Fill="#0277BD" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="12" Height="12"/>
-                    <TextBlock ToolTip="{StaticResource UploadSpeed}" Text="{Binding GlobalUploadSpeed, FallbackValue=128KB/s}" FontSize="12" Width="70" LineHeight="14" Height="14" Margin="2,0"/>
-                    <Path Data="M 2 3 L 10 3 L 6 9 Z" Stroke="#2E7D32" Fill="#2E7D32" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="12" Height="12"/>
-                    <TextBlock ToolTip="{StaticResource DownloadSpeed}" Text="{Binding GlobalDownloadSpeed, FallbackValue=128KB/s}" FontSize="12" Width="70" LineHeight="14" Height="14" Margin="2,0"/>
-                </StackPanel>
-            </Border>
-            <Grid Grid.Row="1" Background="#20000000">
-                <ListBox BorderThickness="0" MaxHeight="160" MouseLeftButtonDown="Window_MouseDown" Background="Transparent" Foreground="#FF496274" ItemsSource="{Binding NetworkCollection}">
-                    <ListBox.Style>
-                        <Style TargetType="ListBox">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListBox}">
-                                        <Grid>
-                                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" Template="{DynamicResource ScrollViewerControlTemplate}">
-                                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                            </ScrollViewer>
-                                        </Grid>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
+            <Grid VerticalAlignment="Top" Panel.ZIndex="10">
+                <Border HorizontalAlignment="Left">
+                    <Image Source="images/title.png" RenderOptions.BitmapScalingMode="HighQuality" Width="20" Height="20" Margin="6"/>
+                </Border>
+                <TextBlock Margin="32,0,0,0" Padding="0,8" LineHeight="16" Text="{StaticResource Title}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsActive}" Value="False">
+                                    <Setter Property="Foreground" Value="{StaticResource Color_TextLight}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
-                    </ListBox.Style>
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="Focusable" Value="False"/>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <DockPanel Height="16" Width="192" ToolTip="{Binding ToolTip}">
-                                <Path DockPanel.Dock="Left" Margin="2" Grid.Column="0" StrokeLineJoin="Round" Width="12" Height="12">
-                                    <Path.Style>
-                                        <Style TargetType="Path">
-                                            <Setter Property="StrokeThickness" Value="1"/>
-                                            <Setter Property="Stroke" Value="#C62828"/>
-                                            <Setter Property="Fill" Value="#C62828"/>
-                                            <Setter Property="Data" Value="M 3 1 L 9 1 L 9 3 L 11 3 L 11 11 L 10 11 L 10 5 L 8 5 L 8 10 L 7 10 L 7 5 L 5 5 L 5 10 L 4 10 L 4 5 L 3 5 L 2 5 L 2 11 L 1 11 L 1 3 L 3 3 Z"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Status}" Value="1">
-                                                    <Setter Property="Stroke" Value="#2E7D32"/>
-                                                    <Setter Property="Fill" Value="#2E7D32"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Type}" Value="71">
-                                                    <Setter Property="StrokeThickness" Value="1.3"/>
-                                                    <Setter Property="Data" Value="M 1 5 C 3 1 9 1 11 5 L 10.5 5.5 C 9 1.6 3 1.6 1.5 5.5 L 1 5 Z M 3 7 C 4.5 4.2 7.5 4.2 9 7 L 8.5 7.5 C 7 5.5 5 5.5 3.5 7.5 L 3 7 Z M 5.3 9 C 6 8 6 8 6.7 9 C 6 9.6 6 9.6 5.3 9 Z"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Path.Style>
-                                </Path>
-                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                    <TextBlock Text="{Binding DownloadSpeed}" FontSize="12" Height="14" LineHeight="14"/>
-                                </StackPanel>
-                                <TextBlock Text="{Binding Name}" FontSize="12" Height="14" LineHeight="14" Margin="2,0"/>
-                            </DockPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                    </TextBlock.Style>
+                </TextBlock>
+                <Border HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                        <Button Style="{StaticResource Button_Window}" Click="WindowMinimize_Click">
+                            <Path Data="M0 5 L10 5" RenderOptions.EdgeMode="Aliased" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6"/>
+                        </Button>
+                        <Button Style="{StaticResource Button_Window}" Click="WindowMaximize_Click">
+                            <Path RenderOptions.EdgeMode="Aliased" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6">
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Data" Value="M1 1 L1 9 L9 9 L9 1 L1 1Z"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding MainWindowState}" Value="Maximized">
+                                                <Setter Property="Data" Value="M3 3 L3 1 L9 1 L9 7 L7 7M1 3 L7 3 L7 9 L1 9 L1 3Z"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Button>
+                        <Button Style="{StaticResource Button_Close}" Click="WindowClose_Click">
+                            <Path Data="M0 0 L10 10 M10 0 L0 10" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6"/>
+                        </Button>
+                    </StackPanel>
+                </Border>
             </Grid>
-            <Grid Grid.Row="2" Background="#40000000">
-                <ListBox BorderThickness="0" MaxHeight="160" Background="Transparent" Foreground="#FFBCD2E2" ItemsSource="{Binding ComputerCollection}">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="Focusable" Value="False"/>
+            <DockPanel Margin="16,32,16,0" Height="96" VerticalAlignment="Top">
+                <Image DockPanel.Dock="Left" Width="72" Height="72" Margin="0,4,0,20" RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Source" Value="images/monitor.png"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding MachineType}" Value="Laptop">
+                                    <Setter Property="Source" Value="images/laptop.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.Style>
-                        <Style TargetType="ListBox">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListBox}">
-                                        <Grid>
-                                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" Template="{DynamicResource ScrollViewerControlTemplate}">
-                                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                            </ScrollViewer>
+                    </Image.Style>
+                </Image>
+                <Grid DockPanel.Dock="Right" Width="240">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4" Text="{StaticResource Text_Graph}" FontSize="10" Foreground="{StaticResource Color_TextLight}"/>
+                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Text="{Binding SpeedLimit, FallbackValue=1MB/s}" FontSize="10" Foreground="{StaticResource Color_TextLight}"/>
+                    <Border BorderBrush="#FB8C00" BorderThickness="1" Margin="0,0,0,23" SnapsToDevicePixels="True" ToolTip="{StaticResource Tip_Graph}" ClipToBounds="True">
+                        <Grid Margin="-2,0,0,-1">
+                            <Grid.Background>
+                                <DrawingBrush TileMode="Tile" Viewport="0,0,20,9" ViewportUnits="Absolute">
+                                    <DrawingBrush.Drawing>
+                                        <GeometryDrawing>
+                                            <GeometryDrawing.Geometry>
+                                                <RectangleGeometry Rect="0,0,20,9"/>
+                                            </GeometryDrawing.Geometry>
+                                            <GeometryDrawing.Pen>
+                                                <Pen Brush="#FB8C00" Thickness="0.2"/>
+                                            </GeometryDrawing.Pen>
+                                        </GeometryDrawing>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Grid.Background>
+                            <Polygon Points="{Binding DownloadPointGraph}" StrokeLineJoin="Bevel" Stretch="Fill" Fill="#80039BE5" Stroke="#C0039BE5" StrokeThickness="1"/>
+                            <Polygon Points="{Binding UploadPointGraph}" StrokeLineJoin="Bevel" Stretch="Fill" Fill="#8043A047" Stroke="#C043A047" StrokeThickness="1"/>
+                        </Grid>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                        <Path Data="M 8 3 L 14 12 L 2 12 Z" Stroke="#43A047" Fill="#43A047" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                        <TextBlock ToolTip="{StaticResource UploadSpeed}" Text="{Binding GlobalUploadSpeed, FallbackValue=128KB/s}" FontSize="13" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                        <Path Data="M 2 5 L 14 5 L 8 12 Z" Stroke="#039BE5" Fill="#039BE5" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                        <TextBlock ToolTip="{StaticResource DownloadSpeed}" Text="{Binding GlobalDownloadSpeed, FallbackValue=128KB/s}" FontSize="13" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                    </StackPanel>
+                </Grid>
+                <StackPanel Height="80" Margin="16,0,16,16">
+                    <TextBlock Text="{Binding ComputerName, FallbackValue=ComputerName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_ComputerName}" FontSize="14" Height="18" Margin="0,0,0,6"/>
+                    <TextBlock Text="{Binding SystemName, FallbackValue=SystemName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_SystemName}" Height="18"/>
+                    <TextBlock Text="{Binding WorkGroup, FallbackValue=WorkGroup}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_WorkGroup}" Height="18"/>
+                    <TextBlock Text="{Binding DomainName, FallbackValue=DomainName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_DomainName}" Height="18"/>
+                </StackPanel>
+            </DockPanel>
+            <Grid Margin="0,120,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" MinHeight="32"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="3*" MinHeight="16"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="3*" MinHeight="16"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <DockPanel VerticalAlignment="Top" Height="16" Margin="0,4">
+                        <Border DockPanel.Dock="Left" Width="12" BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
+                        <TextBlock DockPanel.Dock="Left" Text="{StaticResource Row_Adapter}" FontSize="12" Foreground="{StaticResource Color_TextLight}" Height="16" Margin="4,0"/>
+                        <Border BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
+                    </DockPanel>
+                    <ListView Margin="0,24,0,8" ItemsSource="{Binding NetworkCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="16,8,6,8" Padding="8" BorderThickness="1" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                    <DockPanel Height="64" ToolTip="{Binding ToolTip}">
+                                        <Grid Width="64" DockPanel.Dock="Left">
+                                            <Image Width="36" Height="36" Margin="12,2,12,8" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Source" Value="images/ethernet.png"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Type}" Value="71">
+                                                                <Setter Property="Source" Value="images/router.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Source" Value="images/idle.png"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="1">
+                                                                <Setter Property="Source" Value="images/checkmark.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="2">
+                                                                <Setter Property="Source" Value="images/error.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="6">
+                                                                <Setter Property="Source" Value="images/error.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="7">
+                                                                <Setter Property="Source" Value="images/error.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <TextBlock VerticalAlignment="Bottom" Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
                                         </Grid>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListBox.Style>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <DockPanel Height="16" Width="192" ToolTip="{Binding ToolTip}">
-                                <Path DockPanel.Dock="Left" Margin="2" Grid.Column="0" StrokeLineJoin="Round" Width="12" Height="12">
-                                    <Path.Style>
-                                        <Style TargetType="Path">
-                                            <Setter Property="StrokeThickness" Value="1"/>
-                                            <Setter Property="Stroke" Value="#C62828"/>
-                                            <Setter Property="Fill" Value="#C62828"/>
-                                            <Setter Property="Data" Value="M 1 2 L 11 2 L 11 8 L 8 8 L 8 10 L 10 10 L 10 10.5 L 2 10.5 L 2 10 L 4 10 L 4 8 L 1 8 L 1 2 L 1.5 2 L 1.5 7.5 L 10.5 7.5 L 10.5 2.5 L 1.5 2.5 Z"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Status}" Value="0">
-                                                    <Setter Property="Stroke" Value="#2E7D32"/>
-                                                    <Setter Property="Fill" Value="#2E7D32"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="-1">
-                                                    <Setter Property="Stroke" Value="#FFAAAAAA"/>
-                                                    <Setter Property="Fill" Value="#FFAAAAAA"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Path.Style>
-                                </Path>
-                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                    <TextBlock Text="{Binding Latency}" FontSize="12" Height="14" LineHeight="14"/>
-                                </StackPanel>
-                                <TextBlock Text="{Binding Name}" FontSize="12" Height="14" LineHeight="14" Margin="2,0"/>
-                            </DockPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                                        <StackPanel DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="M 8 3 L 14 12 L 2 12 Z" Stroke="#43A047" Fill="#43A047" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                                                <TextBlock ToolTip="{StaticResource UploadSpeed}" Text="{Binding UploadSpeed, FallbackValue=128KB/s}" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="M 2 5 L 14 5 L 8 12 Z" Stroke="#039BE5" Fill="#039BE5" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                                                <TextBlock ToolTip="{StaticResource DownloadSpeed}" Text="{Binding DownloadSpeed, FallbackValue=128KB/s}" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Margin="8,0">
+                                            <TextBlock Text="{Binding ToolTip}" TextTrimming="CharacterEllipsis" LineHeight="16"/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+                <GridSplitter Grid.Row="1" Height="8" HorizontalAlignment="Stretch" Background="Transparent"/>
+                <Grid Grid.Row="2">
+                    <DockPanel VerticalAlignment="Top" Height="16" Margin="0,-12,0,0" IsHitTestVisible="False">
+                        <Border DockPanel.Dock="Left" Width="12" BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
+                        <TextBlock DockPanel.Dock="Left" Text="{StaticResource Row_Port}" FontSize="12" Foreground="{StaticResource Color_TextLight}" Height="16" Margin="4,0"/>
+                        <Border BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
+                    </DockPanel>
+                    <ListView Margin="0,8,0,8" ItemsSource="{Binding PortCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="16,8,6,8" Padding="8" BorderThickness="1" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}">
+                                    <DockPanel Height="48" ToolTip="{Binding ToolTip}">
+                                        <Grid Width="64" DockPanel.Dock="Left">
+                                            <Image Width="36" Height="36" Margin="12,2,12,8" RenderOptions.BitmapScalingMode="HighQuality">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Source" Value="images/tcp.png"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Type}" Value="UDP">
+                                                                <Setter Property="Source" Value="images/udp.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Source" Value="images/idle.png"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding State}" Value="Established">
+                                                                <Setter Property="Source" Value="images/transfer.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding State}" Value="Listen">
+                                                                <Setter Property="Source" Value="images/checkmark.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding State}" Value="SynSent">
+                                                                <Setter Property="Source" Value="images/transfer.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding State}" Value="TimeWait">
+                                                                <Setter Property="Source" Value="images/rotate.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding State}" Value="CloseWait">
+                                                                <Setter Property="Source" Value="images/error.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                        </Grid>
+                                        <StackPanel DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal" ToolTip="{StaticResource Tip_Port}">
+                                                <Path Data="M 10 1 L 5 1 L 5 15 L10 15 M 1 8 L 15 8 M 11 4 L 15 8 L 11 12" Stroke="#1976d2" StrokeThickness="2" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                                                <TextBlock Text="{Binding StateText}" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Margin="8,0">
+                                            <TextBlock Text="{Binding ToolTip}" TextTrimming="CharacterEllipsis" LineHeight="16"/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+                <GridSplitter Grid.Row="3" Height="8" HorizontalAlignment="Stretch" Background="Transparent"/>
+                <Grid Grid.Row="4">
+                    <DockPanel VerticalAlignment="Top" Height="16" Margin="0,-12,0,0" IsHitTestVisible="False">
+                        <Border DockPanel.Dock="Left" Width="12" BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
+                        <TextBlock DockPanel.Dock="Left" Text="{StaticResource Row_LAN}" FontSize="12" Foreground="{StaticResource Color_TextLight}" Height="16" Margin="4,0"/>
+                        <Border BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
+                    </DockPanel>
+                    <ListView Margin="0,8,0,8" ItemsSource="{Binding ComputerCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="16,8,6,8" Padding="8" BorderThickness="1" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}">
+                                    <DockPanel Height="48" ToolTip="{Binding ToolTip}">
+                                        <Grid Width="64" DockPanel.Dock="Left">
+                                            <Image DockPanel.Dock="Left" Width="36" Height="36" Margin="12,2,12,8" RenderOptions.BitmapScalingMode="HighQuality">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Source" Value="images/computer.png"/>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="-1">
+                                                                <Setter Property="Source" Value="images/idle.png"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="0">
+                                                                <Setter Property="Source" Value="images/checkmark.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                        </Grid>
+                                        <StackPanel DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal" ToolTip="{StaticResource Tip_Latency}">
+                                                <Path Data="M 0 6 L 15 6 L 11 2 M 16 10 L 13 10 M 11 10 L 8 10 M 6 10 L 1 10 L 5 14" Stroke="#FB8C00" StrokeThickness="2" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                                                <TextBlock Text="{Binding Latency, FallbackValue=100ms}" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Margin="8,0">
+                                            <TextBlock Text="{Binding ToolTip}" TextTrimming="CharacterEllipsis" LineHeight="16"/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
             </Grid>
         </Grid>
     </Border>
