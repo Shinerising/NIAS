@@ -116,18 +116,11 @@ namespace LanMonitor
                     }
                     x += 1;
                 }
-                if (max < 1000)
+                if (max < 1024)
                 {
-                    max = 1000;
+                    max = 1024;
                 }
-                while (speedGraphLimit < max)
-                {
-                    speedGraphLimit *= 2;
-                }
-                while (speedGraphLimit > max * 2)
-                {
-                    speedGraphLimit /= 2;
-                }
+                uploadSpeedMax = max;
                 collection.Add(new Point(x - 1, 100));
                 return collection;
             }
@@ -143,7 +136,19 @@ namespace LanMonitor
                     new Point(0, 100)
                 };
                 int x = 0;
-                long max = 0;
+                long max = uploadSpeedMax > downloadSpeedMax ? uploadSpeedMax : downloadSpeedMax;
+
+                while (speedGraphLimit < max)
+                {
+                    speedGraphLimit *= 2;
+                }
+                while (speedGraphLimit > max * 2)
+                {
+                    speedGraphLimit /= 2;
+                }
+
+                max = 0;
+
                 for (int i = 0; i < 120 - downloadSpeedQueue.Count(); i += 1)
                 {
                     collection.Add(new Point(x, 100));
@@ -159,18 +164,11 @@ namespace LanMonitor
                     }
                     x += 1;
                 }
-                if (max < 1000)
+                if (max < 1024)
                 {
-                    max = 1000;
+                    max = 1024;
                 }
-                while (speedGraphLimit < max)
-                {
-                    speedGraphLimit *= 2;
-                }
-                while (speedGraphLimit > max * 2)
-                {
-                    speedGraphLimit /= 2;
-                }
+                downloadSpeedMax = max;
                 collection.Add(new Point(x - 1, 100));
                 return collection;
             }
@@ -182,6 +180,8 @@ namespace LanMonitor
         private readonly Queue<long> downloadSpeedQueue;
 
         private long speedGraphLimit = 1024;
+        private long downloadSpeedMax = 1024;
+        private long uploadSpeedMax = 1024;
 
         public string ComputerName => Environment.MachineName;
         public string SystemName
