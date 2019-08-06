@@ -28,5 +28,8 @@
     <system:String x:Key="Tip_User">登录用户</system:String>
     <system:String x:Key="Tip_Port">端口状态</system:String>
     <system:String x:Key="Tip_Latency">网络延时</system:String>
+    <system:String x:Key="Status_Offline">网络不在线</system:String>
+    <system:String x:Key="Status_LAN">局域网在线</system:String>
+    <system:String x:Key="Status_Internet">互联网在线</system:String>
     
 </ResourceDictionary>

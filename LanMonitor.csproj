@@ -161,5 +161,10 @@
     <Resource Include="images\tcp.png" />
     <Resource Include="images\udp.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\internet.png" />
+    <Resource Include="images\network.png" />
+    <Resource Include="images\offline.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

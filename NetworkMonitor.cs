@@ -109,6 +109,14 @@ namespace LanMonitor
                 foreach (long speed in uploadSpeedQueue)
                 {
                     double y = (speedGraphLimit - speed) * 100.0 / speedGraphLimit;
+                    if (y < 0)
+                    {
+                        y = 0;
+                    }
+                    else if (y > 100)
+                    {
+                        y = 100;
+                    }
                     collection.Add(new Point(x, y));
                     if (speed > max)
                     {
@@ -157,6 +165,14 @@ namespace LanMonitor
                 foreach (long speed in downloadSpeedQueue)
                 {
                     double y = (speedGraphLimit - speed) * 100.0 / speedGraphLimit;
+                    if (y < 0)
+                    {
+                        y = 0;
+                    }
+                    else if (y>100)
+                    {
+                        y = 100;
+                    }
                     collection.Add(new Point(x, y));
                     if (speed > max)
                     {
@@ -175,6 +191,8 @@ namespace LanMonitor
         }
 
         public string SpeedLimit => NetworkAdapter.GetSpeedString(speedGraphLimit);
+
+        public int NetworkStatus { get; set; }
 
         private readonly Queue<long> uploadSpeedQueue;
         private readonly Queue<long> downloadSpeedQueue;
@@ -243,6 +261,7 @@ namespace LanMonitor
             Task.Factory.StartNew(LocalNetworkMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(LocalComputerMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(ActivePortMonitoring, TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(NetworkStatusMonitoring, TaskCreationOptions.LongRunning);
         }
 
         public void Dispose()
@@ -261,7 +280,35 @@ namespace LanMonitor
                 }
             }
         }
-        
+
+        private void NetworkStatusMonitoring()
+        {
+            while (true)
+            {
+                int status = -1;
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    status = 0;
+                    using (Ping ping = new Ping())
+                    {
+                        IPStatus iPStatus = ping.Send("8.8.8.8").Status;
+                        if (iPStatus == IPStatus.Success)
+                        {
+                            status = 1;
+                        }
+                    }
+                }
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    NetworkStatus = status;
+                    Notify(() => NetworkStatus);
+                }));
+
+                Thread.Sleep(5000);
+            }
+        }
+
+
         private void NetworkAdapterMonitoring()
         {
             while (true)
@@ -455,7 +502,34 @@ namespace LanMonitor
 
         public List<LocalNetworkComputer> TestLANComputers()
         {
-            computerList.Sort((LocalNetworkComputer x, LocalNetworkComputer y) => x?.Status > y?.Status ? 1 : -1);
+            computerList.Sort((LocalNetworkComputer x, LocalNetworkComputer y) =>
+            {
+                if (x == null || y == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    int i = x.Status > 1 ? 1 : x.Status;
+                    int j = y.Status > 1 ? 1 : y.Status;
+                    if (i == j)
+                    {
+                        return string.Compare(x.Name, y.Name);
+                    }
+                    else if (i == 0)
+                    {
+                        return -1;
+                    }
+                    else if (j == 0)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return i > j ? 1 : -1;
+                    }
+                }
+            });
 
             return computerList;
         }

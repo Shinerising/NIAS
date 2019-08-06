@@ -155,18 +155,38 @@
                 </Border>
             </Grid>
             <DockPanel Margin="16,32,16,0" Height="96" VerticalAlignment="Top">
-                <Image DockPanel.Dock="Left" Width="72" Height="72" Margin="0,4,0,20" RenderOptions.BitmapScalingMode="HighQuality">
-                    <Image.Style>
-                        <Style TargetType="Image">
-                            <Setter Property="Source" Value="images/monitor.png"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding MachineType}" Value="Laptop">
-                                    <Setter Property="Source" Value="images/laptop.png"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
+                <Grid DockPanel.Dock="Left" Width="72" Height="72" Margin="0,4,0,20">
+                    <Image Width="72" Height="72" RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Source" Value="images/monitor.png"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MachineType}" Value="Laptop">
+                                        <Setter Property="Source" Value="images/laptop.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                    <Image Width="32" Height="32" VerticalAlignment="Top" Margin="0,8,0,0" RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Source" Value="images/offline.png"/>
+                                <Setter Property="ToolTip" Value="{StaticResource Status_Offline}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding NetworkStatus}" Value="0">
+                                        <Setter Property="Source" Value="images/network.png"/>
+                                        <Setter Property="ToolTip" Value="{StaticResource Status_LAN}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding NetworkStatus}" Value="1">
+                                        <Setter Property="Source" Value="images/internet.png"/>
+                                        <Setter Property="ToolTip" Value="{StaticResource Status_Internet}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Grid>
                 <Grid DockPanel.Dock="Right" Width="240">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4" Text="{StaticResource Text_Graph}" FontSize="10" Foreground="{StaticResource Color_TextLight}"/>
                     <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Text="{Binding SpeedLimit, FallbackValue=1MB/s}" FontSize="10" Foreground="{StaticResource Color_TextLight}"/>
@@ -215,7 +235,10 @@
                 <Grid Grid.Row="0">
                     <DockPanel VerticalAlignment="Top" Height="16" Margin="0,4">
                         <Border DockPanel.Dock="Left" Width="12" BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
-                        <TextBlock DockPanel.Dock="Left" Text="{StaticResource Row_Adapter}" FontSize="12" Foreground="{StaticResource Color_TextLight}" Height="16" Margin="4,0"/>
+                        <StackPanel DockPanel.Dock="Left" Margin="4,0" Orientation="Horizontal" Height="16" TextElement.Foreground="{StaticResource Color_TextLight}">
+                            <TextBlock Text="{StaticResource Row_Adapter}"/>
+                            <TextBlock Text="{Binding NetworkCollection.Count, StringFormat=({0})}"/>
+                        </StackPanel>
                         <Border BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
                     </DockPanel>
                     <ListView Margin="0,24,0,8" ItemsSource="{Binding NetworkCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
@@ -282,7 +305,10 @@
                 <Grid Grid.Row="2">
                     <DockPanel VerticalAlignment="Top" Height="16" Margin="0,-12,0,0" IsHitTestVisible="False">
                         <Border DockPanel.Dock="Left" Width="12" BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
-                        <TextBlock DockPanel.Dock="Left" Text="{StaticResource Row_Port}" FontSize="12" Foreground="{StaticResource Color_TextLight}" Height="16" Margin="4,0"/>
+                        <StackPanel DockPanel.Dock="Left" Margin="4,0" Orientation="Horizontal" Height="16" TextElement.Foreground="{StaticResource Color_TextLight}">
+                            <TextBlock Text="{StaticResource Row_Port}"/>
+                            <TextBlock Text="{Binding PortCollection.Count, StringFormat=({0})}"/>
+                        </StackPanel>
                         <Border BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
                     </DockPanel>
                     <ListView Margin="0,8,0,8" ItemsSource="{Binding PortCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
@@ -347,7 +373,10 @@
                 <Grid Grid.Row="4">
                     <DockPanel VerticalAlignment="Top" Height="16" Margin="0,-12,0,0" IsHitTestVisible="False">
                         <Border DockPanel.Dock="Left" Width="12" BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
-                        <TextBlock DockPanel.Dock="Left" Text="{StaticResource Row_LAN}" FontSize="12" Foreground="{StaticResource Color_TextLight}" Height="16" Margin="4,0"/>
+                        <StackPanel DockPanel.Dock="Left" Margin="4,0" Orientation="Horizontal" Height="16" TextElement.Foreground="{StaticResource Color_TextLight}">
+                            <TextBlock Text="{StaticResource Row_LAN}"/>
+                            <TextBlock Text="{Binding ComputerCollection.Count, StringFormat=({0})}"/>
+                        </StackPanel>
                         <Border BorderThickness="0,0,0,1" Height="1" SnapsToDevicePixels="True" BorderBrush="{StaticResource Color_TextLight}"/>
                     </DockPanel>
                     <ListView Margin="0,8,0,8" ItemsSource="{Binding ComputerCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">

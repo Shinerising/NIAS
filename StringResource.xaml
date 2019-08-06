@@ -28,5 +28,8 @@
     <system:String x:Key="Tip_User">User Name</system:String>
     <system:String x:Key="Tip_Port">Port State</system:String>
     <system:String x:Key="Tip_Latency">Network Latency</system:String>
+    <system:String x:Key="Status_Offline">Offline</system:String>
+    <system:String x:Key="Status_LAN">Local Network</system:String>
+    <system:String x:Key="Status_Internet">Internet</system:String>
 
 </ResourceDictionary>
