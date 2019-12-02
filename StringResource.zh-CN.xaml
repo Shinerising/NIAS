@@ -15,7 +15,7 @@
     <system:String x:Key="Port_SynSent">请求连接</system:String>
     <system:String x:Key="ComputerToolTip">计算机名称：{1}{0}IP地址：{2}{0}网络地址：{3}</system:String>
     <system:String x:Key="PortToolTip">通讯协议：{1}{0}本地地址：{2}{0}远端地址：{3}</system:String>
-    <system:String x:Key="NetworkToolTip">网卡名称：{1}{0}IP地址：{2}{0}MAC地址：{3}{0}带宽：{4}</system:String>
+    <system:String x:Key="NetworkToolTip">网卡名称：{1}{0}IP地址：{2}{0}MAC地址：{3}{0}网络带宽：{4}</system:String>
     <system:String x:Key="Text_Graph">网络数据</system:String>
     <system:String x:Key="Row_Adapter">网卡设备</system:String>
     <system:String x:Key="Row_Port">活动端口</system:String>

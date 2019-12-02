@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Management;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace LanMonitor
 {
@@ -47,8 +49,7 @@ namespace LanMonitor
                 Type = "",
                 DownloadSpeed = "2Mbps",
                 UploadSpeed = "1Mbps",
-
-                ToolTip = "DFAEFAEFEFAEFEF"
+                ToolTip = "Test"
             }
         };
 
@@ -227,8 +228,14 @@ namespace LanMonitor
         {
             get
             {
+                object name;
+                /*
                 object name = (from x in new ManagementObjectSearcher("SELECT Workgroup FROM Win32_ComputerSystem").Get().Cast<ManagementObject>()
-                               select x.GetPropertyValue("Workgroup")).FirstOrDefault();
+                               select x.GetPropertyValue("Workgroup")).FirstOrDefault();*/
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Workgroup FROM Win32_ComputerSystem"))
+                {
+                    name = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Workgroup")).FirstOrDefault();
+                }
                 return name != null ? name.ToString() : "Unknown";
             }
         }
@@ -289,13 +296,11 @@ namespace LanMonitor
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
                     status = 0;
-                    using (Ping ping = new Ping())
+                    using Ping ping = new Ping();
+                    IPStatus iPStatus = ping.Send("8.8.8.8").Status;
+                    if (iPStatus == IPStatus.Success)
                     {
-                        IPStatus iPStatus = ping.Send("8.8.8.8").Status;
-                        if (iPStatus == IPStatus.Success)
-                        {
-                            status = 1;
-                        }
+                        status = 1;
                     }
                 }
                 Application.Current.Dispatcher.BeginInvoke(new Action(() =>
@@ -628,6 +633,70 @@ namespace LanMonitor
     
     public class PortMonitor
     {
+        private string GetProcessName(int pid)
+        {
+            string name;
+            try
+            {
+                name = Process.GetProcessById(pid).ProcessName;
+            }
+            catch (Exception)
+            {
+                name = "-";
+            }
+            return name;
+        }
+
+        private int GetPIDByEndPoint(string endPoint)
+        {
+            Dictionary<string, int> dictionary = new Dictionary<string, int>();
+            int pid = -1;
+            try
+            {
+                using Process process = new Process();
+                ProcessStartInfo processInfo = new ProcessStartInfo
+                {
+                    Arguments = "-aon",
+                    FileName = "netstat.exe",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
+                process.StartInfo = processInfo;
+                process.Start();
+
+                StreamReader stdOutput = process.StandardOutput;
+                StreamReader stdError = process.StandardError;
+
+                string content = stdOutput.ReadToEnd() + stdError.ReadToEnd();
+                string exitStatus = process.ExitCode.ToString();
+
+                if (exitStatus == "0")
+                {
+                    string[] rows = Regex.Split(content, "\r\n");
+                    foreach (string row in rows)
+                    {
+                        string[] tokens = Regex.Split(row, "\\s+");
+                        if (tokens.Length > 4 && (tokens[1].Equals("UDP") || tokens[1].Equals("TCP")))
+                        {
+                            dictionary.Add(tokens[2], tokens[1] == "UDP" ? Convert.ToInt32(tokens[4]) : Convert.ToInt32(tokens[5]));
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+            if (dictionary.ContainsKey(endPoint))
+            {
+                pid = dictionary[endPoint];
+            }
+            return pid;
+        }
+
         public List<ActivePort> ListActivePort()
         {
             List<ActivePort> portList = new List<ActivePort>();
@@ -922,6 +991,9 @@ namespace LanMonitor
         public string LocalEndPoint { get; set; }
         public string RemoteEndPoint { get; set; }
 
+        public int PID { get; set; }
+        public string ProcessName { get; set; }
+
         public string State { get; set; }
         public string ToolTip { get; set; }
 
@@ -973,6 +1045,8 @@ namespace LanMonitor
             }
             string localEndPoint = port.LocalEndPoint;
             string remoteEndPoint = port.RemoteEndPoint;
+            int pid = port.PID;
+            string processName = port.ProcessName;
 
             string toolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(),
                 Environment.NewLine, type, localEndPoint, remoteEndPoint);
@@ -998,12 +1072,26 @@ namespace LanMonitor
                 RemoteEndPoint = remoteEndPoint;
                 Notify(() => RemoteEndPoint);
             }
+            if (PID != pid)
+            {
+                PID = pid;
+                Notify(() => PID);
+            }
+            if (ProcessName != processName)
+            {
+                ProcessName = processName;
+                Notify(() => ProcessName);
+            }
+            if (Type != type)
+            {
+                Type = type;
+                Notify(() => Type);
+            }
             if (ToolTip != toolTip)
             {
                 ToolTip = toolTip;
                 Notify(() => ToolTip);
             }
         }
-
     }
 }

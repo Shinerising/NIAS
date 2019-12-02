@@ -13,6 +13,8 @@ namespace LanMonitor
         public string LocalEndPoint;
         public string RemoteEndPoint;
         public string State;
+        public int PID;
+        public string ProcessName;
     }
 
     public class LocalNetworkComputer
