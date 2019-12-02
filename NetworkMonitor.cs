@@ -207,8 +207,11 @@ namespace LanMonitor
         {
             get
             {
-                object name = (from x in new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem").Get().Cast<ManagementObject>()
-                               select x.GetPropertyValue("Caption")).FirstOrDefault();
+                object name;
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem"))
+                {
+                    name = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Caption")).FirstOrDefault();
+                }
                 return name != null ? name.ToString() : "Unknown";
             }
         }
@@ -216,10 +219,15 @@ namespace LanMonitor
         {
             get
             {
-                object name0 = (from x in new ManagementObjectSearcher("SELECT Caption FROM Win32_Battery").Get().Cast<ManagementObject>()
-                               select x.GetPropertyValue("Caption")).FirstOrDefault();
-                object name1 = (from x in new ManagementObjectSearcher("SELECT Caption FROM Win32_PortableBattery").Get().Cast<ManagementObject>()
-                                select x.GetPropertyValue("Caption")).FirstOrDefault();
+                object name0, name1;
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_Battery"))
+                {
+                    name0 = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Caption")).FirstOrDefault();
+                }
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_PortableBattery"))
+                {
+                    name1 = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Caption")).FirstOrDefault();
+                }
                 return (name0 != null || name1 != null) ? "Laptop" : "Desktop";
             }
         }
@@ -229,9 +237,6 @@ namespace LanMonitor
             get
             {
                 object name;
-                /*
-                object name = (from x in new ManagementObjectSearcher("SELECT Workgroup FROM Win32_ComputerSystem").Get().Cast<ManagementObject>()
-                               select x.GetPropertyValue("Workgroup")).FirstOrDefault();*/
                 using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Workgroup FROM Win32_ComputerSystem"))
                 {
                     name = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Workgroup")).FirstOrDefault();
@@ -296,11 +301,13 @@ namespace LanMonitor
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
                     status = 0;
-                    using Ping ping = new Ping();
-                    IPStatus iPStatus = ping.Send("8.8.8.8").Status;
-                    if (iPStatus == IPStatus.Success)
+                    using (Ping ping = new Ping())
                     {
-                        status = 1;
+                        IPStatus iPStatus = ping.Send("8.8.8.8").Status;
+                        if (iPStatus == IPStatus.Success)
+                        {
+                            status = 1;
+                        }
                     }
                 }
                 Application.Current.Dispatcher.BeginInvoke(new Action(() =>
@@ -653,36 +660,38 @@ namespace LanMonitor
             int pid = -1;
             try
             {
-                using Process process = new Process();
-                ProcessStartInfo processInfo = new ProcessStartInfo
+                using (Process process = new Process())
                 {
-                    Arguments = "-aon",
-                    FileName = "netstat.exe",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                };
-                process.StartInfo = processInfo;
-                process.Start();
-
-                StreamReader stdOutput = process.StandardOutput;
-                StreamReader stdError = process.StandardError;
-
-                string content = stdOutput.ReadToEnd() + stdError.ReadToEnd();
-                string exitStatus = process.ExitCode.ToString();
-
-                if (exitStatus == "0")
-                {
-                    string[] rows = Regex.Split(content, "\r\n");
-                    foreach (string row in rows)
+                    ProcessStartInfo processInfo = new ProcessStartInfo
                     {
-                        string[] tokens = Regex.Split(row, "\\s+");
-                        if (tokens.Length > 4 && (tokens[1].Equals("UDP") || tokens[1].Equals("TCP")))
+                        Arguments = "-aon",
+                        FileName = "netstat.exe",
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        RedirectStandardInput = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
+                    };
+                    process.StartInfo = processInfo;
+                    process.Start();
+
+                    StreamReader stdOutput = process.StandardOutput;
+                    StreamReader stdError = process.StandardError;
+
+                    string content = stdOutput.ReadToEnd() + stdError.ReadToEnd();
+                    string exitStatus = process.ExitCode.ToString();
+
+                    if (exitStatus == "0")
+                    {
+                        string[] rows = Regex.Split(content, "\r\n");
+                        foreach (string row in rows)
                         {
-                            dictionary.Add(tokens[2], tokens[1] == "UDP" ? Convert.ToInt32(tokens[4]) : Convert.ToInt32(tokens[5]));
+                            string[] tokens = Regex.Split(row, "\\s+");
+                            if (tokens.Length > 4 && (tokens[1].Equals("UDP") || tokens[1].Equals("TCP")))
+                            {
+                                dictionary.Add(tokens[2], tokens[1] == "UDP" ? Convert.ToInt32(tokens[4]) : Convert.ToInt32(tokens[5]));
+                            }
                         }
                     }
                 }
