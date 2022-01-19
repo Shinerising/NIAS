@@ -20,6 +20,8 @@ namespace LanMonitor
             InitializeComponent();
 
             networkManager.Start();
+
+            SnmpHelper.GetData();
         }
 
         private void WindowMinimize_Click(object sender, RoutedEventArgs e)
