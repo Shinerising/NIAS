@@ -21,6 +21,7 @@ namespace LanMonitor
 
             networkManager.Start();
 
+            SnmpHelper.Initialize();
             SnmpHelper.GetData();
         }
 
@@ -58,7 +59,6 @@ namespace LanMonitor
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
         }
 
         public void Dispose()
