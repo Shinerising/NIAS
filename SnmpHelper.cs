@@ -32,8 +32,52 @@ namespace LanMonitor
         {
             Address = ip;
             EndPoint = new IPEndPoint(IPAddress.Parse(ip), 161);
-            PortList = new List<SwitchPort>();
-            HostList = new List<SwitchHost>();
+            PortList = new List<SwitchPort>()
+            {
+                new SwitchPort()
+                {
+                    Name = "GE1/0/1",
+                    IsUp = true
+                },
+                new SwitchPort()
+                {
+                    Name = "GE1/0/2",
+                    IsUp = false
+                },
+                new SwitchPort()
+                {
+                    Name = "GE1/0/3",
+                    IsUp = true
+                },
+                new SwitchPort()
+                {
+                    Name = "GE1/0/4",
+                    IsUp = false
+                }
+            };
+            HostList = new List<SwitchHost>()
+            {
+                new SwitchHost()
+                {
+                    IPAddress = "172.16.24.90",
+                    MACAddress = "AA-BB-CC-DD-EE-FF"
+                },
+                new SwitchHost()
+                {
+                    IPAddress = "172.16.24.91",
+                    MACAddress = "AA-BB-CC-DD-EE-FF"
+                },
+                new SwitchHost()
+                {
+                    IPAddress = "172.16.24.92",
+                    MACAddress = "AA-BB-CC-DD-EE-FF"
+                },
+                new SwitchHost()
+                {
+                    IPAddress = "172.16.24.93",
+                    MACAddress = "AA-BB-CC-DD-EE-FF"
+                }
+            };
         }
     }
     internal class SnmpHelper
@@ -83,7 +127,7 @@ namespace LanMonitor
                               new ObjectIdentifier("1.3.6.1.2.1.4.22.1.2"),
                               result,
                               Timeout,
-                              10,
+                              RetryCount,
                               WalkMode.WithinSubtree,
                               priv,
                               report);
