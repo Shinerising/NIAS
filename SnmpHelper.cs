@@ -10,23 +10,31 @@ using Lextm.SharpSnmpLib;
 
 namespace LanMonitor
 {
-    public class SwitchDevice
+    public class SwitchPort
     {
-        public class SwitchPort
-        {
-            public string Name { get; set; }
-            public string Brief { get; set; }
-            public bool IsUp { get; set; }
-        }
-        public string IPAddress { get; set; }
-        public IPEndPoint EndPoint { get; set; }
-        public List<SwitchPort> PortList { get; set; }
+        public string Name { get; set; }
+        public string Brief { get; set; }
+        public bool IsUp { get; set; }
     }
     public class SwitchHost
     {
         public string HostName { get; set; }
         public string IPAddress { get; set; }
         public string MACAddress { get; set; }
+    }
+    public class SwitchDevice
+    {
+        public string Address { get; set; }
+        public IPEndPoint EndPoint { get; set; }
+        public List<SwitchPort> PortList { get; set; }
+        public List<SwitchHost> HostList { get; set; }
+        public SwitchDevice(string ip)
+        {
+            Address = ip;
+            EndPoint = new IPEndPoint(IPAddress.Parse(ip), 161);
+            PortList = new List<SwitchPort>();
+            HostList = new List<SwitchHost>();
+        }
     }
     internal class SnmpHelper
     {
@@ -42,6 +50,7 @@ namespace LanMonitor
         public static string AuthPassword;
         public static string PrivPassword;
         public static List<string> SwitchIPList;
+        public static List<SwitchDevice> SwitchDeviceList;
         public const int Timeout = 60000;
         public const int RetryCount = 10;
 
@@ -51,6 +60,7 @@ namespace LanMonitor
             {
                 "172.16.24.1"
             };
+            SwitchDeviceList = SwitchIPList.Select(item => new SwitchDevice(item)).ToList();
 
             Username = "admin";
             AuthPassword = "admin@huawei";
@@ -58,7 +68,7 @@ namespace LanMonitor
         }
 
         [Obsolete]
-        public static void GetData()
+        public static void FetchData()
         {
             Discovery discovery = Messenger.GetNextDiscovery(SnmpType.GetBulkRequestPdu);
             ReportMessage report = discovery.GetResponse(Timeout, new IPEndPoint(IPAddress.Parse("172.16.24.1"), 161));
