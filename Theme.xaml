@@ -65,7 +65,24 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
+    <Style x:Key="Control_Panel" TargetType="ContentControl">
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Border Background="White" CornerRadius="8" Margin="4">
+                        <Border.Effect>
+                            <DropShadowEffect ShadowDepth="1" BlurRadius="4" Opacity=".2"/>
+                        </Border.Effect>
+                        <ContentPresenter/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="NetworkIndicator" TargetType="Control">
         <Setter Property="Template">
             <Setter.Value>

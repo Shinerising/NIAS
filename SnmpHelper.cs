@@ -114,6 +114,7 @@ namespace LanMonitor
         [Obsolete]
         public static void FetchData()
         {
+            return;
             Discovery discovery = Messenger.GetNextDiscovery(SnmpType.GetBulkRequestPdu);
             ReportMessage report = discovery.GetResponse(Timeout, new IPEndPoint(IPAddress.Parse("172.16.24.1"), 161));
 
