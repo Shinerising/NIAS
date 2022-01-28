@@ -15,6 +15,7 @@ namespace LanMonitor
         public string Name { get; set; }
         public string Brief { get; set; }
         public bool IsUp { get; set; }
+        public bool IsFiber { get; set; }
     }
     public class SwitchHost
     {
@@ -32,29 +33,12 @@ namespace LanMonitor
         {
             Address = ip;
             EndPoint = new IPEndPoint(IPAddress.Parse(ip), 161);
-            PortList = new List<SwitchPort>()
+            PortList = Enumerable.Range(0, 28).Select(item => new SwitchPort()
             {
-                new SwitchPort()
-                {
-                    Name = "GE1/0/1",
-                    IsUp = true
-                },
-                new SwitchPort()
-                {
-                    Name = "GE1/0/2",
-                    IsUp = false
-                },
-                new SwitchPort()
-                {
-                    Name = "GE1/0/3",
-                    IsUp = true
-                },
-                new SwitchPort()
-                {
-                    Name = "GE1/0/4",
-                    IsUp = false
-                }
-            };
+                Name = "GE1/0/" + item.ToString(),
+                IsUp = item % 3 == 1,
+                IsFiber = item >= 24
+            }).ToList();
             HostList = new List<SwitchHost>()
             {
                 new SwitchHost()
@@ -76,9 +60,41 @@ namespace LanMonitor
                 {
                     IPAddress = "172.16.24.93",
                     MACAddress = "AA-BB-CC-DD-EE-FF"
+                },
+                new SwitchHost()
+                {
+                    IPAddress = "172.16.24.95",
+                    MACAddress = "AA-BB-CC-DD-EE-FF"
+                },
+                new SwitchHost()
+                {
+                    IPAddress = "172.16.24.101",
+                    MACAddress = "AA-BB-CC-DD-EE-FF"
+                },
+                new SwitchHost()
+                {
+                    IPAddress = "172.16.24.102",
+                    MACAddress = "AA-BB-CC-DD-EE-FF"
+                },
+                new SwitchHost()
+                {
+                    IPAddress = "172.16.24.103",
+                    MACAddress = "AA-BB-CC-DD-EE-FF"
                 }
             };
         }
+    }
+    public class SnmpClient
+    {
+        private SnmpClient(List<string> list)
+        {
+            SwitchIPList = list;
+            SwitchDeviceList = SwitchIPList.Select(item => new SwitchDevice(item)).ToList();
+        }
+
+        public List<string> SwitchIPList { get; set; }
+        public List<SwitchDevice> SwitchDeviceList { get; set; }
+        public static SnmpClient PreviewSnmpClient => new SnmpClient(new List<string>() { "172.16.24.1", "172.16.24.188" });
     }
     internal class SnmpHelper
     {

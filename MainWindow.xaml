@@ -232,17 +232,17 @@
             </Grid>
             <Grid Grid.Row="2" Margin="8,0,8,8">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" MinWidth="120"/>
-                    <ColumnDefinition Width="6"/>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2*" MinWidth="240"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="3*" MinWidth="240"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Margin="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="2*" MinHeight="32"/>
-                        <RowDefinition Height="8"/>
-                        <RowDefinition Height="3*" MinHeight="16"/>
-                        <RowDefinition Height="8"/>
-                        <RowDefinition Height="3*" MinHeight="16"/>
+                        <RowDefinition Height="2*" MinHeight="42"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="3*" MinHeight="42"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="3*" MinHeight="42"/>
                     </Grid.RowDefinitions>
                     <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}">
                         <Grid>
@@ -320,7 +320,7 @@
                             </ListView>
                         </Grid>
                     </ContentControl>
-                    <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" Background="Transparent"/>
+                    <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
                     <ContentControl Grid.Row="2" Style="{StaticResource Control_Panel}">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -395,7 +395,7 @@
                             </ListView>
                         </Grid>
                     </ContentControl>
-                    <GridSplitter Grid.Row="3" Height="4" HorizontalAlignment="Stretch" Background="Transparent"/>
+                    <GridSplitter Grid.Row="3" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
                     <ContentControl Grid.Row="4" Style="{StaticResource Control_Panel}">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -457,10 +457,192 @@
                         </Grid>
                     </ContentControl>
                 </Grid>
-                <GridSplitter Grid.Column="1" Width="6" VerticalAlignment="Stretch" Background="Transparent"/>
+                <GridSplitter Grid.Column="1" Width="6" VerticalAlignment="Stretch" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Background="Transparent"/>
                 <Grid Grid.Column="2">
-                    <ContentControl Style="{StaticResource Control_Panel}">
-                        <Label Content="test"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" MinHeight="42"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="2*" MinHeight="42"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="3*" MinHeight="42"/>
+                    </Grid.RowDefinitions>
+                    <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
+                                <TextBlock Text="交换机接口"/>
+                                <TextBlock Text=""/>
+                            </StackPanel>
+                        </Grid>
+                    </ContentControl>
+                    <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
+                                <TextBlock Text="交换机接口"/>
+                                <TextBlock Text=""/>
+                            </StackPanel>
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                            <Grid Height="64" ToolTip="{Binding ToolTip}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" MaxWidth="128"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Column="0">
+                                                    <Image Width="36" Height="36" Margin="12,2,12,8" VerticalAlignment="Top" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                    <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="images/idle.png"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="1">
+                                                                        <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="2">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="6">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="7">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                    <TextBlock VerticalAlignment="Bottom" Text="{Binding Address}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
+                                                </Grid>
+                                                <Border Grid.Column="1" Margin="0,0,8,0" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="8,4">
+                                                    <ItemsControl ItemsSource="{Binding PortList}" AlternationCount="2">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel Orientation="Vertical" Height="44"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Border Margin="2">
+                                                                    <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#333" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10"/>
+                                                                </Border>
+                                                                <DataTemplate.Triggers>
+                                                                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                                                        <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8"/>
+                                                                    </Trigger>
+                                                                    <DataTrigger Binding="{Binding IsFiber}" Value="True">
+                                                                        <Setter TargetName="Port_Icon" Property="Margin" Value="12,12,-8,12"/>
+                                                                        <Setter TargetName="Port_Icon" Property="Data" Value="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10"/>
+                                                                    </DataTrigger>
+                                                                </DataTemplate.Triggers>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </ContentControl>
+                    <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
+                    <ContentControl Grid.Row="2" Style="{StaticResource Control_Panel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
+                                <TextBlock Text="交换机设备"/>
+                                <TextBlock Text=""/>
+                            </StackPanel>
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                            <Grid Height="64" ToolTip="{Binding ToolTip}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" MaxWidth="128"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Column="0">
+                                                    <Image Width="36" Height="36" Margin="12,2,12,8" VerticalAlignment="Top" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                    <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="images/idle.png"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="1">
+                                                                        <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="2">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="6">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="7">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                    <TextBlock VerticalAlignment="Bottom" Text="{Binding Address}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
+                                                </Grid>
+                                                <Border Grid.Column="1" Margin="0,0,8,0">
+                                                    <ItemsControl ItemsSource="{Binding HostList}" AlternationCount="2">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel Orientation="Vertical" Height="64"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Border Margin="3" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="4,2">
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Image Width="20" Height="20" Margin="0,0,4,0" Source="Images/computer2.png"/>
+                                                                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding IPAddress}"/>
+                                                                    </Grid>
+                                                                </Border>
+                                                                <DataTemplate.Triggers>
+                                                                </DataTemplate.Triggers>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </ContentControl>
+                    <GridSplitter Grid.Row="3" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
+                    <ContentControl Grid.Row="4" Style="{StaticResource Control_Panel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
+                                <TextBlock Text="网络结构图"/>
+                                <TextBlock Text=""/>
+                            </StackPanel>
+                        </Grid>
                     </ContentControl>
                 </Grid>
             </Grid>
