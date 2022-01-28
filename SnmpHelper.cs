@@ -27,12 +27,14 @@ namespace LanMonitor
     {
         public string Address { get; set; }
         public IPEndPoint EndPoint { get; set; }
+        public string Information { get; set; }
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
         public SwitchDevice(string ip)
         {
             Address = ip;
             EndPoint = new IPEndPoint(IPAddress.Parse(ip), 161);
+            Information = string.Format("HUAWEI S5720{0}HUAWEI S5720{0}HUAWEI S5720", Environment.NewLine);
             PortList = Enumerable.Range(0, 28).Select(item => new SwitchPort()
             {
                 Name = "GE1/0/" + item.ToString(),

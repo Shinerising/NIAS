@@ -523,29 +523,38 @@
                                                     <TextBlock VerticalAlignment="Bottom" Text="{Binding Address}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
                                                 </Grid>
                                                 <Border Grid.Column="1" Margin="0,0,8,0" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="8,4">
-                                                    <ItemsControl ItemsSource="{Binding PortList}" AlternationCount="2">
-                                                        <ItemsControl.ItemsPanel>
-                                                            <ItemsPanelTemplate>
-                                                                <WrapPanel Orientation="Vertical" Height="44"/>
-                                                            </ItemsPanelTemplate>
-                                                        </ItemsControl.ItemsPanel>
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <Border Margin="2">
-                                                                    <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#333" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10"/>
-                                                                </Border>
-                                                                <DataTemplate.Triggers>
-                                                                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                                                        <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8"/>
-                                                                    </Trigger>
-                                                                    <DataTrigger Binding="{Binding IsFiber}" Value="True">
-                                                                        <Setter TargetName="Port_Icon" Property="Margin" Value="12,12,-8,12"/>
-                                                                        <Setter TargetName="Port_Icon" Property="Data" Value="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10"/>
-                                                                    </DataTrigger>
-                                                                </DataTemplate.Triggers>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                    </ItemsControl>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <ItemsControl Grid.Column="0" ItemsSource="{Binding PortList}" AlternationCount="2">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <WrapPanel Orientation="Vertical" Height="44"/>
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Border Margin="2">
+                                                                        <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#333" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10"/>
+                                                                    </Border>
+                                                                    <DataTemplate.Triggers>
+                                                                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8"/>
+                                                                        </Trigger>
+                                                                        <DataTrigger Binding="{Binding IsFiber}" Value="True">
+                                                                            <Setter TargetName="Port_Icon" Property="Margin" Value="12,16,-8,6"/>
+                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8"/>
+                                                                        </DataTrigger>
+                                                                    </DataTemplate.Triggers>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                        <StackPanel Grid.Column="1" Margin="16,4,4,4">
+                                                            <TextBlock TextAlignment="Right" Text="{Binding Information}" TextTrimming="CharacterEllipsis" LineHeight="16"/>
+                                                        </StackPanel>
+                                                    </Grid>
                                                 </Border>
                                             </Grid>
                                         </Border>
