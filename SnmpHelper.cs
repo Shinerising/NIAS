@@ -23,6 +23,11 @@ namespace LanMonitor
         public string IPAddress { get; set; }
         public string MACAddress { get; set; }
     }
+    public class LanHost
+    {
+        public string Name { get; set; }
+        public List<string> IPAddress { get; set; }
+    }
     public class SwitchDevice
     {
         public string Address { get; set; }
@@ -97,6 +102,28 @@ namespace LanMonitor
         public List<string> SwitchIPList { get; set; }
         public List<SwitchDevice> SwitchDeviceList { get; set; }
         public static SnmpClient PreviewSnmpClient => new SnmpClient(new List<string>() { "172.16.24.1", "172.16.24.188" });
+        public static List<LanHost> LanHostList => new List<LanHost>() {
+            new LanHost()
+            {
+                Name = "Host01",
+                IPAddress = new List<string>() { "172.16.24.90","172.16.34.90" }
+            },
+            new LanHost()
+            {
+                Name = "Host02",
+                IPAddress = new List<string>() { "172.16.24.91","172.16.34.91" }
+            },
+            new LanHost()
+            {
+                Name = "Host03",
+                IPAddress = new List<string>() { "172.16.24.92","172.16.34.92" }
+            },
+            new LanHost()
+            {
+                Name = "Host04",
+                IPAddress = new List<string>() { "172.16.24.93","172.16.34.93" }
+            }
+        };
     }
     internal class SnmpHelper
     {
