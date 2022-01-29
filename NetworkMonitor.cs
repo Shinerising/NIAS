@@ -202,7 +202,7 @@ namespace LanMonitor
         private long downloadSpeedMax = 1024;
         private long uploadSpeedMax = 1024;
 
-        public string ComputerName => Environment.MachineName;
+        public string ComputerName => Dns.GetHostEntry("").HostName;
         public string SystemName
         {
             get
@@ -240,6 +240,19 @@ namespace LanMonitor
                 using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Workgroup FROM Win32_ComputerSystem"))
                 {
                     name = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Workgroup")).FirstOrDefault();
+                }
+                return name != null ? name.ToString() : "Unknown";
+            }
+        }
+
+        public string Model
+        {
+            get
+            {
+                object name;
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Model FROM Win32_ComputerSystem"))
+                {
+                    name = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Model")).FirstOrDefault();
                 }
                 return name != null ? name.ToString() : "Unknown";
             }
@@ -310,7 +323,7 @@ namespace LanMonitor
                         }
                     }
                 }
-                Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
+                Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
                 {
                     NetworkStatus = status;
                     Notify(() => NetworkStatus);
@@ -344,7 +357,7 @@ namespace LanMonitor
             {
                 List<ActivePort> portList = portMonitor.ListActivePort();
 
-                Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
+                Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
                 {
                     int i = 0;
                     for (; i < portList.Count; i += 1)
@@ -374,7 +387,7 @@ namespace LanMonitor
             {
                 List<LocalNetworkComputer> computerList = lanMonitor.TestLANComputers();
 
-                Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
+                Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
                 {
                     int i = 0;
                     for (; i < computerList.Count; i += 1)
@@ -404,7 +417,7 @@ namespace LanMonitor
             {
                 List<NetworkAdapter> adapters = networkMoniter.Refresh();
 
-                Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
+                Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
                 {
                     long uploadSpeed = 0;
                     long downloadSpeed = 0;

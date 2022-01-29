@@ -24,6 +24,7 @@
     <system:String x:Key="Tip_SystemName">操作系统版本</system:String>
     <system:String x:Key="Tip_DomainName">域名称</system:String>
     <system:String x:Key="Tip_WorkGroup">工作组</system:String>
+    <system:String x:Key="Tip_Model">设备型号</system:String>
     <system:String x:Key="Tip_Graph">网络流量图线(2分钟)</system:String>
     <system:String x:Key="Tip_User">登录用户</system:String>
     <system:String x:Key="Tip_Port">端口状态</system:String>

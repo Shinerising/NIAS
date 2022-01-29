@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="{StaticResource Title}" Height="640" Width="960" MinWidth="560" MinHeight="360"
         MaxHeight="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenHeightKey}}"
-        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}" FontFamily="Verdana, Microsoft YaHei">
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}">
     <Window.Resources>
         <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
             <Grid x:Name="Grid" Background="{TemplateBinding Background}">
@@ -202,8 +202,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" Width="72" Height="72" Margin="0,4,0,20">
-                    <Image Width="72" Height="72" RenderOptions.BitmapScalingMode="HighQuality">
+                <Grid Grid.Column="0" Width="76" Height="76" Margin="0,4,0,16">
+                    <Image Width="76" Height="76" RenderOptions.BitmapScalingMode="HighQuality">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Setter Property="Source" Value="images/monitor.png"/>
@@ -215,7 +215,7 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                    <Image Width="32" Height="32" VerticalAlignment="Top" Margin="0,10,0,0" RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image Width="36" Height="36" VerticalAlignment="Top" Margin="0,10,0,0" RenderOptions.BitmapScalingMode="HighQuality">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Setter Property="Source" Value="images/offline.png"/>
@@ -234,11 +234,11 @@
                         </Image.Style>
                     </Image>
                 </Grid>
-                <StackPanel Grid.Column="1" Height="80" Margin="16,0,16,16">
-                    <TextBlock Text="{Binding ComputerName, FallbackValue=ComputerName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_ComputerName}" FontSize="14" Height="18" Margin="0,0,0,6"/>
+                <StackPanel Grid.Column="1" Height="80" Margin="16,4,16,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <TextBlock Text="{Binding ComputerName, FallbackValue=ComputerName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_ComputerName}" FontSize="14" Height="18" FontWeight="Bold" Margin="0,0,0,6"/>
                     <TextBlock Text="{Binding SystemName, FallbackValue=SystemName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_SystemName}" Height="18"/>
+                    <TextBlock Text="{Binding Model, FallbackValue=Model}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_Model}" Height="18"/>
                     <TextBlock Text="{Binding WorkGroup, FallbackValue=WorkGroup}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_WorkGroup}" Height="18"/>
-                    <TextBlock Text="{Binding DomainName, FallbackValue=DomainName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_DomainName}" Height="18"/>
                 </StackPanel>
                 <Grid Grid.Column="2" Width="239">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4" Text="{StaticResource Text_Graph}" FontSize="10" Foreground="{StaticResource Color_TextLight}"/>
@@ -560,15 +560,15 @@
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
                                                                     <Border Margin="2" ToolTip="{Binding Brief}" Background="Transparent">
-                                                                        <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10"/>
+                                                                        <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10"/>
                                                                     </Border>
                                                                     <DataTemplate.Triggers>
                                                                         <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8"/>
+                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8L4.5 8"/>
                                                                         </Trigger>
                                                                         <DataTrigger Binding="{Binding IsFiber}" Value="True">
                                                                             <Setter TargetName="Port_Icon" Property="Margin" Value="12,16,-8,6"/>
-                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8"/>
+                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8L4.5 8"/>
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding IsUp}" Value="True">
                                                                             <Setter TargetName="Port_Icon" Property="Stroke" Value="#32D359"/>
@@ -616,16 +616,10 @@
                                                             <Style TargetType="Image">
                                                                 <Setter Property="Source" Value="images/idle.png"/>
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="1">
+                                                                    <DataTrigger Binding="{Binding State}" Value="Online">
                                                                         <Setter Property="Source" Value="images/checkmark.png"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="2">
-                                                                        <Setter Property="Source" Value="images/error.png"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="6">
-                                                                        <Setter Property="Source" Value="images/error.png"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="7">
+                                                                    <DataTrigger Binding="{Binding State}" Value="Offline">
                                                                         <Setter Property="Source" Value="images/error.png"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
@@ -710,16 +704,10 @@
                                                                     <Style TargetType="Image">
                                                                         <Setter Property="Source" Value="images/idle.png"/>
                                                                         <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding Status}" Value="1">
+                                                                            <DataTrigger Binding="{Binding State}" Value="Online">
                                                                                 <Setter Property="Source" Value="images/checkmark.png"/>
                                                                             </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Status}" Value="2">
-                                                                                <Setter Property="Source" Value="images/error.png"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Status}" Value="6">
-                                                                                <Setter Property="Source" Value="images/error.png"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Status}" Value="7">
+                                                                            <DataTrigger Binding="{Binding State}" Value="Offline">
                                                                                 <Setter Property="Source" Value="images/error.png"/>
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
