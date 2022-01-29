@@ -28,11 +28,18 @@ namespace LanMonitor
         public string Name { get; set; }
         public List<string> IPAddress { get; set; }
     }
+    public enum DeviceState
+    {
+        Unknown,
+        Online,
+        Offline
+    }
     public class SwitchDevice
     {
         public string Address { get; set; }
         public IPEndPoint EndPoint { get; set; }
         public string Information { get; set; }
+        public DeviceState State { get; set; } = DeviceState.Online;
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
         public SwitchDevice(string ip)
