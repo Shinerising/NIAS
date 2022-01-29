@@ -12,21 +12,22 @@
         <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
             <Grid x:Name="Grid" Background="{TemplateBinding Background}">
                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
-                <ScrollBar HorizontalAlignment="Right" x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Style="{DynamicResource ScrollBarStyle}"/>
+                <ScrollBar HorizontalAlignment="Right" Margin="0,0,0,12" VerticalAlignment="Stretch" x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Style="{DynamicResource VerticalScrollBarStyle}"/>
+                <ScrollBar VerticalAlignment="Bottom" Margin="0,0,12,0" HorizontalAlignment="Stretch" x:Name="PART_HorizontalScrollBar" Orientation="Horizontal" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Style="{DynamicResource HorizontalScrollBarStyle}"/>
             </Grid>
         </ControlTemplate>
-        <Style x:Key="ScrollBarStyle" TargetType="{x:Type ScrollBar}">
+        <Style x:Key="VerticalScrollBarStyle" TargetType="ScrollBar">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
             <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
-            <Setter Property="Width" Value="10"/>
-            <Setter Property="MinWidth" Value="10"/>
+            <Setter Property="Width" Value="12"/>
+            <Setter Property="MinWidth" Value="12"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ScrollBar">
                         <Grid x:Name="Bg" Background="Transparent" SnapsToDevicePixels="true">
-                            <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}" Opacity="0">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True" IsEnabled="{TemplateBinding IsMouseOver}" Opacity="0">
                                 <Track.Thumb>
                                     <Thumb>
                                         <Thumb.Style>
@@ -36,7 +37,47 @@
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="Thumb">
-                                                            <Rectangle Height="25" Width="10" Fill="{StaticResource Color_ButtonBorder}"/>
+                                                            <Rectangle Height="Auto" Width="8" RadiusX="4" RadiusY="4" Fill="{StaticResource Color_ButtonBorder}"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Thumb.Style>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" TargetName="PART_Track" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="HorizontalScrollBarStyle" TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="MinHeight" Value="12"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid x:Name="Bg" Background="Transparent" SnapsToDevicePixels="true">
+                            <Track x:Name="PART_Track" IsDirectionReversed="False" IsEnabled="{TemplateBinding IsMouseOver}" Opacity="0">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Style>
+                                            <Style TargetType="Thumb">
+                                                <Setter Property="OverridesDefaultStyle" Value="true"/>
+                                                <Setter Property="IsTabStop" Value="false"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Thumb">
+                                                            <Rectangle Height="8" Width="Auto" RadiusX="4" RadiusY="4" Fill="{StaticResource Color_ButtonBorder}"/>
                                                         </ControlTemplate>
                                                     </Setter.Value>
                                                 </Setter>
@@ -141,7 +182,7 @@
                                     <Style TargetType="Path">
                                         <Setter Property="Data" Value="M1 1 L1 9 L9 9 L9 1 L1 1Z"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding MainWindowState}" Value="Maximized">
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized">
                                                 <Setter Property="Data" Value="M3 3 L3 1 L9 1 L9 7 L7 7M1 3 L7 3 L7 9 L1 9 L1 3Z"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -464,7 +505,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="2*" MinHeight="42"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="300*" MinHeight="42"/>
+                        <RowDefinition Height="3*" MinHeight="42"/>
                     </Grid.RowDefinitions>
                     <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}">
                         <Grid>
@@ -537,7 +578,7 @@
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
                                                                     <Border Margin="2">
-                                                                        <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#333" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10"/>
+                                                                        <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10"/>
                                                                     </Border>
                                                                     <DataTemplate.Triggers>
                                                                         <Trigger Property="ItemsControl.AlternationIndex" Value="1">
@@ -546,6 +587,9 @@
                                                                         <DataTrigger Binding="{Binding IsFiber}" Value="True">
                                                                             <Setter TargetName="Port_Icon" Property="Margin" Value="12,16,-8,6"/>
                                                                             <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding IsUp}" Value="True">
+                                                                            <Setter TargetName="Port_Icon" Property="Stroke" Value="#32D359"/>
                                                                         </DataTrigger>
                                                                     </DataTemplate.Triggers>
                                                                 </DataTemplate>
@@ -651,116 +695,118 @@
                                 <TextBlock Text="网络结构图"/>
                                 <TextBlock Text=""/>
                             </StackPanel>
-                            <Border Grid.Row="1" Margin="12,0,12,12" Padding="8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <ItemsControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Margin="4,4,4,8" Padding="4">
-                                                    <Grid Height="72">
-                                                        <Border Margin="32,44,-48,0" Background="#666" Height="2" CornerRadius="2"/>
-                                                    </Grid>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                    <ItemsControl Grid.Column="0" Grid.Row="0" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Margin="4,4,4,8" Padding="4">
-                                                    <Grid Height="72">
-                                                        <Image Width="36" Height="36" Margin="12,2,12,8" VerticalAlignment="Top" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                                        <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
-                                                            <Image.Style>
-                                                                <Style TargetType="Image">
-                                                                    <Setter Property="Source" Value="images/idle.png"/>
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding Status}" Value="1">
-                                                                            <Setter Property="Source" Value="images/checkmark.png"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Status}" Value="2">
-                                                                            <Setter Property="Source" Value="images/error.png"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Status}" Value="6">
-                                                                            <Setter Property="Source" Value="images/error.png"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Status}" Value="7">
-                                                                            <Setter Property="Source" Value="images/error.png"/>
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </Image.Style>
-                                                        </Image>
-                                                        <Border VerticalAlignment="Bottom" Padding="4" Background="#FFF" BorderBrush="#333" BorderThickness="1" CornerRadius="2">
-                                                            <TextBlock Text="{Binding Address}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
-                                                        </Border>
-                                                    </Grid>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                    <ItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding}" DataContext="{x:Static local:SnmpClient.LanHostList}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel Orientation="Horizontal"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Margin="8" Padding="8,4" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <Grid Grid.Row="0">
-                                                            <Canvas>
-                                                                <Canvas Canvas.Left="30" Canvas.Top="6">
-                                                                    <Line X1="0" Y1="0" X2="0" Y2="-136" Stroke="#333" StrokeThickness="2" StrokeEndLineCap="Round"/>
-                                                                    <Line Canvas.Top="-136" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                </Canvas>
-                                                                <Canvas Canvas.Left="60" Canvas.Top="42">
-                                                                    <Line X1="0" Y1="0" X2="0" Y2="-80" Stroke="#333" StrokeThickness="2" StrokeEndLineCap="Round"/>
-                                                                    <Line Canvas.Top="-80" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                </Canvas>
-                                                            </Canvas>
-                                                            <ItemsControl ItemsSource="{Binding IPAddress}">
-                                                                <ItemsControl.ItemsPanel>
-                                                                    <ItemsPanelTemplate>
-                                                                        <StackPanel/>
-                                                                    </ItemsPanelTemplate>
-                                                                </ItemsControl.ItemsPanel>
-                                                                <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <Border Margin="0,6" Padding="4" Background="#FFF" BorderBrush="#333" BorderThickness="1" CornerRadius="2">
-                                                                            <TextBlock Text="{Binding}"/>
-                                                                        </Border>
-                                                                    </DataTemplate>
-                                                                </ItemsControl.ItemTemplate>
-                                                            </ItemsControl>
+                            <Border Grid.Row="1" Margin="12,0,12,12" Padding="0" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}">
+                                <ScrollViewer Margin="2,2,0,0" HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerControlTemplate}">
+                                    <Grid Margin="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <ItemsControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="4,4,4,8" Padding="4">
+                                                        <Grid Height="72">
+                                                            <Border Margin="32,44,-96,0" Background="#666" Height="2" CornerRadius="2"/>
                                                         </Grid>
-                                                        <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,4">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <Image Width="20" Height="20" Margin="0,0,4,0" Source="Images/computer2.png"/>
-                                                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <ItemsControl Grid.Column="0" Grid.Row="0" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="4,4,4,8" Padding="4">
+                                                        <Grid Height="72">
+                                                            <Image Width="36" Height="36" Margin="12,2,12,8" VerticalAlignment="Top" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                            <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                                <Image.Style>
+                                                                    <Style TargetType="Image">
+                                                                        <Setter Property="Source" Value="images/idle.png"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="1">
+                                                                                <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="2">
+                                                                                <Setter Property="Source" Value="images/error.png"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="6">
+                                                                                <Setter Property="Source" Value="images/error.png"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="7">
+                                                                                <Setter Property="Source" Value="images/error.png"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Image.Style>
+                                                            </Image>
+                                                            <Border VerticalAlignment="Bottom" Padding="4" Background="#FFF" BorderBrush="#333" BorderThickness="1" CornerRadius="2">
+                                                                <TextBlock Text="{Binding Address}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
+                                                            </Border>
                                                         </Grid>
-                                                    </Grid>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <ItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding}" DataContext="{x:Static local:SnmpClient.LanHostList}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="8" Padding="8,4" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3">
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid Grid.Row="0">
+                                                                <Canvas>
+                                                                    <Canvas Canvas.Left="30" Canvas.Top="6">
+                                                                        <Line X1="0" Y1="0" X2="0" Y2="-136" Stroke="#333" StrokeThickness="2" StrokeEndLineCap="Round"/>
+                                                                        <Line Canvas.Top="-136" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                    </Canvas>
+                                                                    <Canvas Canvas.Left="60" Canvas.Top="42">
+                                                                        <Line X1="0" Y1="0" X2="0" Y2="-80" Stroke="#333" StrokeThickness="2" StrokeEndLineCap="Round"/>
+                                                                        <Line Canvas.Top="-80" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                    </Canvas>
+                                                                </Canvas>
+                                                                <ItemsControl ItemsSource="{Binding IPAddress}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <StackPanel/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Border Margin="0,6" Padding="4" Background="#FFF" BorderBrush="#333" BorderThickness="1" CornerRadius="2">
+                                                                                <TextBlock Text="{Binding}"/>
+                                                                            </Border>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </Grid>
+                                                            <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,4">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Image Width="20" Height="20" Margin="0,0,4,0" Source="Images/computer2.png"/>
+                                                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Grid>
+                                </ScrollViewer>
                             </Border>
                         </Grid>
                     </ContentControl>

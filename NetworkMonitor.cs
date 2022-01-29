@@ -310,7 +310,7 @@ namespace LanMonitor
                         }
                     }
                 }
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
                 {
                     NetworkStatus = status;
                     Notify(() => NetworkStatus);
@@ -344,7 +344,7 @@ namespace LanMonitor
             {
                 List<ActivePort> portList = portMonitor.ListActivePort();
 
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
                 {
                     int i = 0;
                     for (; i < portList.Count; i += 1)
@@ -374,7 +374,7 @@ namespace LanMonitor
             {
                 List<LocalNetworkComputer> computerList = lanMonitor.TestLANComputers();
 
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
                 {
                     int i = 0;
                     for (; i < computerList.Count; i += 1)
@@ -404,7 +404,7 @@ namespace LanMonitor
             {
                 List<NetworkAdapter> adapters = networkMoniter.Refresh();
 
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
                 {
                     long uploadSpeed = 0;
                     long downloadSpeed = 0;
