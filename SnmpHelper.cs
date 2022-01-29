@@ -50,6 +50,7 @@ namespace LanMonitor
             PortList = Enumerable.Range(0, 28).Select(item => new SwitchPort()
             {
                 Name = "GE1/0/" + item.ToString(),
+                Brief = "GigabitEthernet1/0/" + item.ToString(),
                 IsUp = item % 3 == 1,
                 IsFiber = item >= 24
             }).ToList();

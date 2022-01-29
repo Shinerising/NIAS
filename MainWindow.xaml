@@ -517,18 +517,6 @@
                                 <TextBlock Text="交换机接口"/>
                                 <TextBlock Text=""/>
                             </StackPanel>
-                        </Grid>
-                    </ContentControl>
-                    <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
-                                <TextBlock Text="交换机接口"/>
-                                <TextBlock Text=""/>
-                            </StackPanel>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
@@ -571,7 +559,7 @@
                                                             </ItemsControl.ItemsPanel>
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <Border Margin="2">
+                                                                    <Border Margin="2" ToolTip="{Binding Brief}" Background="Transparent">
                                                                         <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10"/>
                                                                     </Border>
                                                                     <DataTemplate.Triggers>
