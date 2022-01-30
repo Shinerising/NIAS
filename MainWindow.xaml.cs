@@ -64,7 +64,7 @@ namespace LanMonitor
         private void Window_Closing(object sender, CancelEventArgs e)
         {
         }
-        protected override void OnSourceInitialized(EventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var source = PresentationSource.FromVisual(this);
             ((HwndSource)source)?.AddHook(Hook);
@@ -155,5 +155,6 @@ namespace LanMonitor
         {
 
         }
+
     }
 }
