@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Management;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace LanMonitor
 {
@@ -31,10 +32,17 @@ namespace LanMonitor
         /// 通知UI更新数据的方法
         /// </summary>
         /// <typeparam name="T">泛型参数</typeparam>
-        /// <param name="propertyExpression">待更新的数据项</param>
-        protected void Notify<T>(Expression<Func<T>> propertyExpression)
+        /// <param name="obj">以待更新项目为属性的匿名类实例</param>
+        protected void Notify<T>(T obj)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((propertyExpression.Body as MemberExpression).Member.Name));
+            if (obj == null)
+            {
+                return;
+            }
+            foreach (PropertyInfo property in typeof(T).GetProperties())
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property.Name));
+            }
         }
     }
 
@@ -102,9 +110,7 @@ namespace LanMonitor
             DownloadGeometry = GetChart(downloadSpeedQueue, maxValue);
             speedGraphLimit = (long)maxValue;
 
-            Notify(() => UploadGeometry);
-            Notify(() => DownloadGeometry);
-            Notify(() => SpeedLimit);
+            Notify(new { UploadGeometry, DownloadGeometry, SpeedLimit });
         }
         public StreamGeometry GetChart(IEnumerable<long> valueList, double maxValue)
         {
@@ -281,7 +287,7 @@ namespace LanMonitor
                 Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
                 {
                     NetworkStatus = status;
-                    Notify(() => NetworkStatus);
+                    Notify(new { NetworkStatus });
                 }));
 
                 Thread.Sleep(5000);
@@ -413,8 +419,7 @@ namespace LanMonitor
                     GlobalUploadSpeed = NetworkAdapter.GetSpeedString(uploadSpeed);
                     GlobalDownloadSpeed = NetworkAdapter.GetSpeedString(downloadSpeed);
 
-                    Notify(() => GlobalUploadSpeed);
-                    Notify(() => GlobalDownloadSpeed);
+                    Notify(new { GlobalUploadSpeed, GlobalDownloadSpeed });
 
                     RefreshChart();
                 }));
@@ -859,32 +864,32 @@ namespace LanMonitor
             if (Name != name)
             {
                 Name = name;
-                Notify(() => Name);
+                Notify(new { Name });
             }
             if (Status != status)
             {
                 Status = status;
-                Notify(() => Status);
+                Notify(new { Status });
             }
             if (IPAddress != ipAddress)
             {
                 IPAddress = ipAddress;
-                Notify(() => IPAddress);
+                Notify(new { IPAddress });
             }
             if (UID != uid)
             {
                 UID = uid;
-                Notify(() => UID);
+                Notify(new { UID });
             }
             if (Latency != latency)
             {
                 Latency = latency;
-                Notify(() => Latency);
+                Notify(new { Latency });
             }
             if (ToolTip != toolTip)
             {
                 ToolTip = toolTip;
-                Notify(() => ToolTip);
+                Notify(new { ToolTip });
             }
         }
     }
@@ -931,32 +936,32 @@ namespace LanMonitor
             if (Name != name)
             {
                 Name = name;
-                Notify(() => Name);
+                Notify(new { Name });
             }
             if (Status != status)
             {
                 Status = status;
-                Notify(() => Status);
+                Notify(new { Status });
             }
             if (Type != type)
             {
                 Type = type;
-                Notify(() => type);
+                Notify(new { Type });
             }
             if (DownloadSpeed != downloadSpeed)
             {
                 DownloadSpeed = downloadSpeed;
-                Notify(() => DownloadSpeed);
+                Notify(new { DownloadSpeed });
             }
             if (UploadSpeed != uploadSpeed)
             {
                 UploadSpeed = uploadSpeed;
-                Notify(() => UploadSpeed);
+                Notify(new { UploadSpeed });
             }
             if (ToolTip != toolTip)
             {
                 ToolTip = toolTip;
-                Notify(() => ToolTip);
+                Notify(new { ToolTip });
             }
         }
     }
@@ -1017,7 +1022,6 @@ namespace LanMonitor
             string state = port.State;
             if (state != "" && state != "Listen" && state != "CloseWait" && state != "TimeWait" && state != "Established")
             {
-                var a = state;
             }
             string localEndPoint = port.LocalEndPoint;
             string remoteEndPoint = port.RemoteEndPoint;
@@ -1030,43 +1034,42 @@ namespace LanMonitor
             if (Type != type)
             {
                 Type = type;
-                Notify(() => Type);
+                Notify(new { Type });
             }
             if (State != state)
             {
                 State = state;
-                Notify(() => State);
-                Notify(() => StateText);
+                Notify(new { State, StateText });
             }
             if (LocalEndPoint != localEndPoint)
             {
                 LocalEndPoint = localEndPoint;
-                Notify(() => LocalEndPoint);
+                Notify(new { LocalEndPoint });
             }
             if (RemoteEndPoint != remoteEndPoint)
             {
                 RemoteEndPoint = remoteEndPoint;
-                Notify(() => RemoteEndPoint);
+                Notify(new { RemoteEndPoint });
             }
             if (PID != pid)
             {
                 PID = pid;
-                Notify(() => PID);
+                Notify(new { PID });
             }
             if (ProcessName != processName)
             {
                 ProcessName = processName;
-                Notify(() => ProcessName);
+                Notify(new { ProcessName });
             }
             if (Type != type)
             {
                 Type = type;
-                Notify(() => Type);
+                Notify(new { Type });
             }
             if (ToolTip != toolTip)
             {
                 ToolTip = toolTip;
-                Notify(() => ToolTip);
+                Notify(new { ToolTip });
             }
         }
     }
