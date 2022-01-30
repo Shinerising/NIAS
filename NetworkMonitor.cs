@@ -156,8 +156,6 @@ namespace LanMonitor
         private readonly Queue<long> downloadSpeedQueue;
 
         private long speedGraphLimit = 1024;
-        private long downloadSpeedMax = 1024;
-        private long uploadSpeedMax = 1024;
 
         public string ComputerName => Dns.GetHostEntry("").HostName;
         public string SystemName
