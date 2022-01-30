@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LanMonitor"
         mc:Ignorable="d"
-        Title="{StaticResource Title}" Height="640" Width="960" MinWidth="560" MinHeight="360"
+        Title="{StaticResource Title}" Height="640" Width="960" MinWidth="640" MinHeight="360"
         MaxHeight="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenHeightKey}}"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}">
     <Window.Resources>
@@ -196,14 +196,14 @@
                     </StackPanel>
                 </Border>
             </Grid>
-            <Grid Grid.Row="1" Margin="16,0" Height="96">
+            <Grid Grid.Row="1" Margin="12,0" Height="96">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*" MinWidth="240" MaxWidth="480"/>
+                    <ColumnDefinition Width="3*"/>
                 </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" Width="76" Height="76" Margin="0,4,0,16">
-                    <Image Width="76" Height="76" RenderOptions.BitmapScalingMode="HighQuality">
+                <Grid Grid.Column="0" Width="96" Height="96" Margin="0,0,0,0">
+                    <Image Width="90" Height="90" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Setter Property="Source" Value="images/monitor.png"/>
@@ -215,7 +215,7 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                    <Image Width="36" Height="36" VerticalAlignment="Top" Margin="0,10,0,0" RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image Width="40" Height="40" VerticalAlignment="Top" Margin="0,12,0,0" RenderOptions.BitmapScalingMode="HighQuality">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Setter Property="Source" Value="images/offline.png"/>
@@ -234,35 +234,22 @@
                         </Image.Style>
                     </Image>
                 </Grid>
-                <StackPanel Grid.Column="1" Height="80" Margin="16,4,16,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                    <TextBlock Text="{Binding ComputerName, FallbackValue=ComputerName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_ComputerName}" FontSize="14" Height="18" FontWeight="Bold" Margin="0,0,0,6"/>
-                    <TextBlock Text="{Binding SystemName, FallbackValue=SystemName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_SystemName}" Height="18"/>
-                    <TextBlock Text="{Binding Model, FallbackValue=Model}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_Model}" Height="18"/>
-                    <TextBlock Text="{Binding WorkGroup, FallbackValue=WorkGroup}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_WorkGroup}" Height="18"/>
+                <StackPanel Grid.Column="1" Height="96" Margin="16,0,16,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <TextBlock Text="{Binding ComputerName, FallbackValue=ComputerName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_ComputerName}" FontSize="14" Height="20" FontWeight="Bold" Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding SystemName, FallbackValue=SystemName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_SystemName}" Height="20"/>
+                    <TextBlock Text="{Binding Model, FallbackValue=Model}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_Model}" Height="20"/>
+                    <TextBlock Text="{Binding WorkGroup, FallbackValue=WorkGroup}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_WorkGroup}" Height="20"/>
                 </StackPanel>
-                <Grid Grid.Column="2" Width="239">
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4" Text="{StaticResource Text_Graph}" FontSize="10" Foreground="{StaticResource Color_TextLight}"/>
-                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Text="{Binding SpeedLimit, FallbackValue=1MB/s}" FontSize="10" Foreground="{StaticResource Color_TextLight}"/>
-                    <Border BorderBrush="#FB8C00" BorderThickness="1" Margin="0,0,0,23" SnapsToDevicePixels="True" ToolTip="{StaticResource Tip_Graph}" ClipToBounds="True">
-                        <Grid Margin="-2,0,-1,-1">
-                            <Grid.Background>
-                                <DrawingBrush TileMode="Tile" Viewport="0,0,20,9" ViewportUnits="Absolute">
-                                    <DrawingBrush.Drawing>
-                                        <GeometryDrawing>
-                                            <GeometryDrawing.Geometry>
-                                                <RectangleGeometry Rect="0,0,20,9"/>
-                                            </GeometryDrawing.Geometry>
-                                            <GeometryDrawing.Pen>
-                                                <Pen Brush="#FB8C00" Thickness="0.2"/>
-                                            </GeometryDrawing.Pen>
-                                        </GeometryDrawing>
-                                    </DrawingBrush.Drawing>
-                                </DrawingBrush>
-                            </Grid.Background>
-                            <Polygon Points="{Binding DownloadPointGraph}" StrokeLineJoin="Bevel" Stretch="Fill" Fill="#80039BE5" Stroke="#C0039BE5" StrokeThickness="1"/>
-                            <Polygon Points="{Binding UploadPointGraph}" StrokeLineJoin="Bevel" Stretch="Fill" Fill="#8043A047" Stroke="#C043A047" StrokeThickness="1"/>
+                <Grid Grid.Column="2">
+                    <Border Margin="0,0,0,24" SnapsToDevicePixels="True" ToolTip="{StaticResource Tip_Graph}" Background="#FFF" ClipToBounds="True">
+                        <Grid>
+                            <Path Margin="0" Data="M0 0h12M0 1h12M0 2h12M0 3h12M0 4h12M0 5h12M0 6h12M0 7h12M0 8h12M0 0v8M1 0v8M2 0v8M3 0v8M4 0v8M5 0v8M6 0v8M7 0v8M8 0v8M9 0v8M10 0v8M11 0v8M12 0v8" Stretch="Fill" Stroke="#A0FB8C00" StrokeThickness="1"/>
+                            <Path Data="{Binding DownloadGeometry}" Stretch="Fill" Fill="#80039BE5" Stroke="#C0039BE5" StrokeThickness="1" StrokeLineJoin="Bevel"/>
+                            <Path Data="{Binding UploadGeometry}" Stretch="Fill" Fill="#8043A047" Stroke="#C043A047" StrokeThickness="1" StrokeLineJoin="Bevel"/>
                         </Grid>
                     </Border>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,4" Text="{StaticResource Text_Graph}" FontSize="11" Foreground="{StaticResource Color_TextLight}"/>
+                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="6,4" Text="{Binding SpeedLimit, FallbackValue=1MB/s}" FontSize="11" Foreground="{StaticResource Color_TextLight}"/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
                         <Path Data="M 8 3 L 14 12 L 2 12 Z" Stroke="#43A047" Fill="#43A047" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
                         <TextBlock ToolTip="{StaticResource UploadSpeed}" Text="{Binding GlobalUploadSpeed, FallbackValue=128KB/s}" FontSize="13" Margin="2,2,8,2" LineHeight="16" Height="16"/>

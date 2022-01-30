@@ -89,107 +89,64 @@ namespace LanMonitor
 
         public string GlobalUploadSpeed { get; set; }
         public string GlobalDownloadSpeed { get; set; }
-
-        public PointCollection UploadPointGraph
+        public void RefreshChart()
         {
-            get
+            double value = Math.Max(downloadSpeedQueue.Max(), uploadSpeedQueue.Max());
+            double maxValue = Math.Pow(2, Math.Floor(Math.Log(Math.Abs(value), 2)) + 1);
+            if (maxValue < 1024)
             {
-                PointCollection collection = new PointCollection
-                {
-                    new Point(0, 100),
-                    new Point(0, 0),
-                    new Point(0, 100)
-                };
-                int x = 0;
-                long max = 0;
-                for (int i = 0; i < 120 - uploadSpeedQueue.Count(); i += 1)
-                {
-                    collection.Add(new Point(x, 100));
-                    x += 1;
-                }
-                foreach (long speed in uploadSpeedQueue)
-                {
-                    double y = (speedGraphLimit - speed) * 100.0 / speedGraphLimit;
-                    if (y < 0)
-                    {
-                        y = 0;
-                    }
-                    else if (y > 100)
-                    {
-                        y = 100;
-                    }
-                    collection.Add(new Point(x, y));
-                    if (speed > max)
-                    {
-                        max = speed;
-                    }
-                    x += 1;
-                }
-                if (max < 1024)
-                {
-                    max = 1024;
-                }
-                uploadSpeedMax = max;
-                collection.Add(new Point(x - 1, 100));
-                return collection;
+                maxValue = 1024;
             }
+
+            UploadGeometry = GetChart(uploadSpeedQueue, maxValue);
+            DownloadGeometry = GetChart(downloadSpeedQueue, maxValue);
+            speedGraphLimit = (long)maxValue;
+
+            Notify(() => UploadGeometry);
+            Notify(() => DownloadGeometry);
+            Notify(() => SpeedLimit);
         }
-        public PointCollection DownloadPointGraph
+        public StreamGeometry GetChart(IEnumerable<long> valueList, double maxValue)
         {
-            get
+            double max = maxValue;
+            double min = 0;
+            double range = maxValue;
+
+            StreamGeometry geometry = new StreamGeometry();
+            using (StreamGeometryContext context = geometry.Open())
             {
-                PointCollection collection = new PointCollection
+                context.BeginFigure(new Point(0, range), true, true);
+                int index = 0;
+                foreach (double value in valueList)
                 {
-                    new Point(0, 100),
-                    new Point(0, 0),
-                    new Point(0, 100)
-                };
-                int x = 0;
-                long max = uploadSpeedMax > downloadSpeedMax ? uploadSpeedMax : downloadSpeedMax;
-
-                while (speedGraphLimit < max)
-                {
-                    speedGraphLimit *= 2;
-                }
-                while (speedGraphLimit > max * 2)
-                {
-                    speedGraphLimit /= 2;
-                }
-
-                max = 0;
-
-                for (int i = 0; i < 120 - downloadSpeedQueue.Count(); i += 1)
-                {
-                    collection.Add(new Point(x, 100));
-                    x += 1;
-                }
-                foreach (long speed in downloadSpeedQueue)
-                {
-                    double y = (speedGraphLimit - speed) * 100.0 / speedGraphLimit;
-                    if (y < 0)
+                    if (value > max)
                     {
-                        y = 0;
+                        context.LineTo(new Point(index, min), true, true);
                     }
-                    else if (y>100)
+                    else if (value < min)
                     {
-                        y = 100;
+                        context.LineTo(new Point(index, max), true, true);
                     }
-                    collection.Add(new Point(x, y));
-                    if (speed > max)
+                    else
                     {
-                        max = speed;
+                        context.LineTo(new Point(index, range - value), true, true);
                     }
-                    x += 1;
+                    index += 1;
                 }
-                if (max < 1024)
-                {
-                    max = 1024;
-                }
-                downloadSpeedMax = max;
-                collection.Add(new Point(x - 1, 100));
-                return collection;
+                context.LineTo(new Point(119, range), true, true);
+                context.LineTo(new Point(119, max), false, false);
+                context.LineTo(new Point(119, min), false, false);
+                context.LineTo(new Point(119, range), false, false);
+                context.LineTo(new Point(0, range), true, true);
+                context.LineTo(new Point(0, max), false, false);
+                context.LineTo(new Point(0, min), false, false);
+                context.LineTo(new Point(0, range), false, false);
             }
+            geometry.Freeze();
+            return geometry;
         }
+        public StreamGeometry DownloadGeometry { get; private set; }
+        public StreamGeometry UploadGeometry { get; private set; }
 
         public string SpeedLimit => NetworkAdapter.GetSpeedString(speedGraphLimit);
 
@@ -263,8 +220,8 @@ namespace LanMonitor
 
         public NetworkManager()
         {
-            uploadSpeedQueue = new Queue<long>();
-            downloadSpeedQueue = new Queue<long>();
+            uploadSpeedQueue = new Queue<long>(Enumerable.Repeat<long>(0, 120));
+            downloadSpeedQueue = new Queue<long>(Enumerable.Repeat<long>(0, 120));
 
             NetworkCollection = new ObservableCollection<NetworkModelView>();
 
@@ -460,9 +417,8 @@ namespace LanMonitor
 
                     Notify(() => GlobalUploadSpeed);
                     Notify(() => GlobalDownloadSpeed);
-                    Notify(() => UploadPointGraph);
-                    Notify(() => DownloadPointGraph);
-                    Notify(() => SpeedLimit);
+
+                    RefreshChart();
                 }));
 
                 Thread.Sleep(1000);
