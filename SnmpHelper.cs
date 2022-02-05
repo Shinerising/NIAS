@@ -7,6 +7,7 @@ using Lextm.SharpSnmpLib.Messaging;
 using System.Net;
 using Lextm.SharpSnmpLib.Security;
 using Lextm.SharpSnmpLib;
+using System.Numerics;
 
 namespace LanMonitor
 {
@@ -27,6 +28,31 @@ namespace LanMonitor
     {
         public string Name { get; set; }
         public List<string> IPAddress { get; set; }
+        public class LineVector
+        {
+            public double Left { get; set; }
+            public double Top { get; set; }
+            public double Length { get; set; }
+            public DeviceState State { get; set; }
+        }
+        public List<LineVector> VectorList { get; set; }
+        public static List<LineVector> RefreshVector(int count)
+        {
+            if (count == 0)
+            {
+                return null;
+            }
+            double width = 60;
+            double height0 = 92;
+            double height1 = 38;
+            return Enumerable.Range(0, count).Select(item => new LineVector()
+            {
+                Left = width / -2 + width / count * (item + 0.5),
+                Top = 6 + height1 * item,
+                Length = height0 * item - height1 * item - 137,
+                State = DeviceState.Online
+            }).ToList();
+        }
     }
     public enum DeviceState
     {
@@ -114,22 +140,26 @@ namespace LanMonitor
             new LanHost()
             {
                 Name = "Host01",
-                IPAddress = new List<string>() { "172.16.24.90","172.16.34.90" }
+                IPAddress = new List<string>() { "172.16.24.90", "172.16.34.90" },
+                VectorList = LanHost.RefreshVector(2)
             },
             new LanHost()
             {
                 Name = "Host02",
-                IPAddress = new List<string>() { "172.16.24.91","172.16.34.91" }
+                IPAddress = new List<string>() { "172.16.24.91", "172.16.34.91" },
+                VectorList = LanHost.RefreshVector(2)
             },
             new LanHost()
             {
                 Name = "Host03",
-                IPAddress = new List<string>() { "172.16.24.92","172.16.34.92" }
+                IPAddress = new List<string>() { "172.16.24.92", "172.16.34.192" },
+                VectorList = LanHost.RefreshVector(2)
             },
             new LanHost()
             {
                 Name = "Host04",
-                IPAddress = new List<string>() { "172.16.24.93","172.16.34.93" }
+                IPAddress = new List<string>() { "172.16.24.93", "172.16.34.93" },
+                VectorList = LanHost.RefreshVector(2)
             }
         };
     }

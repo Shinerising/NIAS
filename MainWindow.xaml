@@ -674,9 +674,14 @@
                                                 <DataTemplate>
                                                     <Border Margin="4,4,4,8" Padding="4">
                                                         <Grid Height="72">
-                                                            <Border Margin="32,44,-96,0" Background="#666" Height="2" CornerRadius="2"/>
+                                                            <Border x:Name="Border" Margin="32,44,-96,0" Background="#666" Height="2" CornerRadius="2"/>
                                                         </Grid>
                                                     </Border>
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding State}" Value="Online">
+                                                            <Setter TargetName="Border" Property="Background" Value="#34D345"/>
+                                                        </DataTrigger>
+                                                    </DataTemplate.Triggers>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -701,11 +706,16 @@
                                                                     </Style>
                                                                 </Image.Style>
                                                             </Image>
-                                                            <Border VerticalAlignment="Bottom" Padding="4" Background="#FFF" BorderBrush="#333" BorderThickness="1" CornerRadius="2">
-                                                                <TextBlock Text="{Binding Address}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
+                                                            <Border x:Name="Border" VerticalAlignment="Bottom" Padding="4" Background="#FFF" BorderBrush="#333" BorderThickness="1" CornerRadius="2">
+                                                                <TextBlock Text="{Binding Address}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16" Height="16"/>
                                                             </Border>
                                                         </Grid>
                                                     </Border>
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding State}" Value="Online">
+                                                            <Setter TargetName="Border" Property="BorderBrush" Value="#34D345"/>
+                                                        </DataTrigger>
+                                                    </DataTemplate.Triggers>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -724,16 +734,35 @@
                                                                 <RowDefinition Height="Auto"/>
                                                             </Grid.RowDefinitions>
                                                             <Grid Grid.Row="0">
-                                                                <Canvas>
-                                                                    <Canvas Canvas.Left="30" Canvas.Top="6">
-                                                                        <Line X1="0" Y1="0" X2="0" Y2="-136" Stroke="#333" StrokeThickness="2" StrokeEndLineCap="Round"/>
-                                                                        <Line Canvas.Top="-136" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                    </Canvas>
-                                                                    <Canvas Canvas.Left="60" Canvas.Top="42">
-                                                                        <Line X1="0" Y1="0" X2="0" Y2="-80" Stroke="#333" StrokeThickness="2" StrokeEndLineCap="Round"/>
-                                                                        <Line Canvas.Top="-80" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                    </Canvas>
-                                                                </Canvas>
+                                                                <ItemsControl ItemsSource="{Binding VectorList}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <Canvas Width="0"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemContainerStyle>
+                                                                        <Style TargetType="ContentPresenter">
+                                                                            <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                                                                            <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                                                                        </Style>
+                                                                    </ItemsControl.ItemContainerStyle>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Canvas>
+                                                                                <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Length}" Stroke="#333" StrokeThickness="2" StrokeEndLineCap="Round"/>
+                                                                                <Line x:Name="Dot1" Canvas.Top="{Binding Length}" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                <Line x:Name="Dot2" Canvas.Top="0" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                            </Canvas>
+                                                                            <DataTemplate.Triggers>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
+                                                                                    <Setter TargetName="Dot1" Property="Stroke" Value="#34D345"/>
+                                                                                    <Setter TargetName="Dot2" Property="Stroke" Value="#34D345"/>
+                                                                                </DataTrigger>
+                                                                            </DataTemplate.Triggers>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
                                                                 <ItemsControl ItemsSource="{Binding IPAddress}">
                                                                     <ItemsControl.ItemsPanel>
                                                                         <ItemsPanelTemplate>
@@ -742,8 +771,8 @@
                                                                     </ItemsControl.ItemsPanel>
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
-                                                                            <Border Margin="0,6" Padding="4" Background="#FFF" BorderBrush="#333" BorderThickness="1" CornerRadius="2">
-                                                                                <TextBlock Text="{Binding}"/>
+                                                                            <Border Margin="0,6" Padding="4" Background="#FFF" BorderBrush="#34D345" BorderThickness="1" CornerRadius="2">
+                                                                                <TextBlock Text="{Binding}" Height="15"/>
                                                                             </Border>
                                                                         </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
