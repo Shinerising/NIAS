@@ -83,6 +83,23 @@ namespace LanMonitor
                 ToolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(), Environment.NewLine, "TCP", "10.211.55.3:52940", "40.90.189.152:443")
             }
         };
+
+
+        public ObservableCollection<ToastMessage> ToastCollection { get; set; } = new ObservableCollection<ToastMessage>
+        {
+            new ToastMessage()
+            {
+                Title = "检测到网络故障",
+                Content = "某个设备的网络通信已断开",
+                Time = DateTime.Now
+            },
+            new ToastMessage()
+            {
+                Title = "检测到网络故障",
+                Content = "某个设备的网络通信已断开",
+                Time = DateTime.Now
+            }
+        };
     }
 
     public class NetworkManager : CustomINotifyPropertyChanged, IDisposable
@@ -427,6 +444,15 @@ namespace LanMonitor
                 Thread.Sleep(1000);
             }
         }
+
+        public ObservableCollection<ToastMessage> ToastCollection { get; set; }
+    }
+
+    public class ToastMessage
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public DateTime Time { get; set; }
     }
 
     public class LocalNetworkManager : IDisposable
