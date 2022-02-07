@@ -90,13 +90,13 @@ namespace LanMonitor
             new ToastMessage()
             {
                 Title = "检测到网络故障",
-                Content = "某个设备的网络通信已断开",
+                Content = "某个设备的网络通信已断开，请检查设备连接状态！",
                 Time = DateTime.Now
             },
             new ToastMessage()
             {
                 Title = "检测到网络故障",
-                Content = "某个设备的网络通信已断开",
+                Content = "某个设备的网络通信已断开，请检查设备连接状态！",
                 Time = DateTime.Now
             }
         };
@@ -445,7 +445,25 @@ namespace LanMonitor
             }
         }
 
-        public ObservableCollection<ToastMessage> ToastCollection { get; set; }
+        public ObservableCollection<ToastMessage> ToastCollection { get; set; } = new ObservableCollection<ToastMessage>();
+
+        public void AddToast(string title, string message)
+        {
+            while (ToastCollection.Count > 3)
+            {
+                ToastCollection.RemoveAt(0);
+            }
+            ToastCollection.Add(new ToastMessage(title, message));
+        }
+
+        public void RemoveToast(ToastMessage toast)
+        {
+            if (toast == null)
+            {
+                return;
+            }
+            ToastCollection.Remove(toast);
+        }
     }
 
     public class ToastMessage
@@ -453,6 +471,16 @@ namespace LanMonitor
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime Time { get; set; }
+        public ToastMessage()
+        {
+
+        }
+        public ToastMessage(string title, string message)
+        {
+            Time = DateTime.Now;
+            Title = title;
+            Content = message;
+        }
     }
 
     public class LocalNetworkManager : IDisposable

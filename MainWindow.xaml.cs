@@ -27,6 +27,8 @@ namespace LanMonitor
 
             SnmpHelper.Initialize();
             SnmpHelper.FetchData();
+
+            networkManager.AddToast("系统提示", "程序已启动！");
         }
 
         private void WindowMinimize_Click(object sender, RoutedEventArgs e)
@@ -156,5 +158,9 @@ namespace LanMonitor
 
         }
 
+        private void CloseToast_Click(object sender, RoutedEventArgs e)
+        {
+            networkManager.RemoveToast(((FrameworkElement)sender).DataContext as ToastMessage);
+        }
     }
 }

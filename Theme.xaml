@@ -74,7 +74,7 @@
                 <ControlTemplate TargetType="ContentControl">
                     <Border Background="White" CornerRadius="8" Margin="4">
                         <Border.Effect>
-                            <DropShadowEffect ShadowDepth="1" BlurRadius="4" Opacity=".2"/>
+                            <DropShadowEffect ShadowDepth="1" BlurRadius="4" Opacity=".2" Direction="-90"/>
                         </Border.Effect>
                         <ContentPresenter/>
                     </Border>
