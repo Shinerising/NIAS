@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LanMonitor"
         mc:Ignorable="d"
-        Title="{StaticResource Title}" Height="640" Width="960" MinWidth="640" MinHeight="360"
+        Title="{StaticResource Title}" Height="800" Width="1280" MinWidth="640" MinHeight="360"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}" Loaded="Window_Loaded">
     <Window.Resources>
         <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
@@ -526,7 +526,7 @@
                                 <TextBlock Text="交换机接口"/>
                                 <TextBlock Text=""/>
                             </StackPanel>
-                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
@@ -609,7 +609,7 @@
                                 <TextBlock Text="交换机设备"/>
                                 <TextBlock Text=""/>
                             </StackPanel>
-                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
@@ -646,7 +646,7 @@
                                                         </ItemsControl.ItemsPanel>
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
-                                                                <Border Margin="3" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="4,2">
+                                                                <Border Margin="3" Height="26" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="4,0">
                                                                     <Grid>
                                                                         <Grid.ColumnDefinitions>
                                                                             <ColumnDefinition Width="Auto"/>
@@ -691,7 +691,7 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-                                        <ItemsControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
+                                        <ItemsControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Border Margin="4,4,4,8" Padding="4">
@@ -707,7 +707,7 @@
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
-                                        <ItemsControl Grid.Column="0" Grid.Row="0" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:SnmpClient.PreviewSnmpClient}">
+                                        <ItemsControl Grid.Column="0" Grid.Row="0" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Border Margin="4,4,4,8" Padding="4">
@@ -741,7 +741,7 @@
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
-                                        <ItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding}" DataContext="{x:Static local:SnmpClient.LanHostList}">
+                                        <ItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding LanHostList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <StackPanel Orientation="Horizontal"/>
@@ -821,7 +821,7 @@
                 </Grid>
             </Grid>
             <Grid Grid.Row="1" Grid.RowSpan="2" Margin="12">
-                <ItemsControl ItemsSource="{Binding ToastCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                <ItemsControl HorizontalAlignment="Center" VerticalAlignment="Top" ItemsSource="{Binding ToastCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center"/>

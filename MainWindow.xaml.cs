@@ -84,14 +84,8 @@ namespace LanMonitor
             DataContext = networkManager;
 
             InitializeComponent();
-            //ContentRendered += Window_ContentRendered;
 
             networkManager.Start();
-
-            SnmpHelper.Initialize();
-            SnmpHelper.FetchData();
-
-            networkManager.AddToast("系统提示", "程序已启动！");
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

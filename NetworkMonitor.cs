@@ -18,6 +18,8 @@ using System.Management;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace LanMonitor
 {
@@ -49,7 +51,7 @@ namespace LanMonitor
     public class NetworkManager_Test
     {
         public static NetworkManager_Test Instance = new NetworkManager_Test();
-        public static ObservableCollection<NetworkModelView> NetworkCollection { get; set; } = new ObservableCollection<NetworkModelView> {
+        public ObservableCollection<NetworkModelView> NetworkCollection => new ObservableCollection<NetworkModelView> {
             new NetworkModelView()
             {
                 Name = "测试名称",
@@ -61,7 +63,7 @@ namespace LanMonitor
             }
         };
 
-        public ObservableCollection<LANComputerModelView> ComputerCollection { get; set; } = new ObservableCollection<LANComputerModelView>
+        public ObservableCollection<LANComputerModelView> ComputerCollection => new ObservableCollection<LANComputerModelView>
         {
             new LANComputerModelView()
             {
@@ -72,7 +74,7 @@ namespace LanMonitor
                 ToolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(), Environment.NewLine, "LAN Computer", "192.168.1.45", "365ms")
             }
         };
-        public ObservableCollection<PortModelView> PortCollection { get; set; } = new ObservableCollection<PortModelView>
+        public ObservableCollection<PortModelView> PortCollection => new ObservableCollection<PortModelView>
         {
             new PortModelView()
             {
@@ -84,8 +86,7 @@ namespace LanMonitor
             }
         };
 
-
-        public ObservableCollection<ToastMessage> ToastCollection { get; set; } = new ObservableCollection<ToastMessage>
+        public ObservableCollection<ToastMessage> ToastCollection => new ObservableCollection<ToastMessage>
         {
             new ToastMessage()
             {
@@ -100,6 +101,34 @@ namespace LanMonitor
                 Time = DateTime.Now
             }
         };
+
+        public List<SwitchDeviceModelView> SwitchDeviceList => new List<string>() { "172.16.24.1", "172.16.24.188" }.Select(item => SwitchDeviceModelView.GetPreviewInstance(item)).ToList();
+        public List<LanHostModelView> LanHostList => new List<LanHostModelView>() {
+            new LanHostModelView()
+            {
+                Name = "Host01",
+                IPAddress = new List<string>() { "172.16.24.90", "172.16.34.90" },
+                VectorList = LanHostModelView.RefreshVector(2)
+            },
+            new LanHostModelView()
+            {
+                Name = "Host02",
+                IPAddress = new List<string>() { "172.16.24.91", "172.16.34.91" },
+                VectorList = LanHostModelView.RefreshVector(2)
+            },
+            new LanHostModelView()
+            {
+                Name = "Host03",
+                IPAddress = new List<string>() { "172.16.24.92", "172.16.34.192" },
+                VectorList = LanHostModelView.RefreshVector(2)
+            },
+            new LanHostModelView()
+            {
+                Name = "Host04",
+                IPAddress = new List<string>() { "172.16.24.93", "172.16.34.93" },
+                VectorList = LanHostModelView.RefreshVector(2)
+            }
+        };
     }
 
     public class NetworkManager : CustomINotifyPropertyChanged, IDisposable
@@ -107,6 +136,8 @@ namespace LanMonitor
         public ObservableCollection<NetworkModelView> NetworkCollection { get; set; }
         public ObservableCollection<PortModelView> PortCollection { get; set; }
         public ObservableCollection<LANComputerModelView> ComputerCollection { get; set; }
+        public List<SwitchDeviceModelView> SwitchDeviceList { get; set; }
+        public List<LanHostModelView> LanHostList { get; set; }
 
         private readonly NetworkMonitor networkMoniter;
         private readonly LocalNetworkManager lanMonitor;
@@ -257,16 +288,14 @@ namespace LanMonitor
             downloadSpeedQueue = new Queue<long>(Enumerable.Repeat<long>(0, 120));
 
             NetworkCollection = new ObservableCollection<NetworkModelView>();
-
             ComputerCollection = new ObservableCollection<LANComputerModelView>();
-
             PortCollection = new ObservableCollection<PortModelView>();
 
             networkMoniter = new NetworkMonitor();
-
             lanMonitor = new LocalNetworkManager();
-
             portMonitor = new PortMonitor();
+
+            InitializeSwitchData();
         }
 
         public void Start()
@@ -277,6 +306,7 @@ namespace LanMonitor
             Task.Factory.StartNew(LocalComputerMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(ActivePortMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(NetworkStatusMonitoring, TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(SwitchMonitoring, TaskCreationOptions.LongRunning);
         }
 
         public void Dispose()
@@ -294,6 +324,21 @@ namespace LanMonitor
                     lanMonitor.Dispose();
                 }
             }
+        }
+
+        private void InitializeSwitchData()
+        {
+            string name = ConfigurationManager.AppSettings.Get("switch_username");
+            string auth = ConfigurationManager.AppSettings.Get("switch_auth");
+            string priv = ConfigurationManager.AppSettings.Get("switch_priv");
+
+            NameValueCollection switchList = (NameValueCollection)ConfigurationManager.GetSection("switchList");
+            NameValueCollection deviceList = (NameValueCollection)ConfigurationManager.GetSection("deviceList");
+
+            SwitchDeviceList = switchList.AllKeys.Select(item => new SwitchDeviceModelView(item, switchList[item])).ToList();
+            LanHostList = deviceList.AllKeys.Select(item => new LanHostModelView(item, deviceList[item], 2)).ToList();
+
+            SnmpHelper.Initialize(name, auth, priv);
         }
 
         private void NetworkStatusMonitoring()
@@ -453,6 +498,14 @@ namespace LanMonitor
                     RefreshChart();
                 }));
 
+                Thread.Sleep(1000);
+            }
+        }
+
+        private void SwitchMonitoring()
+        {
+            while (true)
+            {
                 Thread.Sleep(1000);
             }
         }
@@ -885,258 +938,6 @@ namespace LanMonitor
         private static string GetLetter(string input)
         {
             return new string(input.Where(c => char.IsLetterOrDigit(c)).ToArray()).ToLower();
-        }
-    }
-
-    public class LANComputerModelView : CustomINotifyPropertyChanged
-    {
-        public string Name { get; set; }
-        public string IPAddress { get; set; }
-        public string Type { get; set; }
-        public string MacAddress { get; set; }
-        public string Status { get; set; }
-        public string UID { get; set; }
-        public string Latency { get; set; }
-        public string ToolTip { get; set; }
-
-        public LANComputerModelView()
-        {
-
-        }
-
-        public LANComputerModelView(LocalNetworkComputer computer)
-        {
-            Name = computer.Name;
-            Status = computer.Status.ToString();
-            IPAddress = computer.IPAddress;
-            UID = computer.UID;
-            Latency = computer.Latency == -1 ? "???" : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
-
-            ToolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(),
-                Environment.NewLine, Name, IPAddress, UID);
-        }
-
-        public void Resolve(LocalNetworkComputer computer)
-        {
-            string name = computer.Name;
-            string status = computer.Status.ToString();
-            string ipAddress = computer.IPAddress;
-            string uid = computer.UID;
-            string latency = computer.Latency == -1 ? "???" : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
-
-            string toolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(),
-                Environment.NewLine, name, ipAddress, uid);
-
-            if (Name != name)
-            {
-                Name = name;
-                Notify(new { Name });
-            }
-            if (Status != status)
-            {
-                Status = status;
-                Notify(new { Status });
-            }
-            if (IPAddress != ipAddress)
-            {
-                IPAddress = ipAddress;
-                Notify(new { IPAddress });
-            }
-            if (UID != uid)
-            {
-                UID = uid;
-                Notify(new { UID });
-            }
-            if (Latency != latency)
-            {
-                Latency = latency;
-                Notify(new { Latency });
-            }
-            if (ToolTip != toolTip)
-            {
-                ToolTip = toolTip;
-                Notify(new { ToolTip });
-            }
-        }
-    }
-
-    public class NetworkModelView : CustomINotifyPropertyChanged
-    {
-        public string Name { get; set; }
-        public string IPAddress { get; set; }
-        public string Type { get; set; }
-        public string MacAddress { get; set; }
-        public string Status { get; set; }
-        public string Speed { get; set; }
-        public string ToolTip { get; set; }
-        public string DownloadSpeed { get; set; }
-        public string UploadSpeed { get; set; }
-
-        public NetworkModelView()
-        {
-
-        }
-
-        public NetworkModelView(NetworkAdapter adapter)
-        {
-            Name = adapter.Name;
-            Status = adapter.Status.ToString();
-            Type = adapter.Type.ToString();
-            DownloadSpeed = adapter.DownloadSpeedString;
-            UploadSpeed = adapter.UploadSpeedString;
-
-            ToolTip = string.Format(Application.Current.FindResource("NetworkToolTip").ToString(),
-                Environment.NewLine, adapter.Description, adapter.IPAddress, adapter.MACAddress, adapter.MaxSpeed);
-        }
-
-        public void Resolve(NetworkAdapter adapter)
-        {
-            string name = adapter.Name;
-            string status = adapter.Status.ToString();
-            string type = adapter.Type.ToString();
-            string downloadSpeed = adapter.DownloadSpeedString;
-            string uploadSpeed = adapter.UploadSpeedString;
-            string toolTip = string.Format(Application.Current.FindResource("NetworkToolTip").ToString(),
-                Environment.NewLine, adapter.Description, adapter.IPAddress, adapter.MACAddress, adapter.MaxSpeed);
-
-            if (Name != name)
-            {
-                Name = name;
-                Notify(new { Name });
-            }
-            if (Status != status)
-            {
-                Status = status;
-                Notify(new { Status });
-            }
-            if (Type != type)
-            {
-                Type = type;
-                Notify(new { Type });
-            }
-            if (DownloadSpeed != downloadSpeed)
-            {
-                DownloadSpeed = downloadSpeed;
-                Notify(new { DownloadSpeed });
-            }
-            if (UploadSpeed != uploadSpeed)
-            {
-                UploadSpeed = uploadSpeed;
-                Notify(new { UploadSpeed });
-            }
-            if (ToolTip != toolTip)
-            {
-                ToolTip = toolTip;
-                Notify(new { ToolTip });
-            }
-        }
-    }
-
-    public class PortModelView : CustomINotifyPropertyChanged
-    {
-        public string Type { get; set; }
-        public string LocalEndPoint { get; set; }
-        public string RemoteEndPoint { get; set; }
-
-        public int PID { get; set; }
-        public string ProcessName { get; set; }
-
-        public string State { get; set; }
-        public string ToolTip { get; set; }
-
-        public string StateText
-        {
-            get
-            {
-                switch (State)
-                {
-                    case "Established":
-                        return Application.Current.FindResource("Port_Established").ToString();
-                    case "Listen":
-                        return Application.Current.FindResource("Port_Listening").ToString();
-                    case "CloseWait":
-                        return Application.Current.FindResource("Port_CloseWait").ToString();
-                    case "TimeWait":
-                        return Application.Current.FindResource("Port_TimeWait").ToString();
-                    case "SynSent":
-                        return Application.Current.FindResource("Port_SynSent").ToString();
-                    case "":
-                    default:
-                        return Application.Current.FindResource("Port_Default").ToString();
-                }
-            }
-        }
-
-        public PortModelView()
-        {
-
-        }
-        public PortModelView(ActivePort port)
-        {
-            Type = port.Type;
-            State = port.State;
-            LocalEndPoint = port.LocalEndPoint;
-            RemoteEndPoint = port.RemoteEndPoint;
-
-            ToolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(),
-                Environment.NewLine, Type, LocalEndPoint, RemoteEndPoint);
-        }
-
-        public void Resolve(ActivePort port)
-        {
-            string type = port.Type;
-            string state = port.State;
-            if (state != "" && state != "Listen" && state != "CloseWait" && state != "TimeWait" && state != "Established")
-            {
-            }
-            string localEndPoint = port.LocalEndPoint;
-            string remoteEndPoint = port.RemoteEndPoint;
-            int pid = port.PID;
-            string processName = port.ProcessName;
-
-            string toolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(),
-                Environment.NewLine, type, localEndPoint, remoteEndPoint);
-
-            if (Type != type)
-            {
-                Type = type;
-                Notify(new { Type });
-            }
-            if (State != state)
-            {
-                State = state;
-                Notify(new { State, StateText });
-            }
-            if (LocalEndPoint != localEndPoint)
-            {
-                LocalEndPoint = localEndPoint;
-                Notify(new { LocalEndPoint });
-            }
-            if (RemoteEndPoint != remoteEndPoint)
-            {
-                RemoteEndPoint = remoteEndPoint;
-                Notify(new { RemoteEndPoint });
-            }
-            if (PID != pid)
-            {
-                PID = pid;
-                Notify(new { PID });
-            }
-            if (ProcessName != processName)
-            {
-                ProcessName = processName;
-                Notify(new { ProcessName });
-            }
-            if (Type != type)
-            {
-                Type = type;
-                Notify(new { Type });
-            }
-            if (ToolTip != toolTip)
-            {
-                ToolTip = toolTip;
-                Notify(new { ToolTip });
-            }
         }
     }
 }
