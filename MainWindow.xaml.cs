@@ -114,23 +114,6 @@ namespace LanMonitor
             Close();
         }
 
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void Window_Activated(object sender, EventArgs e)
-        {
-        }
-
-        private void Window_Deactivated(object sender, EventArgs e)
-        {
-        }
-
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-        }
-
-
         public void Dispose()
         {
             Dispose(true);
