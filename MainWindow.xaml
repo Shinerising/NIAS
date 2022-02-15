@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:LanMonitor"
         mc:Ignorable="d"
         Title="{StaticResource Title}" Height="640" Width="960" MinWidth="640" MinHeight="360"
-        MaxHeight="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenHeightKey}}"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}" Loaded="Window_Loaded">
     <Window.Resources>
         <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
@@ -125,16 +124,21 @@
         </Style>
     </Window.Resources>
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="32" ResizeBorderThickness="8" UseAeroCaptionButtons="False" CornerRadius="0"/>
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="8" UseAeroCaptionButtons="False" CornerRadius="8"/>
     </WindowChrome.WindowChrome>
-    <Border BorderThickness="1" Margin="6">
+    <Border>
         <Border.Style>
             <Style TargetType="Border">
+                <Setter Property="UseLayoutRounding" Value="True"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
                 <Setter Property="Background" Value="{StaticResource Color_Window}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource Color_Border}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="Margin" Value="8"/>
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect ShadowDepth="1" Direction="270" BlurRadius="8" Opacity=".3"/>
+                        <DropShadowEffect ShadowDepth="1" Direction="270" BlurRadius="6" Opacity=".4"/>
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>
@@ -146,6 +150,14 @@
                                 <DropShadowEffect ShadowDepth="1" Direction="270" BlurRadius="4" Opacity=".2"/>
                             </Setter.Value>
                         </Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized">
+                        <Setter Property="Background" Value="{StaticResource Color_WindowLight}"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource Color_BorderLight}"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Margin" Value="6"/>
+                        <Setter Property="CornerRadius" Value="0"/>
+                        <Setter Property="Effect" Value="{x:Null}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -190,7 +202,17 @@
                                 </Path.Style>
                             </Path>
                         </Button>
-                        <Button Style="{StaticResource Button_Close}" Click="WindowClose_Click">
+                        <Button Click="WindowClose_Click">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource Button_Close}">
+                                    <Setter Property="Border.CornerRadius" Value="0,8,0,0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized">
+                                            <Setter Property="Border.CornerRadius" Value="0,0,0,0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <Path Data="M0 0 L10 10 M10 0 L0 10" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6"/>
                         </Button>
                     </StackPanel>
@@ -237,8 +259,8 @@
                 <StackPanel Grid.Column="1" Height="96" Margin="16,0,16,0" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <TextBlock Text="{Binding ComputerName, FallbackValue=ComputerName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_ComputerName}" FontSize="14" Height="20" FontWeight="Bold" Margin="0,0,0,4"/>
                     <TextBlock Text="{Binding SystemName, FallbackValue=SystemName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_SystemName}" Height="20"/>
+                    <TextBlock Text="{Binding Manufacturer, FallbackValue=Manufacturer}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_Manufacturer}" Height="20"/>
                     <TextBlock Text="{Binding Model, FallbackValue=Model}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_Model}" Height="20"/>
-                    <TextBlock Text="{Binding WorkGroup, FallbackValue=WorkGroup}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_WorkGroup}" Height="20"/>
                 </StackPanel>
                 <Grid Grid.Column="2">
                     <Border Margin="0,0,0,24" SnapsToDevicePixels="True" ToolTip="{StaticResource Tip_Graph}" Background="#FFF" ClipToBounds="True">
@@ -811,7 +833,7 @@
                                 <Border.RenderTransform>
                                     <TranslateTransform/>
                                 </Border.RenderTransform>
-                                <Border Background="#FFF" CornerRadius="8" Padding="6" Margin="12,0,12,12" Width="360">
+                                <Border Background="#FFF" CornerRadius="8" Padding="8" Margin="12,0,12,12" Width="360">
                                     <Border.Effect>
                                         <DropShadowEffect ShadowDepth="4" BlurRadius="12" Opacity=".4" Direction="-90"/>
                                     </Border.Effect>
@@ -828,7 +850,12 @@
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.ColumnSpan="2" Text="{Binding Title}" VerticalAlignment="Center" FontSize="12.5" Margin="6,0,0,0"/>
                                         <Border Grid.Column="2">
-                                            <Button Style="{StaticResource Button_Close}" Width="24" Height="24" Click="CloseToast_Click">
+                                            <Button Width="24" Height="24" Click="CloseToast_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource Button_Close}">
+                                                        <Setter Property="Border.CornerRadius" Value="4"/>
+                                                    </Style>
+                                                </Button.Style>
                                                 <Path Data="M0 0 L10 10 M10 0 L0 10" StrokeThickness="1" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10"/>
                                             </Button>
                                         </Border>

@@ -32,7 +32,7 @@
                        BorderThickness="0"
                        Padding="{TemplateBinding Padding}"
                        BorderBrush="{TemplateBinding BorderBrush}"
-                       CornerRadius="0"
+                       CornerRadius="{TemplateBinding Border.CornerRadius}"
                        Background="{TemplateBinding Background}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Name="content"/>
                     </Border>

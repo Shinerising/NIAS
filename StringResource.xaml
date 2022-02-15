@@ -25,6 +25,7 @@
     <system:String x:Key="Tip_DomainName">Domain Name</system:String>
     <system:String x:Key="Tip_WorkGroup">Work Group Name</system:String>
     <system:String x:Key="Tip_Model">Device Model</system:String>
+    <system:String x:Key="Tip_Manufacturer">Manufacturer</system:String>
     <system:String x:Key="Tip_Graph">Network Graph (2min)</system:String>
     <system:String x:Key="Tip_User">User Name</system:String>
     <system:String x:Key="Tip_Port">Port State</system:String>

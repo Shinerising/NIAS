@@ -222,6 +222,18 @@ namespace LanMonitor
                 return name != null ? name.ToString() : "Unknown";
             }
         }
+        public string Manufacturer
+        {
+            get
+            {
+                object name;
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Manufacturer FROM Win32_ComputerSystem"))
+                {
+                    name = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Manufacturer")).FirstOrDefault();
+                }
+                return name != null ? name.ToString() : "Unknown";
+            }
+        }
 
         public string Model
         {
