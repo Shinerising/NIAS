@@ -506,6 +506,74 @@ namespace LanMonitor
         {
             while (true)
             {
+                foreach (SwitchDeviceModelView switchDevice in SwitchDeviceList)
+                {
+                    var report = SnmpHelper.GetReportMessage(switchDevice.EndPoint);
+                    if (report == null)
+                    {
+                        switchDevice.State = DeviceState.Offline;
+                        switchDevice.Refresh();
+                        continue;
+                    }
+                    switchDevice.State = DeviceState.Online;
+
+                    {
+                        var dict = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
+                        switchDevice.Information = dict?.FirstOrDefault().Value;
+                    }
+
+                    {
+                        var dict0 = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
+                        var dict1 = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
+                        var dict2 = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
+                        List<SwitchPort> list = new List<SwitchPort>();
+
+                        if (dict0 != null && dict1 != null && dict2 != null)
+                        {
+                            for (int i = 0; i < dict0.Count; i += 1)
+                            {
+                                if (dict0.ElementAt(i).Value == "6")
+                                {
+                                    string text = dict1.ElementAt(i).Value;
+                                    SwitchPort port = new SwitchPort
+                                    {
+                                        Name = text.Split('/').Last(),
+                                        Brief = text,
+                                        IsUp = dict2.ElementAt(i).Value == "1"
+                                    };
+                                    list.Add(port);
+                                }
+                            }
+
+                            for (int i = 0; i < list.Count; i += 1)
+                            {
+                                if (i >= 24)
+                                {
+                                    list[i].IsFiber = true;
+                                }
+                                else if (i % 2 == 0)
+                                {
+                                    var tmp = list[i];
+                                    list[i] = list[i + 1];
+                                    list[i + 1] = tmp;
+                                }
+                            }
+
+                        }
+
+                        switchDevice.RefreshPortList(list);
+                    }
+
+                    {
+                        var dict01 = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaPhysAddress);
+                        var dict02 = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
+                        List<SwitchHost> list = new List<SwitchHost>();
+
+                    }
+
+                    switchDevice.Refresh();
+                }
+
                 Thread.Sleep(1000);
             }
         }

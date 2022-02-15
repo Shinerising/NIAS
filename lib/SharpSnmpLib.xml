@@ -4755,7 +4755,11 @@
             Verifies if the provider is supported.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:Lextm.SharpSnmpLib.Security.DESPrivacyProvider.UseEcbEncryption" -->
+        <member name="P:Lextm.SharpSnmpLib.Security.DESPrivacyProvider.UseEcbEncryption">
+            <summary>
+            Flag to force using old ECB cipher mode encryption.
+            </summary>
+        </member>
         <member name="M:Lextm.SharpSnmpLib.Security.DESPrivacyProvider.#ctor(Lextm.SharpSnmpLib.OctetString,Lextm.SharpSnmpLib.Security.IAuthenticationProvider)">
             <summary>
             Initializes a new instance of the <see cref="T:Lextm.SharpSnmpLib.Security.DESPrivacyProvider"/> class.

@@ -577,7 +577,7 @@
                                                                         </Trigger>
                                                                         <DataTrigger Binding="{Binding IsFiber}" Value="True">
                                                                             <Setter TargetName="Port_Icon" Property="Margin" Value="12,16,-8,6"/>
-                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8L4.5 8"/>
+                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M2 2L2 14L16 14L16 2ZM4.5 14L4.5 10M7.5 14L7.5 10M10.5 14L10.5 10M13.5 14L13.5 10L4.5 10M4.5 14L4.5 16L13.5 16L13.5 14"/>
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding IsUp}" Value="True">
                                                                             <Setter TargetName="Port_Icon" Property="Stroke" Value="#32D359"/>
@@ -587,7 +587,7 @@
                                                             </ItemsControl.ItemTemplate>
                                                         </ItemsControl>
                                                         <StackPanel Grid.Column="1" Margin="16,4,4,4">
-                                                            <TextBlock TextAlignment="Right" Text="{Binding Information}" TextTrimming="CharacterEllipsis" LineHeight="16"/>
+                                                            <TextBlock TextAlignment="Right" Text="{Binding Information}" TextTrimming="CharacterEllipsis" LineHeight="16" ToolTip="{Binding Information}"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>

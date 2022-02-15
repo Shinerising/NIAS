@@ -81,6 +81,15 @@ namespace LanMonitor
             PortList = new List<SwitchPort>();
             HostList = new List<SwitchHost>();
         }
+        public void RefreshPortList(List<SwitchPort> list)
+        {
+            PortList = list;
+            Notify(new { PortList });
+        }
+        public void Refresh()
+        {
+            Notify(new { State, Information });
+        }
         public static SwitchDeviceModelView GetPreviewInstance(string ip)
         {
             SwitchDeviceModelView switchDevice = new SwitchDeviceModelView("test", ip);
