@@ -124,9 +124,9 @@
         </Style>
     </Window.Resources>
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="32" ResizeBorderThickness="8" UseAeroCaptionButtons="False" CornerRadius="8"/>
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="8" UseAeroCaptionButtons="True" GlassFrameThickness="-1" CornerRadius="8"/>
     </WindowChrome.WindowChrome>
-    <Border>
+    <Border x:Name="Border_Main">
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="UseLayoutRounding" Value="True"/>
@@ -184,7 +184,7 @@
                     </TextBlock.Style>
                 </TextBlock>
                 <Border HorizontalAlignment="Right">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True">
                         <Button Style="{StaticResource Button_Window}" Click="WindowMinimize_Click">
                             <Path Data="M0 5 L10 5" RenderOptions.EdgeMode="Aliased" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6"/>
                         </Button>
@@ -205,7 +205,7 @@
                         <Button Click="WindowClose_Click">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource Button_Close}">
-                                    <Setter Property="Border.CornerRadius" Value="0,8,0,0"/>
+                                    <Setter Property="Border.CornerRadius" Value="0,7,0,0"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized">
                                             <Setter Property="Border.CornerRadius" Value="0,0,0,0"/>

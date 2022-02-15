@@ -13,64 +13,7 @@ namespace LanMonitor
     /// </summary>
     public partial class MainWindow : Window, IDisposable
     {
-        private readonly NetworkManager networkManager;
-
-        public MainWindow()
-        {
-            networkManager = new NetworkManager();
-
-            DataContext = networkManager;
-
-            InitializeComponent();
-
-            networkManager.Start();
-
-            SnmpHelper.Initialize();
-            SnmpHelper.FetchData();
-
-            networkManager.AddToast("系统提示", "程序已启动！");
-        }
-
-        private void WindowMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-        private void WindowMaximize_Click(object sender, RoutedEventArgs e)
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-            }
-        }
-        private void WindowClose_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void Window_Activated(object sender, EventArgs e)
-        {
-        }
-
-        private void Window_Deactivated(object sender, EventArgs e)
-        {
-        }
-
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-        }
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            var source = PresentationSource.FromVisual(this);
-            ((HwndSource)source)?.AddHook(Hook);
-        }
+        #region Mouse Tilt Support
 
         const int WM_MOUSEHWHEEL = 0x020E;
 
@@ -130,6 +73,69 @@ namespace LanMonitor
             else
                 return FindParent<T>(parentObject);
         }
+        #endregion
+
+        private readonly NetworkManager networkManager;
+
+        public MainWindow()
+        {
+            networkManager = new NetworkManager();
+
+            DataContext = networkManager;
+
+            InitializeComponent();
+            //ContentRendered += Window_ContentRendered;
+
+            networkManager.Start();
+
+            SnmpHelper.Initialize();
+            SnmpHelper.FetchData();
+
+            networkManager.AddToast("系统提示", "程序已启动！");
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
+            source?.AddHook(Hook);
+        }
+
+        private void WindowMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+        private void WindowMaximize_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+            }
+            else
+            {
+                WindowState = WindowState.Maximized;
+            }
+        }
+        private void WindowClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+        }
+
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+        }
+
 
         public void Dispose()
         {
