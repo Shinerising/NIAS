@@ -1,13 +1,9 @@
-﻿using System;
+﻿using Lextm.SharpSnmpLib;
+using Lextm.SharpSnmpLib.Messaging;
+using Lextm.SharpSnmpLib.Security;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Lextm.SharpSnmpLib.Messaging;
 using System.Net;
-using Lextm.SharpSnmpLib.Security;
-using Lextm.SharpSnmpLib;
-using System.Numerics;
 
 namespace LanMonitor
 {
