@@ -11,12 +11,15 @@ namespace LanMonitor
         public string Brief { get; set; }
         public bool IsUp { get; set; }
         public bool IsFiber { get; set; }
+        public string Tip => Brief;
     }
     public class SwitchHost
     {
         public string HostName { get; set; }
         public string IPAddress { get; set; }
         public string MACAddress { get; set; }
+        public HostState State { get; set; }
+        public string Tip => MACAddress;
     }
     public class LanHostModelView
     {
@@ -64,6 +67,13 @@ namespace LanMonitor
         Online,
         Offline
     }
+    public enum HostState
+    {
+        Other = 1,
+        Invalid = 2,
+        Dynamic = 3,
+        Static = 4,
+    }
     public class SwitchDeviceModelView : CustomINotifyPropertyChanged
     {
         public string Name { get; set; }
@@ -85,6 +95,16 @@ namespace LanMonitor
         {
             PortList = list;
             Notify(new { PortList });
+        }
+        public void RefreshHostList(List<SwitchHost> list)
+        {
+            HostList = list;
+            Notify(new { HostList });
+        }
+        public void SetIdle()
+        {
+            RefreshPortList(null);
+            RefreshHostList(null);
         }
         public void Refresh()
         {

@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Configuration;
 using System.Collections.Specialized;
+using System.Text;
 
 namespace LanMonitor
 {
@@ -512,20 +513,21 @@ namespace LanMonitor
                     if (report == null)
                     {
                         switchDevice.State = DeviceState.Offline;
+                        switchDevice.SetIdle();
                         switchDevice.Refresh();
                         continue;
                     }
                     switchDevice.State = DeviceState.Online;
 
                     {
-                        var dict = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
+                        var dict = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
                         switchDevice.Information = dict?.FirstOrDefault().Value;
                     }
 
                     {
-                        var dict0 = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
-                        var dict1 = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
-                        var dict2 = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
+                        var dict0 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
+                        var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
+                        var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
                         List<SwitchPort> list = new List<SwitchPort>();
 
                         if (dict0 != null && dict1 != null && dict2 != null)
@@ -565,10 +567,26 @@ namespace LanMonitor
                     }
 
                     {
-                        var dict01 = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaPhysAddress);
-                        var dict02 = SnmpHelper.FetchData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
+                        var dict0 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaPhysAddress);
+                        var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
+                        var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaType);
                         List<SwitchHost> list = new List<SwitchHost>();
 
+                        if (dict0 != null && dict1 != null && dict2 != null)
+                        {
+                            for (int i = 0; i < dict0.Count; i += 1)
+                            {
+                                SwitchHost host = new SwitchHost
+                                {
+                                    MACAddress = BitConverter.ToString(dict0.ElementAt(i).Value, 2),
+                                    IPAddress = dict1.ElementAt(i).Value,
+                                    State = (HostState)int.Parse(dict2.ElementAt(i).Value)
+                                };
+                                list.Add(host);
+                            }
+                        }
+
+                        switchDevice.RefreshHostList(list);
                     }
 
                     switchDevice.Refresh();

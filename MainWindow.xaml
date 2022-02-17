@@ -568,7 +568,7 @@
                                                             </ItemsControl.ItemsPanel>
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <Border Margin="2" ToolTip="{Binding Brief}" Background="Transparent">
+                                                                    <Border Margin="2" ToolTip="{Binding Tip}" Background="Transparent">
                                                                         <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10L4.5 16"/>
                                                                     </Border>
                                                                     <DataTemplate.Triggers>
@@ -646,7 +646,7 @@
                                                         </ItemsControl.ItemsPanel>
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
-                                                                <Border Margin="3" Height="26" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="4,0">
+                                                                <Border x:Name="Border" Margin="3" Height="26" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="4,0" ToolTip="{Binding Tip}">
                                                                     <Grid>
                                                                         <Grid.ColumnDefinitions>
                                                                             <ColumnDefinition Width="Auto"/>
@@ -657,6 +657,15 @@
                                                                     </Grid>
                                                                 </Border>
                                                                 <DataTemplate.Triggers>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Invalid">
+                                                                        <Setter TargetName="Border" Property="Opacity" Value=".75"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Dynamic">
+                                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#32D359"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Other">
+                                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#F8A33A"/>
+                                                                    </DataTrigger>
                                                                 </DataTemplate.Triggers>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
