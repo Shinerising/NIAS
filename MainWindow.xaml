@@ -273,7 +273,7 @@
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,4" Text="{StaticResource Text_Graph}" FontSize="11" Foreground="{StaticResource Color_TextLight}"/>
                     <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="6,4" Text="{Binding SpeedLimit, FallbackValue=1MB/s}" FontSize="11" Foreground="{StaticResource Color_TextLight}"/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                        <Path Data="M 8 3 L 14 12 L 2 12 Z" Stroke="#43A047" Fill="#43A047" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                        <Path Data="M 8 5 L 14 12 L 2 12 Z" Stroke="#43A047" Fill="#43A047" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
                         <TextBlock ToolTip="{StaticResource UploadSpeed}" Text="{Binding GlobalUploadSpeed, FallbackValue=128KB/s}" FontSize="13" Margin="2,2,8,2" LineHeight="16" Height="16"/>
                         <Path Data="M 2 5 L 14 5 L 8 12 Z" Stroke="#039BE5" Fill="#039BE5" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
                         <TextBlock ToolTip="{StaticResource DownloadSpeed}" Text="{Binding GlobalDownloadSpeed, FallbackValue=128KB/s}" FontSize="13" Margin="2,2,8,2" LineHeight="16" Height="16"/>
@@ -355,7 +355,7 @@
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                                     <StackPanel Orientation="Horizontal">
-                                                        <Path Data="M 8 3 L 14 12 L 2 12 Z" Stroke="#43A047" Fill="#43A047" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                                                        <Path Data="M 8 5 L 14 12 L 2 12 Z" Stroke="#43A047" Fill="#43A047" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
                                                         <TextBlock ToolTip="{StaticResource UploadSpeed}" Text="{Binding UploadSpeed, FallbackValue=128KB/s}" Margin="2,2,8,2" LineHeight="16" Height="16"/>
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal">
@@ -569,15 +569,15 @@
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
                                                                     <Border Margin="2" ToolTip="{Binding Brief}" Background="Transparent">
-                                                                        <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM4.5 16L4.5 10M7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10"/>
+                                                                        <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10L4.5 16"/>
                                                                     </Border>
                                                                     <DataTemplate.Triggers>
                                                                         <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM4.5 2L4.5 8M7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8L4.5 8"/>
+                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8L4.5 8L4.5 2"/>
                                                                         </Trigger>
                                                                         <DataTrigger Binding="{Binding IsFiber}" Value="True">
                                                                             <Setter TargetName="Port_Icon" Property="Margin" Value="12,16,-8,6"/>
-                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M2 2L2 14L16 14L16 2ZM4.5 14L4.5 10M7.5 14L7.5 10M10.5 14L10.5 10M13.5 14L13.5 10L4.5 10M4.5 14L4.5 16L13.5 16L13.5 14"/>
+                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M2 2L2 14L16 14L16 2ZM7.5 14L7.5 10M10.5 14L10.5 10M13.5 14L13.5 10L4.5 10L4.5 14M4.5 14L4.5 16L13.5 16L13.5 14"/>
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding IsUp}" Value="True">
                                                                             <Setter TargetName="Port_Icon" Property="Stroke" Value="#32D359"/>
@@ -652,7 +652,7 @@
                                                                             <ColumnDefinition Width="Auto"/>
                                                                             <ColumnDefinition Width="Auto"/>
                                                                         </Grid.ColumnDefinitions>
-                                                                        <Image Width="20" Height="20" Margin="0,0,4,0" Source="Images/computer2.png"/>
+                                                                        <Image Width="16" Height="16" Margin="0,0,4,0" Source="Images/computer3.png"/>
                                                                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding IPAddress}"/>
                                                                     </Grid>
                                                                 </Border>
