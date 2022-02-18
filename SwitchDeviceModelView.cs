@@ -12,6 +12,24 @@ namespace LanMonitor
         public bool IsUp { get; set; }
         public bool IsFiber { get; set; }
         public string Tip => Brief;
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            SwitchPort other = obj as SwitchPort;
+            if (other == null)
+            {
+                return false;
+            }
+            return Name == other.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return Name == null ? 0 : Name.GetHashCode();
+        }
     }
     public class SwitchHost
     {
@@ -20,6 +38,24 @@ namespace LanMonitor
         public string MACAddress { get; set; }
         public HostState State { get; set; }
         public string Tip => MACAddress;
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            SwitchHost other = obj as SwitchHost;
+            if (other == null)
+            {
+                return false;
+            }
+            return IPAddress == other.IPAddress;
+        }
+
+        public override int GetHashCode()
+        {
+            return IPAddress == null ? 0 : IPAddress.GetHashCode();
+        }
     }
     public class LanHostAdapter : CustomINotifyPropertyChanged
     {
