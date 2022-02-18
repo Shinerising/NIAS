@@ -524,7 +524,7 @@
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
                                 <TextBlock Text="交换机接口"/>
-                                <TextBlock Text=""/>
+                                <TextBlock Text="{Binding SwitchPortCount, StringFormat=({0})}"/>
                             </StackPanel>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>
@@ -607,7 +607,7 @@
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
                                 <TextBlock Text="交换机设备"/>
-                                <TextBlock Text=""/>
+                                <TextBlock Text="{Binding SwitchHostCount, StringFormat=({0})}"/>
                             </StackPanel>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>

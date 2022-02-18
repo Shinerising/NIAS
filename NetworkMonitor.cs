@@ -94,12 +94,6 @@ namespace LanMonitor
                 Title = "检测到网络故障",
                 Content = "某个设备的网络通信已断开，请检查设备连接状态！",
                 Time = DateTime.Now
-            },
-            new ToastMessage()
-            {
-                Title = "检测到网络故障",
-                Content = "某个设备的网络通信已断开，请检查设备连接状态！",
-                Time = DateTime.Now
             }
         };
 
@@ -119,6 +113,8 @@ namespace LanMonitor
         public ObservableCollection<LANComputerModelView> ComputerCollection { get; set; }
         public List<SwitchDeviceModelView> SwitchDeviceList { get; set; }
         public List<LanHostModelView> LanHostList { get; set; }
+        public string SwitchPortCount => SwitchDeviceList == null ? "0" : string.Join(",", SwitchDeviceList.Select(item => item.PortCount));
+        public string SwitchHostCount => SwitchDeviceList == null ? "0" : string.Join(",", SwitchDeviceList.Select(item => item.HostCount));
 
         private readonly NetworkMonitor networkMoniter;
         private readonly LocalNetworkManager lanMonitor;
@@ -571,6 +567,8 @@ namespace LanMonitor
 
                     switchDevice.Refresh();
                 }
+
+                Notify(new { SwitchPortCount, SwitchHostCount });
 
                 Thread.Sleep(1000);
             }

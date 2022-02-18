@@ -121,6 +121,8 @@ namespace LanMonitor
         public DeviceState State { get; set; } = DeviceState.Unknown;
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
+        public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();
+        public int HostCount => HostList == null ? 0 : HostList.Count();
         public SwitchDeviceModelView(string name, string ip)
         {
             Name = name;
@@ -133,35 +135,41 @@ namespace LanMonitor
         {
             if (list == null)
             {
+                Notify(new { PortCount });
                 return;
             }
             if (PortList == null || PortList.Count != list.Count)
             {
                 PortList = list;
-                Notify(new { PortList });
+                Notify(new { PortList, PortCount });
                 return;
             }
             for (int i = 0; i < list.Count; i += 1)
             {
                 PortList[i].Refresh(list[i]);
             }
+
+            Notify(new { PortCount });
         }
         public void RefreshHostList(List<SwitchHost> list)
         {
             if (list == null)
             {
+                Notify(new { HostCount });
                 return;
             }
             if (HostList == null || HostList.Count != list.Count)
             {
                 HostList = list;
-                Notify(new { HostList });
+                Notify(new { HostList, HostCount });
                 return;
             }
             for (int i = 0; i < list.Count; i += 1)
             {
                 HostList[i].Refresh(list[i]);
             }
+
+            Notify(new { HostCount });
         }
         public void SetIdle()
         {
