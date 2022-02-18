@@ -21,44 +21,66 @@ namespace LanMonitor
         public HostState State { get; set; }
         public string Tip => MACAddress;
     }
-    public class LanHostModelView
+    public class LanHostAdapter : CustomINotifyPropertyChanged
     {
-        public string Name { get; set; }
-        public List<string> IPAddress { get; set; }
-        public class LineVector
+        public struct LineVector
         {
             public double Left { get; set; }
             public double Top { get; set; }
             public double Length { get; set; }
-            public DeviceState State { get; set; }
+            public bool IsEnabled { get; set; }
         }
-        public List<LineVector> VectorList { get; set; }
-        public static List<LineVector> RefreshVector(int count)
+        public void RefreshVector(int adapterIndex, int adapterCount, int switchIndex, int switchCount)
         {
-            if (count == 0)
+            if (adapterIndex < 0 || adapterCount < 0 || switchIndex < 0 || switchCount < 0)
             {
-                return null;
+                Vector = new LineVector();
             }
-            double width = 60;
-            double height0 = 92;
-            double height1 = 38;
-            return Enumerable.Range(0, count).Select(item => new LineVector()
+            else
             {
-                Left = width / -2 + width / count * (item + 0.5),
-                Top = 6 + height1 * item,
-                Length = height0 * item - height1 * item - 137,
-                State = DeviceState.Online
-            }).ToList();
-        }
-        public LanHostModelView()
-        {
+                double width = 72;
+                double height0 = 92;
+                double height1 = 38;
 
+                Vector = new LineVector()
+                {
+                    Left = width / -2 + width / adapterCount * (adapterIndex + 0.5),
+                    Top = 6 + height1 * adapterIndex,
+                    Length = height0 * (switchIndex - switchCount) - height1 * adapterIndex + 47,
+                    IsEnabled = true
+                };
+            }
+
+            Notify(new { Vector });
         }
-        public LanHostModelView(string name, string iplist, int switchCount)
+        public string IPAddress { get; set; }
+        public LineVector Vector { get; set; }
+        public DeviceState State { get; set; }
+
+        public bool IsHover { get; set; }
+        public void SetHover(bool flag)
+        {
+            IsHover = flag;
+            Notify(new { IsHover });
+        }
+        public LanHostAdapter(string ip)
+        {
+            IPAddress = ip;
+        }
+    }
+    public class LanHostModelView
+    {
+        public string Name { get; set; }
+        public List<LanHostAdapter> AdapterList { get; set; }
+        public LanHostModelView(string name, string iplist)
         {
             Name = name;
-            IPAddress = iplist == null ? new List<string>() : iplist.Split(';').ToList();
-            VectorList = RefreshVector(switchCount);
+            AdapterList = iplist == null ? new List<LanHostAdapter>() : iplist.Split(';').Select(item => new LanHostAdapter(item)).ToList();
+            for (int i = 0; i < AdapterList.Count; i += 1)
+            {
+                AdapterList[i].RefreshVector(i, AdapterList.Count, i % 2, 2);
+                AdapterList[i].State = i % 2 == 0 ? DeviceState.Online : DeviceState.Offline;
+            }
         }
     }
     public enum DeviceState

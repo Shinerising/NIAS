@@ -105,30 +105,10 @@ namespace LanMonitor
 
         public List<SwitchDeviceModelView> SwitchDeviceList => new List<string>() { "172.16.24.1", "172.16.24.188" }.Select(item => SwitchDeviceModelView.GetPreviewInstance(item)).ToList();
         public List<LanHostModelView> LanHostList => new List<LanHostModelView>() {
-            new LanHostModelView()
-            {
-                Name = "Host01",
-                IPAddress = new List<string>() { "172.16.24.90", "172.16.34.90" },
-                VectorList = LanHostModelView.RefreshVector(2)
-            },
-            new LanHostModelView()
-            {
-                Name = "Host02",
-                IPAddress = new List<string>() { "172.16.24.91", "172.16.34.91" },
-                VectorList = LanHostModelView.RefreshVector(2)
-            },
-            new LanHostModelView()
-            {
-                Name = "Host03",
-                IPAddress = new List<string>() { "172.16.24.92", "172.16.34.192" },
-                VectorList = LanHostModelView.RefreshVector(2)
-            },
-            new LanHostModelView()
-            {
-                Name = "Host04",
-                IPAddress = new List<string>() { "172.16.24.93", "172.16.34.93" },
-                VectorList = LanHostModelView.RefreshVector(2)
-            }
+            new LanHostModelView("Host01", "172.16.24.90,172.16.34.90"),
+            new LanHostModelView("Host02", "172.16.24.91,172.16.34.91"),
+            new LanHostModelView("Host03", "172.16.24.92,172.16.34.92"),
+            new LanHostModelView("Host04", "172.16.24.93,172.16.34.93")
         };
     }
 
@@ -337,7 +317,7 @@ namespace LanMonitor
             NameValueCollection deviceList = (NameValueCollection)ConfigurationManager.GetSection("deviceList");
 
             SwitchDeviceList = switchList.AllKeys.Select(item => new SwitchDeviceModelView(item, switchList[item])).ToList();
-            LanHostList = deviceList.AllKeys.Select(item => new LanHostModelView(item, deviceList[item], 2)).ToList();
+            LanHostList = deviceList.AllKeys.Select(item => new LanHostModelView(item, deviceList[item])).ToList();
 
             SnmpHelper.Initialize(name, auth, priv);
         }
