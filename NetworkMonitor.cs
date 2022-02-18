@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Configuration;
 using System.Collections.Specialized;
 using System.Text;
+using System.Windows.Threading;
 
 namespace LanMonitor
 {
@@ -115,6 +116,7 @@ namespace LanMonitor
         public List<LanHostModelView> LanHostList { get; set; }
         public string SwitchPortCount => SwitchDeviceList == null ? "0" : string.Join(",", SwitchDeviceList.Select(item => item.PortCount));
         public string SwitchHostCount => SwitchDeviceList == null ? "0" : string.Join(",", SwitchDeviceList.Select(item => item.HostCount));
+        public string LanHostCount => SwitchDeviceList == null ? "0" : string.Join(",", LanHostList.Select(item => item.ActiveCount));
 
         private readonly NetworkMonitor networkMoniter;
         private readonly LocalNetworkManager lanMonitor;
@@ -312,8 +314,8 @@ namespace LanMonitor
             NameValueCollection switchList = (NameValueCollection)ConfigurationManager.GetSection("switchList");
             NameValueCollection deviceList = (NameValueCollection)ConfigurationManager.GetSection("deviceList");
 
-            SwitchDeviceList = switchList.AllKeys.Select(item => new SwitchDeviceModelView(item, switchList[item])).ToList();
-            LanHostList = deviceList.AllKeys.Select(item => new LanHostModelView(item, deviceList[item])).ToList();
+            SwitchDeviceList = switchList == null ? new List<SwitchDeviceModelView>() : switchList.AllKeys.Select(item => new SwitchDeviceModelView(item, switchList[item])).ToList();
+            LanHostList = deviceList == null ? new List<LanHostModelView>() : deviceList.AllKeys.Select(item => new LanHostModelView(item, deviceList[item])).ToList();
 
             SnmpHelper.Initialize(name, auth, priv);
         }
@@ -565,10 +567,53 @@ namespace LanMonitor
                         switchDevice.RefreshHostList(list);
                     }
 
+                    {
+                        foreach (LanHostModelView host in LanHostList)
+                        {
+                            List<LanHostAdapter> list = host.AdapterList;
+                            for (int i = 0; i < list.Count; i += 1)
+                            {
+                                string switchIP = null;
+                                int switchIndex = 0;
+                                foreach (SwitchDeviceModelView device in SwitchDeviceList)
+                                {
+                                    if (device.HostList.FirstOrDefault(item => item.IPAddress == list[i].IPAddress) != null)
+                                    {
+                                        switchIP = device.Address;
+                                        break;
+                                    }
+                                    switchIndex += 1;
+                                }
+
+                                if (switchIP == null)
+                                {
+                                    if (list[i].State == DeviceState.Online)
+                                    {
+                                        list[i].State = DeviceState.Offline;
+                                        AddToast("消息提示", string.Format("主机{0}的网络适配器{1}已断开连接！", host.Name, list[i].IPAddress));
+                                    }
+                                    list[i].SwitchIPAddress = null;
+                                }
+                                else
+                                {
+                                    if (list[i].State == DeviceState.Offline)
+                                    {
+                                        AddToast("消息提示", string.Format("主机{0}的网络适配器{1}已连接至{2}！", host.Name, list[i].IPAddress, switchIP));
+                                    }
+                                    list[i].SwitchIPAddress = switchIP;
+                                    list[i].RefreshVector(i, list.Count, switchIndex, SwitchDeviceList.Count);
+                                    list[i].State = DeviceState.Online;
+                                }
+
+                                list[i].Refresh();
+                            }
+                        }
+                    }
+
                     switchDevice.Refresh();
                 }
 
-                Notify(new { SwitchPortCount, SwitchHostCount });
+                Notify(new { SwitchPortCount, SwitchHostCount, LanHostCount });
 
                 Thread.Sleep(1000);
             }
@@ -578,11 +623,19 @@ namespace LanMonitor
 
         public void AddToast(string title, string message)
         {
-            while (ToastCollection.Count > 3)
+            Dispatcher dispatcher = Dispatcher.FromThread(Thread.CurrentThread);
+            if (dispatcher == null)
             {
-                ToastCollection.RemoveAt(0);
+                dispatcher = Application.Current.Dispatcher;
             }
-            ToastCollection.Add(new ToastMessage(title, message));
+            dispatcher?.Invoke(() =>
+            {
+                while (ToastCollection.Count > 3)
+                {
+                    ToastCollection.RemoveAt(0);
+                }
+                ToastCollection.Add(new ToastMessage(title, message));
+            });
         }
 
         public void RemoveToast(ToastMessage toast)

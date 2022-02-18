@@ -687,7 +687,7 @@
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
                                 <TextBlock Text="网络结构图"/>
-                                <TextBlock Text=""/>
+                                <TextBlock Text="{Binding LanHostCount, StringFormat=({0})}"/>
                             </StackPanel>
                             <Border Grid.Row="1" Margin="12,0,12,12" Padding="0" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}">
                                 <ScrollViewer Margin="2,2,0,0" HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerControlTemplate}">

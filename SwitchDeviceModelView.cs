@@ -70,14 +70,20 @@ namespace LanMonitor
             Notify(new { Vector });
         }
         public string IPAddress { get; set; }
+        public string SwitchIPAddress { get; set; }
         public LineVector Vector { get; set; }
         public DeviceState State { get; set; }
+        public string Tip { get; set; }
 
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
         {
             IsHover = flag;
             Notify(new { IsHover });
+        }
+        public void Refresh()
+        {
+            Notify(new { State, SwitchIPAddress, Tip });
         }
         public LanHostAdapter(string ip)
         {
@@ -87,16 +93,13 @@ namespace LanMonitor
     public class LanHostModelView
     {
         public string Name { get; set; }
+        public string Tip { get; set; }
         public List<LanHostAdapter> AdapterList { get; set; }
+        public string ActiveCount => string.Format("{0}/{1}", AdapterList.Where(item => item.State == DeviceState.Online).Count(), AdapterList.Count);
         public LanHostModelView(string name, string iplist)
         {
             Name = name;
-            AdapterList = iplist == null ? new List<LanHostAdapter>() : iplist.Split(';').Select(item => new LanHostAdapter(item)).ToList();
-            for (int i = 0; i < AdapterList.Count; i += 1)
-            {
-                AdapterList[i].RefreshVector(i, AdapterList.Count, i % 2, 2);
-                AdapterList[i].State = i % 2 == 0 ? DeviceState.Online : DeviceState.Offline;
-            }
+            AdapterList = iplist == null ? new List<LanHostAdapter>() : iplist.Split(';').Select(item => new LanHostAdapter(item.Trim())).ToList();
         }
     }
     public enum DeviceState
