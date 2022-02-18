@@ -5,56 +5,36 @@ using System.Net;
 
 namespace LanMonitor
 {
-    public class SwitchPort
+    public class SwitchPort : CustomINotifyPropertyChanged
     {
         public string Name { get; set; }
         public string Brief { get; set; }
         public bool IsUp { get; set; }
         public bool IsFiber { get; set; }
         public string Tip => Brief;
-        public override bool Equals(object obj)
+        public void Refresh(SwitchPort port)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-            SwitchPort other = obj as SwitchPort;
-            if (other == null)
-            {
-                return false;
-            }
-            return Name == other.Name;
-        }
-
-        public override int GetHashCode()
-        {
-            return Name == null ? 0 : Name.GetHashCode();
+            Name = port.Name;
+            Brief = port.Brief;
+            IsUp = port.IsUp;
+            IsFiber = port.IsFiber;
+            Notify(new { Name, Brief, IsUp, IsFiber, Tip });
         }
     }
-    public class SwitchHost
+    public class SwitchHost : CustomINotifyPropertyChanged
     {
         public string HostName { get; set; }
         public string IPAddress { get; set; }
         public string MACAddress { get; set; }
         public HostState State { get; set; }
         public string Tip => MACAddress;
-        public override bool Equals(object obj)
+        public void Refresh(SwitchHost host)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-            SwitchHost other = obj as SwitchHost;
-            if (other == null)
-            {
-                return false;
-            }
-            return IPAddress == other.IPAddress;
-        }
-
-        public override int GetHashCode()
-        {
-            return IPAddress == null ? 0 : IPAddress.GetHashCode();
+            HostName = host.HostName;
+            IPAddress = host.IPAddress;
+            MACAddress = host.MACAddress;
+            State = host.State;
+            Notify(new { HostName, IPAddress, MACAddress, State, Tip });
         }
     }
     public class LanHostAdapter : CustomINotifyPropertyChanged
@@ -151,13 +131,37 @@ namespace LanMonitor
         }
         public void RefreshPortList(List<SwitchPort> list)
         {
-            PortList = list;
-            Notify(new { PortList });
+            if (list == null)
+            {
+                return;
+            }
+            if (PortList == null || PortList.Count != list.Count)
+            {
+                PortList = list;
+                Notify(new { PortList });
+                return;
+            }
+            for (int i = 0; i < list.Count; i += 1)
+            {
+                PortList[i].Refresh(list[i]);
+            }
         }
         public void RefreshHostList(List<SwitchHost> list)
         {
-            HostList = list;
-            Notify(new { HostList });
+            if (list == null)
+            {
+                return;
+            }
+            if (HostList == null || HostList.Count != list.Count)
+            {
+                HostList = list;
+                Notify(new { HostList });
+                return;
+            }
+            for (int i = 0; i < list.Count; i += 1)
+            {
+                HostList[i].Refresh(list[i]);
+            }
         }
         public void SetIdle()
         {
