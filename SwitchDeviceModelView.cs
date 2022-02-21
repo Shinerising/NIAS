@@ -7,6 +7,7 @@ namespace LanMonitor
 {
     public class SwitchPort : CustomINotifyPropertyChanged
     {
+        public int Index { get; set; }
         public string Name { get; set; }
         public string Brief { get; set; }
         public bool IsUp { get; set; }
@@ -26,6 +27,8 @@ namespace LanMonitor
         public string HostName { get; set; }
         public string IPAddress { get; set; }
         public string MACAddress { get; set; }
+        public int PortIndex { get; set; }
+        public bool IsCascade { get; set; }
         public HostState State { get; set; }
         public string Tip => MACAddress;
         public void Refresh(SwitchHost host)

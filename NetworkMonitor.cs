@@ -328,13 +328,20 @@ namespace LanMonitor
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
                     status = 0;
-                    using (Ping ping = new Ping())
+                    try
                     {
-                        IPStatus iPStatus = ping.Send("8.8.8.8").Status;
-                        if (iPStatus == IPStatus.Success)
+                        using (Ping ping = new Ping())
                         {
-                            status = 1;
+                            IPStatus iPStatus = ping.Send("8.8.8.8").Status;
+                            if (iPStatus == IPStatus.Success)
+                            {
+                                status = 1;
+                            }
                         }
+                    }
+                    catch
+                    {
+
                     }
                 }
                 Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
@@ -503,25 +510,30 @@ namespace LanMonitor
                     }
 
                     {
-                        var dict0 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
-                        var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
-                        var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
+                        var dict0 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifIndex);
+                        var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
+                        var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
+                        var dict3 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
                         List<SwitchPort> list = new List<SwitchPort>();
 
-                        if (dict0 != null && dict1 != null && dict2 != null)
+                        if (dict0 != null && dict1 != null && dict2 != null && dict3 != null)
                         {
                             for (int i = 0; i < dict0.Count; i += 1)
                             {
-                                if (dict0.ElementAt(i).Value == "6")
+                                if (dict1.Count >= dict0.Count && dict2.Count >= dict0.Count && dict3.Count >= dict0.Count)
                                 {
-                                    string text = dict1.ElementAt(i).Value;
-                                    SwitchPort port = new SwitchPort
+                                    if (dict1.ElementAt(i).Value == "6")
                                     {
-                                        Name = text.Split('/').Last(),
-                                        Brief = text,
-                                        IsUp = dict2.ElementAt(i).Value == "1"
-                                    };
-                                    list.Add(port);
+                                        string text = dict2.ElementAt(i).Value;
+                                        SwitchPort port = new SwitchPort
+                                        {
+                                            Index = int.Parse(dict0.ElementAt(i).Value),
+                                            Name = text.Split('/').Last(),
+                                            Brief = text,
+                                            IsUp = dict3.ElementAt(i).Value == "1"
+                                        };
+                                        list.Add(port);
+                                    }
                                 }
                             }
 
@@ -554,13 +566,16 @@ namespace LanMonitor
                         {
                             for (int i = 0; i < dict0.Count; i += 1)
                             {
-                                SwitchHost host = new SwitchHost
+                                if (dict1.Count >= dict0.Count && dict2.Count >= dict0.Count)
                                 {
-                                    MACAddress = BitConverter.ToString(dict0.ElementAt(i).Value, 2),
-                                    IPAddress = dict1.ElementAt(i).Value,
-                                    State = (HostState)int.Parse(dict2.ElementAt(i).Value)
-                                };
-                                list.Add(host);
+                                    SwitchHost host = new SwitchHost
+                                    {
+                                        MACAddress = BitConverter.ToString(dict0.ElementAt(i).Value, 2),
+                                        IPAddress = dict1.ElementAt(i).Value,
+                                        State = (HostState)int.Parse(dict2.ElementAt(i).Value)
+                                    };
+                                    list.Add(host);
+                                }
                             }
                         }
 
