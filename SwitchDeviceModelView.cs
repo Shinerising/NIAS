@@ -12,14 +12,15 @@ namespace LanMonitor
         public string Brief { get; set; }
         public bool IsUp { get; set; }
         public bool IsFiber { get; set; }
-        public string Tip => Brief;
+        public string Tip => string.Format("网口号：{0}{3}接口名称：{1}{3}当前状态：{2}", Name, Brief, IsUp ? "已连接" : "未连接", Environment.NewLine);
         public void Refresh(SwitchPort port)
         {
+            Index = port.Index;
             Name = port.Name;
             Brief = port.Brief;
             IsUp = port.IsUp;
             IsFiber = port.IsFiber;
-            Notify(new { Name, Brief, IsUp, IsFiber, Tip });
+            Notify(new { Index, Name, Brief, IsUp, IsFiber, Tip });
         }
     }
     public class SwitchHost : CustomINotifyPropertyChanged
@@ -28,16 +29,20 @@ namespace LanMonitor
         public string IPAddress { get; set; }
         public string MACAddress { get; set; }
         public int PortIndex { get; set; }
+        public SwitchPort Port { get; set; }
         public bool IsCascade { get; set; }
         public HostState State { get; set; }
-        public string Tip => MACAddress;
+        public string Tip => string.Format("IP地址：{0}{4}MAC地址：{1}{4}网口号：{2}{4}地址类型：{3}", IPAddress, MACAddress, Port == null ? "未知" : Port.Name, State == HostState.Dynamic ? "动态" : (State == HostState.Static ? "静态" : "其他"), Environment.NewLine);
         public void Refresh(SwitchHost host)
         {
             HostName = host.HostName;
             IPAddress = host.IPAddress;
             MACAddress = host.MACAddress;
+            PortIndex = host.PortIndex;
+            Port = host.Port;
+            IsCascade = host.IsCascade;
             State = host.State;
-            Notify(new { HostName, IPAddress, MACAddress, State, Tip });
+            Notify(new { HostName, IPAddress, MACAddress, Port, PortIndex, IsCascade, State, Tip });
         }
     }
     public class LanHostAdapter : CustomINotifyPropertyChanged
@@ -76,7 +81,8 @@ namespace LanMonitor
         public string SwitchIPAddress { get; set; }
         public LineVector Vector { get; set; }
         public DeviceState State { get; set; }
-        public string Tip { get; set; }
+        public string Tip => string.Format("IP地址：{0}{5}MAC地址：{1}{5}交换机IP：{2}{5}网口号：{3}{5}连接状态：{4}", IPAddress, Host == null ? "" : Host.MACAddress, SwitchIPAddress == null ? "未知" : SwitchIPAddress, Host == null || Host.Port == null ? "未知" : Host.Port.Name, State == DeviceState.Online ? "已连接" : (State == DeviceState.Offline ? "连接断开" : "未知"), Environment.NewLine);
+        public SwitchHost Host { get; set; }
 
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
@@ -86,7 +92,7 @@ namespace LanMonitor
         }
         public void Refresh()
         {
-            Notify(new { State, SwitchIPAddress, Tip });
+            Notify(new { State, SwitchIPAddress, Host, Tip });
         }
         public LanHostAdapter(string ip)
         {
@@ -125,6 +131,7 @@ namespace LanMonitor
         public IPEndPoint EndPoint { get; set; }
         public string Information { get; set; }
         public DeviceState State { get; set; } = DeviceState.Unknown;
+        public string Tip => string.Format("设备名称：{0}{3}通信IP地址：{1}{3}当前状态：{2}", Name, Address, State == DeviceState.Online ? "在线" : (State == DeviceState.Offline ? "离线" : "未知"), Environment.NewLine);
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
         public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();
@@ -141,7 +148,8 @@ namespace LanMonitor
         {
             if (list == null)
             {
-                Notify(new { PortCount });
+                PortList = null;
+                Notify(new { PortList, PortCount });
                 return;
             }
             if (PortList == null || PortList.Count != list.Count)
@@ -161,7 +169,8 @@ namespace LanMonitor
         {
             if (list == null)
             {
-                Notify(new { HostCount });
+                HostList = null;
+                Notify(new { HostList, HostCount });
                 return;
             }
             if (HostList == null || HostList.Count != list.Count)
@@ -184,7 +193,7 @@ namespace LanMonitor
         }
         public void Refresh()
         {
-            Notify(new { State, Information });
+            Notify(new { State, Information, Tip });
         }
         public static SwitchDeviceModelView GetPreviewInstance(string ip)
         {

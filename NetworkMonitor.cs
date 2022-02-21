@@ -497,6 +497,10 @@ namespace LanMonitor
                     var report = SnmpHelper.GetReportMessage(switchDevice.EndPoint);
                     if (report == null)
                     {
+                        if (switchDevice.State == DeviceState.Online)
+                        {
+                            AddToast("消息提示", string.Format("无法使用IP地址[{0}]采集交换机[{1}]的信息，请检查设备连接状态！", switchDevice.Address, switchDevice.Name));
+                        }
                         switchDevice.State = DeviceState.Offline;
                         switchDevice.SetIdle();
                         switchDevice.Refresh();
@@ -520,7 +524,7 @@ namespace LanMonitor
                         {
                             for (int i = 0; i < dict0.Count; i += 1)
                             {
-                                if (dict1.Count >= dict0.Count && dict2.Count >= dict0.Count && dict3.Count >= dict0.Count)
+                                if (dict1.Count > i && dict2.Count > i && dict3.Count > i)
                                 {
                                     if (dict1.ElementAt(i).Value == "6")
                                     {
@@ -557,23 +561,56 @@ namespace LanMonitor
                     }
 
                     {
+                        var dict3 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwArpDynMacAdd);
+                        var dict4 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwArpDynOutIfIndex);
+                        var dict5 = new Dictionary<string, string>();
+
+                        if (dict3 != null && dict4 != null)
+                        {
+                            for (int i = 0; i < dict3.Count; i += 1)
+                            {
+                                string mac = BitConverter.ToString(dict3.ElementAt(i).Value, 2);
+                                if (dict4.Count > i && !dict5.ContainsKey(mac))
+                                {
+                                    dict5.Add(mac, dict4.ElementAt(i).Value);
+                                }
+                            }
+                        }
+
                         var dict0 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaPhysAddress);
                         var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
                         var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaType);
+
                         List<SwitchHost> list = new List<SwitchHost>();
 
-                        if (dict0 != null && dict1 != null && dict2 != null)
+                        if (dict0 != null && dict1 != null)
                         {
                             for (int i = 0; i < dict0.Count; i += 1)
                             {
-                                if (dict1.Count >= dict0.Count && dict2.Count >= dict0.Count)
+                                if (dict1.Count > i && dict2.Count > i)
                                 {
+                                    string mac = BitConverter.ToString(dict0.ElementAt(i).Value, 2);
+                                    int portIndex = dict5.ContainsKey(mac) ? int.Parse(dict5[mac]) : 0;
                                     SwitchHost host = new SwitchHost
                                     {
-                                        MACAddress = BitConverter.ToString(dict0.ElementAt(i).Value, 2),
+                                        MACAddress = mac.Replace('-', ':'),
                                         IPAddress = dict1.ElementAt(i).Value,
-                                        State = (HostState)int.Parse(dict2.ElementAt(i).Value)
+                                        State = (HostState)(int.Parse(dict2.ElementAt(i).Value)),
+                                        PortIndex = portIndex,
+                                        Port = switchDevice.PortList.FirstOrDefault(item => item.Index == portIndex)
                                     };
+
+
+                                    if (portIndex != 0)
+                                    {
+                                        var find = list.Find(item => item.PortIndex == portIndex);
+                                        if (find != null)
+                                        {
+                                            find.IsCascade = true;
+                                            host.IsCascade = true;
+                                        }
+                                    }
+
                                     list.Add(host);
                                 }
                             }
@@ -589,10 +626,12 @@ namespace LanMonitor
                             for (int i = 0; i < list.Count; i += 1)
                             {
                                 string switchIP = null;
+                                SwitchHost switchHost = null;
                                 int switchIndex = 0;
                                 foreach (SwitchDeviceModelView device in SwitchDeviceList)
                                 {
-                                    if (device.HostList.FirstOrDefault(item => item.IPAddress == list[i].IPAddress) != null)
+                                    switchHost = device.HostList?.FirstOrDefault(item => item.IPAddress == list[i].IPAddress && !item.IsCascade);
+                                    if (switchHost != null)
                                     {
                                         switchIP = device.Address;
                                         break;
@@ -605,17 +644,19 @@ namespace LanMonitor
                                     if (list[i].State == DeviceState.Online)
                                     {
                                         list[i].State = DeviceState.Offline;
-                                        AddToast("消息提示", string.Format("主机{0}的网络适配器{1}已断开连接！", host.Name, list[i].IPAddress));
+                                        AddToast("消息提示", string.Format("主机[{0}]的网络适配器[{1}]已断开连接！", host.Name, list[i].IPAddress));
                                     }
                                     list[i].SwitchIPAddress = null;
+                                    list[i].Host = null;
                                 }
                                 else
                                 {
                                     if (list[i].State == DeviceState.Offline)
                                     {
-                                        AddToast("消息提示", string.Format("主机{0}的网络适配器{1}已连接至{2}！", host.Name, list[i].IPAddress, switchIP));
+                                        AddToast("消息提示", string.Format("主机[{0}]的网络适配器[{1}]已连接至[{2}]！", host.Name, list[i].IPAddress, switchIP));
                                     }
                                     list[i].SwitchIPAddress = switchIP;
+                                    list[i].Host = switchHost;
                                     list[i].RefreshVector(i, list.Count, switchIndex, SwitchDeviceList.Count);
                                     list[i].State = DeviceState.Online;
                                 }
