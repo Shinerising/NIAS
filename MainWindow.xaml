@@ -381,7 +381,7 @@
                                 <TextBlock Text="{StaticResource Row_Port}"/>
                                 <TextBlock Text="{Binding PortCollection.Count, StringFormat=({0})}"/>
                             </StackPanel>
-                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding PortCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding PortCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}" VirtualizingPanel.IsVirtualizing="True">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}">
@@ -456,7 +456,7 @@
                                 <TextBlock Text="{StaticResource Row_LAN}"/>
                                 <TextBlock Text="{Binding ComputerCollection.Count, StringFormat=({0})}"/>
                             </StackPanel>
-                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding ComputerCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding ComputerCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}" VirtualizingPanel.IsVirtualizing="True">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
@@ -555,7 +555,7 @@
                                                     <TextBlock VerticalAlignment="Bottom" Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
                                                 </Grid>
                                                 <Border Grid.Column="1" Margin="0,0,8,0" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="8,4">
-                                                    <Grid>
+                                                    <Grid Background="Transparent">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="*"/>
@@ -569,19 +569,25 @@
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
                                                                     <Border Margin="2" ToolTip="{Binding Tip}" Background="Transparent">
-                                                                        <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10L4.5 16"/>
+                                                                        <Grid x:Name="Port_Grid">
+                                                                            <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10L4.5 16"/>
+                                                                            <TextBlock x:Name="Port_Label" Visibility="Collapsed" Margin="-6,-6,0,0" Padding="2,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#F0FFFFFF" MinWidth="12" FontSize="10" TextAlignment="Center" Text="{Binding Name}"/>
+                                                                        </Grid>
                                                                     </Border>
                                                                     <DataTemplate.Triggers>
                                                                         <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                                                                             <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8L4.5 8L4.5 2"/>
                                                                         </Trigger>
                                                                         <DataTrigger Binding="{Binding IsFiber}" Value="True">
-                                                                            <Setter TargetName="Port_Icon" Property="Margin" Value="12,16,-8,6"/>
+                                                                            <Setter TargetName="Port_Grid" Property="Margin" Value="12,16,-8,6"/>
                                                                             <Setter TargetName="Port_Icon" Property="Data" Value="M2 2L2 14L16 14L16 2ZM7.5 14L7.5 10M10.5 14L10.5 10M13.5 14L13.5 10L4.5 10L4.5 14M4.5 14L4.5 16L13.5 16L13.5 14"/>
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding IsUp}" Value="True">
                                                                             <Setter TargetName="Port_Icon" Property="Stroke" Value="#32D359"/>
                                                                         </DataTrigger>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter TargetName="Port_Label" Property="Visibility" Value="Visible"/>
+                                                                        </Trigger>
                                                                     </DataTemplate.Triggers>
                                                                 </DataTemplate>
                                                             </ItemsControl.ItemTemplate>
@@ -788,7 +794,7 @@
                                                                     </ItemsControl.ItemContainerStyle>
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
-                                                                            <Canvas x:Name="Canvas" Cursor="Hand" MouseEnter="Line_MouseEnter" MouseLeave="Line_MouseLeave" ToolTip="{Binding Tip}">
+                                                                            <Canvas x:Name="Canvas" MouseEnter="Line_MouseEnter" MouseLeave="Line_MouseLeave" ToolTip="{Binding Tip}">
                                                                                 <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="#333" StrokeThickness="2" StrokeEndLineCap="Round"/>
                                                                                 <Line X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="Transparent" StrokeThickness="8" StrokeEndLineCap="Round"/>
                                                                                 <Line x:Name="Dot1" Canvas.Top="{Binding Vector.Length}" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
@@ -824,7 +830,7 @@
                                                                     </ItemsControl.ItemsPanel>
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
-                                                                            <Grid Cursor="Hand" Margin="2,6" MouseEnter="Line_MouseEnter" MouseLeave="Line_MouseLeave" ToolTip="{Binding Tip}">
+                                                                            <Grid Margin="2,6" MouseEnter="Line_MouseEnter" MouseLeave="Line_MouseLeave" ToolTip="{Binding Tip}">
                                                                                 <Border x:Name="Border" Background="#FFF" BorderBrush="#333" BorderThickness="1" CornerRadius="2"/>
                                                                                 <Border Padding="6" MinWidth="72">
                                                                                     <TextBlock Text="{Binding IPAddress}" HorizontalAlignment="Center" Height="15"/>
