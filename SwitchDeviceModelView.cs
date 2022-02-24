@@ -203,7 +203,7 @@ namespace LanMonitor
             switchDevice.Information = string.Format("HUAWEI S5720{0}HUAWEI S5720{0}HUAWEI S5720", Environment.NewLine);
             switchDevice.PortList = Enumerable.Range(0, 28).Select(item => new SwitchPort()
             {
-                Name = "GE1/0/" + item.ToString(),
+                Name = item.ToString(),
                 Brief = "GigabitEthernet1/0/" + item.ToString(),
                 IsUp = item % 3 == 1,
                 IsFiber = item >= 24
