@@ -52,7 +52,6 @@ namespace LanMonitor
             public double Left { get; set; }
             public double Top { get; set; }
             public double Length { get; set; }
-            public bool IsEnabled { get; set; }
         }
         public void RefreshVector(int adapterIndex, int adapterCount, int switchIndex, int switchCount)
         {
@@ -70,8 +69,7 @@ namespace LanMonitor
                 {
                     Left = width / -2 + width / adapterCount * (adapterIndex + 0.5),
                     Top = 6 + height1 * adapterIndex,
-                    Length = height0 * (switchIndex - switchCount) - height1 * adapterIndex + 47,
-                    IsEnabled = true
+                    Length = height0 * (switchIndex - switchCount) - height1 * adapterIndex + 47
                 };
             }
 

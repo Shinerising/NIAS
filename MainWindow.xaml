@@ -816,7 +816,7 @@
                                                                                 <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
                                                                             </Canvas>
                                                                             <DataTemplate.Triggers>
-                                                                                <DataTrigger Binding="{Binding Vector.IsEnabled}" Value="False">
+                                                                                <DataTrigger Binding="{Binding State}" Value="Unknown">
                                                                                     <Setter TargetName="Canvas" Property="Visibility" Value="Collapsed"/>
                                                                                 </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding State}" Value="Online">
@@ -896,7 +896,7 @@
                                                                                     <Setter TargetName="Canvas" Property="Visibility" Value="Visible"/>
                                                                                     <Setter TargetName="Line" Property="StrokeThickness" Value="4"/>
                                                                                 </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding Vector.IsEnabled}" Value="False">
+                                                                                <DataTrigger Binding="{Binding State}" Value="Unknown">
                                                                                     <Setter TargetName="Canvas" Property="Visibility" Value="Collapsed"/>
                                                                                 </DataTrigger>
                                                                             </DataTemplate.Triggers>
