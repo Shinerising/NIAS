@@ -60,8 +60,7 @@ namespace LanMonitor
                 Status = "",
                 Type = "",
                 DownloadSpeed = "2Mbps",
-                UploadSpeed = "1Mbps",
-                ToolTip = "Test"
+                UploadSpeed = "1Mbps"
             }
         };
 
@@ -72,8 +71,7 @@ namespace LanMonitor
                 Name = "LAN Computer",
                 Status = "",
                 IPAddress = "192.168.1.45",
-                Latency = "365ms",
-                ToolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(), Environment.NewLine, "LAN Computer", "192.168.1.45", "365ms")
+                Latency = "365ms"
             }
         };
         public ObservableCollection<PortModelView> PortCollection => new ObservableCollection<PortModelView>
@@ -83,8 +81,7 @@ namespace LanMonitor
                 Type = "TCP",
                 LocalEndPoint = "10.211.55.3:52940",
                 RemoteEndPoint = "40.90.189.152:443",
-                State = "Established",
-                ToolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(), Environment.NewLine, "TCP", "10.211.55.3:52940", "40.90.189.152:443")
+                State = "Established"
             }
         };
 

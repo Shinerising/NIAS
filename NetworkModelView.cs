@@ -10,8 +10,9 @@ namespace LanMonitor
         public string Type { get; set; }
         public string MacAddress { get; set; }
         public string Status { get; set; }
-        public string Speed { get; set; }
-        public string ToolTip { get; set; }
+        public string MaxSpeed { get; set; }
+        public string Description { get; set; }
+        public string ToolTip => string.Format(Application.Current.FindResource("NetworkToolTip").ToString(), Environment.NewLine, Description, IPAddress, MacAddress, MaxSpeed);
         public string DownloadSpeed { get; set; }
         public string UploadSpeed { get; set; }
 
@@ -27,9 +28,10 @@ namespace LanMonitor
             Type = adapter.Type.ToString();
             DownloadSpeed = adapter.DownloadSpeedString;
             UploadSpeed = adapter.UploadSpeedString;
-
-            ToolTip = string.Format(Application.Current.FindResource("NetworkToolTip").ToString(),
-                Environment.NewLine, adapter.Description, adapter.IPAddress, adapter.MACAddress, adapter.MaxSpeed);
+            Description = adapter.Description;
+            MaxSpeed = adapter.MaxSpeed;
+            IPAddress = adapter.IPAddress;
+            MacAddress = adapter.MACAddress;
         }
 
         public void Resolve(NetworkAdapter adapter)
@@ -39,10 +41,12 @@ namespace LanMonitor
             Type = adapter.Type.ToString();
             DownloadSpeed = adapter.DownloadSpeedString;
             UploadSpeed = adapter.UploadSpeedString;
-            ToolTip = string.Format(Application.Current.FindResource("NetworkToolTip").ToString(),
-                Environment.NewLine, adapter.Description, adapter.IPAddress, adapter.MACAddress, adapter.MaxSpeed);
+            Description = adapter.Description;
+            MaxSpeed = adapter.MaxSpeed;
+            IPAddress = adapter.IPAddress;
+            MacAddress = adapter.MACAddress;
 
-            Notify(new { Name, Status, Type, DownloadSpeed, UploadSpeed, ToolTip });
+            Notify(new { Name, Status, Type, DownloadSpeed, UploadSpeed, Description, MaxSpeed, IPAddress, MacAddress, ToolTip });
         }
     }
 }

@@ -13,7 +13,7 @@ namespace LanMonitor
         public string ProcessName { get; set; }
 
         public string State { get; set; }
-        public string ToolTip { get; set; }
+        public string ToolTip => string.Format(Application.Current.FindResource("PortToolTip").ToString(), Environment.NewLine, Type, LocalEndPoint, RemoteEndPoint);
 
         public string StateText
         {
@@ -48,9 +48,6 @@ namespace LanMonitor
             State = port.State;
             LocalEndPoint = port.LocalEndPoint;
             RemoteEndPoint = port.RemoteEndPoint;
-
-            ToolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(),
-                Environment.NewLine, Type, LocalEndPoint, RemoteEndPoint);
         }
 
         public void Resolve(ActivePort port)
@@ -61,8 +58,6 @@ namespace LanMonitor
             RemoteEndPoint = port.RemoteEndPoint;
             PID = port.PID;
             ProcessName = port.ProcessName;
-            ToolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(),
-                Environment.NewLine, Type, LocalEndPoint, RemoteEndPoint);
 
             Notify(new { Type, State, LocalEndPoint, RemoteEndPoint, PID, ProcessName, ToolTip });
         }

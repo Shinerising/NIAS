@@ -12,7 +12,7 @@ namespace LanMonitor
         public string Status { get; set; }
         public string UID { get; set; }
         public string Latency { get; set; }
-        public string ToolTip { get; set; }
+        public string ToolTip => string.Format(Application.Current.FindResource("ComputerToolTip").ToString(), Environment.NewLine, Name, IPAddress, UID);
 
         public LANComputerModelView()
         {
@@ -26,9 +26,6 @@ namespace LanMonitor
             IPAddress = computer.IPAddress;
             UID = computer.UID;
             Latency = computer.Latency == -1 ? "???" : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
-
-            ToolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(),
-                Environment.NewLine, Name, IPAddress, UID);
         }
 
         public void Resolve(LocalNetworkComputer computer)
@@ -38,8 +35,6 @@ namespace LanMonitor
             IPAddress = computer.IPAddress;
             UID = computer.UID;
             Latency = computer.Latency == -1 ? "???" : (computer.Latency >= 1000 ? ">1000ms" : computer.Latency.ToString() + "ms");
-            ToolTip = string.Format(Application.Current.FindResource("ComputerToolTip").ToString(),
-                Environment.NewLine, Name, IPAddress, UID);
 
             Notify(new { Name, Status, IPAddress, UID, Latency, ToolTip });
         }
