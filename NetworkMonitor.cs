@@ -109,7 +109,7 @@ namespace LanMonitor
 
     public class NetworkManager : CustomINotifyPropertyChanged, IDisposable
     {
-        public ObservableCollection<NetworkModelView> NetworkCollection { get; set; }
+        public List<NetworkModelView> NetworkCollection { get; set; }
         public ObservableCollection<PortModelView> PortCollection { get; set; }
         public ObservableCollection<LANComputerModelView> ComputerCollection { get; set; }
         public List<SwitchDeviceModelView> SwitchDeviceList { get; set; }
@@ -266,7 +266,7 @@ namespace LanMonitor
             uploadSpeedQueue = new Queue<long>(Enumerable.Repeat<long>(0, 120));
             downloadSpeedQueue = new Queue<long>(Enumerable.Repeat<long>(0, 120));
 
-            NetworkCollection = new ObservableCollection<NetworkModelView>();
+            NetworkCollection = new List<NetworkModelView>();
             ComputerCollection = new ObservableCollection<LANComputerModelView>();
             PortCollection = new ObservableCollection<PortModelView>();
 
@@ -438,51 +438,46 @@ namespace LanMonitor
             {
                 List<NetworkAdapter> adapters = networkMoniter.Refresh();
 
-                Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+                long uploadSpeed = 0;
+                long downloadSpeed = 0;
+
+                for (int i = 0; i < adapters.Count; i += 1)
                 {
-                    long uploadSpeed = 0;
-                    long downloadSpeed = 0;
+                    uploadSpeed += adapters[i].UploadSpeed;
+                    downloadSpeed += adapters[i].downloadSpeed;
+                }
 
-                    int i = 0;
-                    for (; i < adapters.Count; i += 1)
+                if (NetworkCollection != null && adapters.Count == NetworkCollection.Count)
+                {
+                    for (int i = 0; i < adapters.Count; i += 1)
                     {
-                        uploadSpeed += adapters[i].UploadSpeed;
-                        downloadSpeed += adapters[i].downloadSpeed;
-
-                        if (NetworkCollection.Count <= i)
-                        {
-                            NetworkCollection.Add(new NetworkModelView(adapters[i]));
-                        }
-                        else
-                        {
-                            NetworkCollection[i].Resolve(adapters[i]);
-                        }
+                        NetworkCollection[i].Resolve(adapters[i]);
                     }
+                }
+                else
+                {
+                    NetworkCollection = adapters.Select(item => new NetworkModelView(item)).ToList();
+                    Notify(new { NetworkCollection });
+                }
 
-                    while (NetworkCollection.Count > i)
-                    {
-                        NetworkCollection.RemoveAt(i);
-                    }
+                uploadSpeedQueue.Enqueue(uploadSpeed);
+                downloadSpeedQueue.Enqueue(downloadSpeed);
 
-                    uploadSpeedQueue.Enqueue(uploadSpeed);
-                    downloadSpeedQueue.Enqueue(downloadSpeed);
+                while (uploadSpeedQueue.Count > 120)
+                {
+                    uploadSpeedQueue.Dequeue();
+                }
+                while (downloadSpeedQueue.Count > 120)
+                {
+                    downloadSpeedQueue.Dequeue();
+                }
 
-                    while (uploadSpeedQueue.Count > 120)
-                    {
-                        uploadSpeedQueue.Dequeue();
-                    }
-                    while (downloadSpeedQueue.Count > 120)
-                    {
-                        downloadSpeedQueue.Dequeue();
-                    }
+                GlobalUploadSpeed = NetworkAdapter.GetSpeedString(uploadSpeed);
+                GlobalDownloadSpeed = NetworkAdapter.GetSpeedString(downloadSpeed);
 
-                    GlobalUploadSpeed = NetworkAdapter.GetSpeedString(uploadSpeed);
-                    GlobalDownloadSpeed = NetworkAdapter.GetSpeedString(downloadSpeed);
+                Notify(new { GlobalUploadSpeed, GlobalDownloadSpeed });
 
-                    Notify(new { GlobalUploadSpeed, GlobalDownloadSpeed });
-
-                    RefreshChart();
-                }));
+                RefreshChart();
 
                 Thread.Sleep(1000);
             }
