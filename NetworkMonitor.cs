@@ -110,8 +110,8 @@ namespace LanMonitor
     public class NetworkManager : CustomINotifyPropertyChanged, IDisposable
     {
         public List<NetworkModelView> NetworkCollection { get; set; }
-        public ObservableCollection<PortModelView> PortCollection { get; set; }
-        public ObservableCollection<LANComputerModelView> ComputerCollection { get; set; }
+        public List<PortModelView> PortCollection { get; set; }
+        public List<LANComputerModelView> ComputerCollection { get; set; }
         public List<SwitchDeviceModelView> SwitchDeviceList { get; set; }
         public List<LanHostModelView> LanHostList { get; set; }
         public string SwitchPortCount => SwitchDeviceList == null ? "0" : string.Join(",", SwitchDeviceList.Select(item => item.PortCount));
@@ -267,8 +267,8 @@ namespace LanMonitor
             downloadSpeedQueue = new Queue<long>(Enumerable.Repeat<long>(0, 120));
 
             NetworkCollection = new List<NetworkModelView>();
-            ComputerCollection = new ObservableCollection<LANComputerModelView>();
-            PortCollection = new ObservableCollection<PortModelView>();
+            ComputerCollection = new List<LANComputerModelView>();
+            PortCollection = new List<PortModelView>();
 
             networkMoniter = new NetworkMonitor();
             lanMonitor = new LocalNetworkManager();
@@ -344,11 +344,9 @@ namespace LanMonitor
 
                     }
                 }
-                Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
-                {
-                    NetworkStatus = status;
-                    Notify(new { NetworkStatus });
-                }));
+
+                NetworkStatus = status;
+                Notify(new { NetworkStatus });
 
                 Thread.Sleep(5000);
             }
@@ -378,27 +376,20 @@ namespace LanMonitor
             {
                 List<ActivePort> portList = portMonitor.ListActivePort();
 
-                Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+                if (PortCollection != null && portList.Count == PortCollection.Count)
                 {
-                    int i = 0;
-                    for (; i < portList.Count; i += 1)
+                    for (int i = 0; i < portList.Count; i += 1)
                     {
-                        if (PortCollection.Count <= i)
-                        {
-                            PortCollection.Add(new PortModelView(portList[i]));
-                        }
-                        else
-                        {
-                            PortCollection[i].Resolve(portList[i]);
-                        }
+                        PortCollection[i].Resolve(portList[i]);
                     }
-                    while (PortCollection.Count > i)
-                    {
-                        PortCollection.RemoveAt(i);
-                    }
-                }));
+                }
+                else
+                {
+                    PortCollection = portList.Select(item => new PortModelView(item)).ToList();
+                    Notify(new { PortCollection });
+                }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(5000);
             }
         }
 
@@ -408,27 +399,20 @@ namespace LanMonitor
             {
                 List<LocalNetworkComputer> computerList = lanMonitor.TestLANComputers();
 
-                Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+                if (ComputerCollection != null && ComputerCollection.Count == computerList.Count)
                 {
-                    int i = 0;
-                    for (; i < computerList.Count; i += 1)
+                    for (int i = 0; i < computerList.Count; i += 1)
                     {
-                        if (ComputerCollection.Count <= i)
-                        {
-                            ComputerCollection.Add(new LANComputerModelView(computerList[i]));
-                        }
-                        else
-                        {
-                            ComputerCollection[i].Resolve(computerList[i]);
-                        }
+                        ComputerCollection[i].Resolve(computerList[i]);
                     }
-                    while (ComputerCollection.Count > i)
-                    {
-                        ComputerCollection.RemoveAt(i);
-                    }
-                }));
+                }
+                else
+                {
+                    ComputerCollection = computerList.Select(item => new LANComputerModelView(item)).ToList();
+                    Notify(new { ComputerCollection });
+                }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(5000);
             }
         }
         

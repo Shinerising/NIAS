@@ -55,59 +55,16 @@ namespace LanMonitor
 
         public void Resolve(ActivePort port)
         {
-            string type = port.Type;
-            string state = port.State;
-            if (state != "" && state != "Listen" && state != "CloseWait" && state != "TimeWait" && state != "Established")
-            {
-            }
-            string localEndPoint = port.LocalEndPoint;
-            string remoteEndPoint = port.RemoteEndPoint;
-            int pid = port.PID;
-            string processName = port.ProcessName;
+            Type = port.Type;
+            State = port.State;
+            LocalEndPoint = port.LocalEndPoint;
+            RemoteEndPoint = port.RemoteEndPoint;
+            PID = port.PID;
+            ProcessName = port.ProcessName;
+            ToolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(),
+                Environment.NewLine, Type, LocalEndPoint, RemoteEndPoint);
 
-            string toolTip = string.Format(Application.Current.FindResource("PortToolTip").ToString(),
-                Environment.NewLine, type, localEndPoint, remoteEndPoint);
-
-            if (Type != type)
-            {
-                Type = type;
-                Notify(new { Type });
-            }
-            if (State != state)
-            {
-                State = state;
-                Notify(new { State, StateText });
-            }
-            if (LocalEndPoint != localEndPoint)
-            {
-                LocalEndPoint = localEndPoint;
-                Notify(new { LocalEndPoint });
-            }
-            if (RemoteEndPoint != remoteEndPoint)
-            {
-                RemoteEndPoint = remoteEndPoint;
-                Notify(new { RemoteEndPoint });
-            }
-            if (PID != pid)
-            {
-                PID = pid;
-                Notify(new { PID });
-            }
-            if (ProcessName != processName)
-            {
-                ProcessName = processName;
-                Notify(new { ProcessName });
-            }
-            if (Type != type)
-            {
-                Type = type;
-                Notify(new { Type });
-            }
-            if (ToolTip != toolTip)
-            {
-                ToolTip = toolTip;
-                Notify(new { ToolTip });
-            }
+            Notify(new { Type, State, LocalEndPoint, RemoteEndPoint, PID, ProcessName, ToolTip });
         }
     }
 }
