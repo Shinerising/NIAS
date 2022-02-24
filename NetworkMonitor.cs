@@ -122,6 +122,8 @@ namespace LanMonitor
         private readonly LocalNetworkManager lanMonitor;
         private readonly PortMonitor portMonitor;
 
+        public bool IsSwitchEnabled { get; set; } = true;
+
         public string GlobalUploadSpeed { get; set; }
         public string GlobalDownloadSpeed { get; set; }
         public void RefreshChart()
@@ -307,6 +309,15 @@ namespace LanMonitor
 
         private void InitializeSwitchData()
         {
+            string isSwitchEnabled = ConfigurationManager.AppSettings.Get("switch_enable");
+            if (isSwitchEnabled.ToUpper() != "TRUE")
+            {
+                IsSwitchEnabled = false;
+                return;
+            }
+
+            IsSwitchEnabled = true;
+
             string name = ConfigurationManager.AppSettings.Get("switch_username");
             string auth = ConfigurationManager.AppSettings.Get("switch_auth");
             string priv = ConfigurationManager.AppSettings.Get("switch_priv");
@@ -469,6 +480,11 @@ namespace LanMonitor
 
         private void SwitchMonitoring()
         {
+            if (!IsSwitchEnabled)
+            {
+                return;
+            }
+
             while (true)
             {
                 foreach (SwitchDeviceModelView switchDevice in SwitchDeviceList)
