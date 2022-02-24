@@ -81,8 +81,9 @@ namespace LanMonitor
         public string SwitchIPAddress { get; set; }
         public LineVector Vector { get; set; }
         public DeviceState State { get; set; }
-        public string Tip => string.Format("IP地址：{0}{5}MAC地址：{1}{5}交换机IP：{2}{5}网口号：{3}{5}连接状态：{4}", IPAddress, Host == null ? "" : Host.MACAddress, SwitchIPAddress == null ? "未知" : SwitchIPAddress, Host == null || Host.Port == null ? "未知" : Host.Port.Name, State == DeviceState.Online ? "已连接" : (State == DeviceState.Offline ? "连接断开" : "未知"), Environment.NewLine);
+        public string Tip => string.Format("IP地址：{0}{5}MAC地址：{1}{5}接入交换机：{2}{5}网口号：{3}{5}连接状态：{4}", IPAddress, Host == null ? "未知" : Host.MACAddress, SwitchDevice == null ? "未知" : SwitchDevice.Name, Host == null || Host.Port == null ? "未知" : Host.Port.Name, State == DeviceState.Online ? "已连接" : (State == DeviceState.Offline ? "连接断开" : "未知"), Environment.NewLine);
         public SwitchHost Host { get; set; }
+        public SwitchDeviceModelView SwitchDevice { get; set; }
 
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
@@ -92,7 +93,7 @@ namespace LanMonitor
         }
         public void Refresh()
         {
-            Notify(new { State, SwitchIPAddress, Host, Tip });
+            Notify(new { State, SwitchIPAddress, SwitchDevice, Host, Tip });
         }
         public LanHostAdapter(string ip)
         {
@@ -197,58 +198,60 @@ namespace LanMonitor
         }
         public static SwitchDeviceModelView GetPreviewInstance(string ip)
         {
-            SwitchDeviceModelView switchDevice = new SwitchDeviceModelView("test", ip);
-            switchDevice.Address = ip;
-            switchDevice.EndPoint = new IPEndPoint(IPAddress.Parse(ip), 161);
-            switchDevice.Information = string.Format("HUAWEI S5720{0}HUAWEI S5720{0}HUAWEI S5720", Environment.NewLine);
-            switchDevice.PortList = Enumerable.Range(0, 28).Select(item => new SwitchPort()
+            SwitchDeviceModelView switchDevice = new SwitchDeviceModelView("test", ip)
             {
-                Name = item.ToString(),
-                Brief = "GigabitEthernet1/0/" + item.ToString(),
-                IsUp = item % 3 == 1,
-                IsFiber = item >= 24
-            }).ToList();
-            switchDevice.HostList = new List<SwitchHost>()
-            {
-                new SwitchHost()
+                Address = ip,
+                EndPoint = new IPEndPoint(IPAddress.Parse(ip), 161),
+                Information = string.Format("HUAWEI S5720{0}HUAWEI S5720{0}HUAWEI S5720", Environment.NewLine),
+                PortList = Enumerable.Range(0, 28).Select(item => new SwitchPort()
                 {
-                    IPAddress = "172.16.24.90",
-                    MACAddress = "AA-BB-CC-DD-EE-FF"
-                },
-                new SwitchHost()
+                    Name = item.ToString(),
+                    Brief = "GigabitEthernet1/0/" + item.ToString(),
+                    IsUp = item % 3 == 1,
+                    IsFiber = item >= 24
+                }).ToList(),
+                HostList = new List<SwitchHost>()
                 {
-                    IPAddress = "172.16.24.91",
-                    MACAddress = "AA-BB-CC-DD-EE-FF"
-                },
-                new SwitchHost()
-                {
-                    IPAddress = "172.16.24.92",
-                    MACAddress = "AA-BB-CC-DD-EE-FF"
-                },
-                new SwitchHost()
-                {
-                    IPAddress = "172.16.24.93",
-                    MACAddress = "AA-BB-CC-DD-EE-FF"
-                },
-                new SwitchHost()
-                {
-                    IPAddress = "172.16.24.95",
-                    MACAddress = "AA-BB-CC-DD-EE-FF"
-                },
-                new SwitchHost()
-                {
-                    IPAddress = "172.16.24.101",
-                    MACAddress = "AA-BB-CC-DD-EE-FF"
-                },
-                new SwitchHost()
-                {
-                    IPAddress = "172.16.24.102",
-                    MACAddress = "AA-BB-CC-DD-EE-FF"
-                },
-                new SwitchHost()
-                {
-                    IPAddress = "172.16.24.103",
-                    MACAddress = "AA-BB-CC-DD-EE-FF"
+                    new SwitchHost()
+                    {
+                        IPAddress = "172.16.24.90",
+                        MACAddress = "AA-BB-CC-DD-EE-FF"
+                    },
+                    new SwitchHost()
+                    {
+                        IPAddress = "172.16.24.91",
+                        MACAddress = "AA-BB-CC-DD-EE-FF"
+                    },
+                    new SwitchHost()
+                    {
+                        IPAddress = "172.16.24.92",
+                        MACAddress = "AA-BB-CC-DD-EE-FF"
+                    },
+                    new SwitchHost()
+                    {
+                        IPAddress = "172.16.24.93",
+                        MACAddress = "AA-BB-CC-DD-EE-FF"
+                    },
+                    new SwitchHost()
+                    {
+                        IPAddress = "172.16.24.95",
+                        MACAddress = "AA-BB-CC-DD-EE-FF"
+                    },
+                    new SwitchHost()
+                    {
+                        IPAddress = "172.16.24.101",
+                        MACAddress = "AA-BB-CC-DD-EE-FF"
+                    },
+                    new SwitchHost()
+                    {
+                        IPAddress = "172.16.24.102",
+                        MACAddress = "AA-BB-CC-DD-EE-FF"
+                    },
+                    new SwitchHost()
+                    {
+                        IPAddress = "172.16.24.103",
+                        MACAddress = "AA-BB-CC-DD-EE-FF"
+                    }
                 }
             };
             return switchDevice;

@@ -622,6 +622,7 @@ namespace LanMonitor
                             {
                                 string switchIP = null;
                                 SwitchHost switchHost = null;
+                                SwitchDeviceModelView switchParent = null;
                                 int switchIndex = 0;
                                 foreach (SwitchDeviceModelView device in SwitchDeviceList)
                                 {
@@ -629,6 +630,7 @@ namespace LanMonitor
                                     if (switchHost != null)
                                     {
                                         switchIP = device.Address;
+                                        switchParent = device;
                                         break;
                                     }
                                     switchIndex += 1;
@@ -638,19 +640,28 @@ namespace LanMonitor
                                 {
                                     if (list[i].State == DeviceState.Online)
                                     {
-                                        list[i].State = DeviceState.Offline;
-                                        AddToast("消息提示", string.Format("主机[{0}]的网络适配器[{1}]已断开连接！", host.Name, list[i].IPAddress));
+                                        if (list[i].SwitchDevice.State == DeviceState.Offline)
+                                        {
+                                            list[i].State = DeviceState.Unknown;
+                                        }
+                                        else
+                                        {
+                                            list[i].State = DeviceState.Offline;
+                                            AddToast("消息提示", string.Format("主机[{0}]的网络适配器[{1}]已断开连接！", host.Name, list[i].IPAddress));
+                                        }
                                     }
                                     list[i].SwitchIPAddress = null;
+                                    list[i].SwitchDevice = null;
                                     list[i].Host = null;
                                 }
                                 else
                                 {
                                     if (list[i].State == DeviceState.Offline)
                                     {
-                                        AddToast("消息提示", string.Format("主机[{0}]的网络适配器[{1}]已连接至[{2}]！", host.Name, list[i].IPAddress, switchIP));
+                                        AddToast("消息提示", string.Format("主机[{0}]的网络适配器[{1}]已连接至交换机[{2}]！", host.Name, list[i].IPAddress, switchParent.Name));
                                     }
                                     list[i].SwitchIPAddress = switchIP;
+                                    list[i].SwitchDevice = switchParent;
                                     list[i].Host = switchHost;
                                     list[i].RefreshVector(i, list.Count, switchIndex, SwitchDeviceList.Count);
                                     list[i].State = DeviceState.Online;
