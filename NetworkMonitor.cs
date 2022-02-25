@@ -501,8 +501,11 @@ namespace LanMonitor
                     switchDevice.State = DeviceState.Online;
 
                     {
-                        var dict = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
-                        switchDevice.Information = dict?.FirstOrDefault().Value;
+                        var dict0 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
+                        var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysUpTime);
+                        switchDevice.Information = dict0?.FirstOrDefault().Value;
+                        var upTime = dict1?.FirstOrDefault().Value.Split('.');
+                        switchDevice.UpTime = (upTime == null || upTime.Length < 2) ? "未知" : (upTime.Length >= 3 ? string.Format("{0}天 {1}", upTime[0], upTime[1]) : string.Format("{0}", upTime[0]));
                     }
 
                     {
@@ -510,6 +513,8 @@ namespace LanMonitor
                         var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
                         var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
                         var dict3 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
+                        var dict4 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifInOctets);
+                        var dict5 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOutOctets);
                         List<SwitchPort> list = new List<SwitchPort>();
 
                         if (dict0 != null && dict1 != null && dict2 != null && dict3 != null)
@@ -521,12 +526,23 @@ namespace LanMonitor
                                     if (dict1.ElementAt(i).Value == "6")
                                     {
                                         string text = dict2.ElementAt(i).Value;
+                                        long inCount = 0;
+                                        long outCount = 0;
+
+                                        if (dict4 != null && dict5 != null && dict4.Count > i && dict5.Count > i)
+                                        {
+                                            inCount = long.Parse(dict4.ElementAt(i).Value);
+                                            outCount = long.Parse(dict5.ElementAt(i).Value);
+                                        }
+
                                         SwitchPort port = new SwitchPort
                                         {
                                             Index = int.Parse(dict0.ElementAt(i).Value),
                                             Name = text.Split('/').Last(),
                                             Brief = text,
-                                            IsUp = dict3.ElementAt(i).Value == "1"
+                                            IsUp = dict3.ElementAt(i).Value == "1",
+                                            InCount = inCount,
+                                            OutCount = outCount
                                         };
                                         list.Add(port);
                                     }

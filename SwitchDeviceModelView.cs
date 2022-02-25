@@ -12,7 +12,11 @@ namespace LanMonitor
         public string Brief { get; set; }
         public bool IsUp { get; set; }
         public bool IsFiber { get; set; }
-        public string Tip => string.Format("网口号：{0}{3}接口名称：{1}{3}当前状态：{2}", Name, Brief, IsUp ? "已连接" : "未连接", Environment.NewLine);
+        public long InCount { get; set; }
+        public long OutCount { get; set; }
+        public string InSpeed { get; set; } = "0B/s";
+        public string OutSpeed { get; set; } = "0B/s";
+        public string Tip => string.Format("网口号：{1}{0}接口名称：{2}{0}当前状态：{3}{0}传入速度：{4}{0}传出速度：{5}", Environment.NewLine, Name, Brief, IsUp ? "已连接" : "未连接", InSpeed, OutSpeed);
         public void Refresh(SwitchPort port)
         {
             Index = port.Index;
@@ -20,7 +24,28 @@ namespace LanMonitor
             Brief = port.Brief;
             IsUp = port.IsUp;
             IsFiber = port.IsFiber;
-            Notify(new { Index, Name, Brief, IsUp, IsFiber, Tip });
+
+            if (port.InCount >= InCount)
+            {
+                InSpeed = NetworkAdapter.GetSpeedString(port.InCount - InCount);
+            }
+            else
+            {
+                InSpeed = "0B/s";
+            }
+            InCount = port.InCount;
+
+            if (port.OutCount >= OutCount)
+            {
+                OutSpeed = NetworkAdapter.GetSpeedString(port.OutCount - OutCount);
+            }
+            else
+            {
+                OutSpeed = "0B/s";
+            }
+            OutCount = port.OutCount;
+
+            Notify(new { Index, Name, Brief, IsUp, IsFiber, InSpeed, OutSpeed, Tip });
         }
     }
     public class SwitchHost : CustomINotifyPropertyChanged
@@ -130,7 +155,8 @@ namespace LanMonitor
         public IPEndPoint EndPoint { get; set; }
         public string Information { get; set; }
         public DeviceState State { get; set; } = DeviceState.Unknown;
-        public string Tip => string.Format("设备名称：{0}{3}通信IP地址：{1}{3}当前状态：{2}", Name, Address, State == DeviceState.Online ? "在线" : (State == DeviceState.Offline ? "离线" : "未知"), Environment.NewLine);
+        public string UpTime { get; set; }
+        public string Tip => string.Format("设备名称：{1}{0}通信IP地址：{2}{0}当前状态：{3}{0}运行时间：{4}", Environment.NewLine, Name, Address, State == DeviceState.Online ? "在线" : (State == DeviceState.Offline ? "离线" : "未知"), UpTime == null ? "未知" : UpTime);
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
         public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();
@@ -192,7 +218,7 @@ namespace LanMonitor
         }
         public void Refresh()
         {
-            Notify(new { State, Information, Tip });
+            Notify(new { State, UpTime, Information, Tip });
         }
         public static SwitchDeviceModelView GetPreviewInstance(string ip)
         {

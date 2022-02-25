@@ -18,7 +18,10 @@ namespace LanMonitor
             public const string OID_ifDescr = "1.3.6.1.2.1.2.2.1.2";
             public const string OID_ifType = "1.3.6.1.2.1.2.2.1.3";
             public const string OID_ifOperStatus = "1.3.6.1.2.1.2.2.1.8";
+            public const string OID_ifInOctets = "1.3.6.1.2.1.2.2.1.10";
+            public const string OID_ifOutOctets = "1.3.6.1.2.1.2.2.1.16";
             public const string OID_sysDescr = "1.3.6.1.2.1.1.1";
+            public const string OID_sysUpTime = "1.3.6.1.2.1.1.3";
             public const string OID_hwArpDynMacAdd = "1.3.6.1.4.1.2011.5.25.123.1.17.1.11";
             public const string OID_hwArpDynOutIfIndex = "1.3.6.1.4.1.2011.5.25.123.1.17.1.14";
         }
