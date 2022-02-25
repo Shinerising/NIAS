@@ -575,7 +575,7 @@ namespace LanMonitor
 
                         List<SwitchHost> list = new List<SwitchHost>();
 
-                        if (dict0 != null && dict1 != null)
+                        if (dict0 != null && dict1 != null && dict2 != null)
                         {
                             for (int i = 0; i < dict0.Count; i += 1)
                             {
@@ -591,7 +591,6 @@ namespace LanMonitor
                                         PortIndex = portIndex,
                                         Port = switchDevice.PortList.FirstOrDefault(item => item.Index == portIndex)
                                     };
-
 
                                     if (portIndex != 0)
                                     {
