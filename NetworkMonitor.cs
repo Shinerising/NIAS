@@ -585,6 +585,22 @@ namespace LanMonitor
                             }
                         }
 
+                        var dict6 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_dot1dTpFdbAddress);
+                        var dict7 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_dot1dTpFdbPort);
+                        var dict8 = new Dictionary<string, string>();
+
+                        if (dict6 != null && dict7 != null)
+                        {
+                            for (int i = 0; i < dict6.Count; i += 1)
+                            {
+                                string mac = BitConverter.ToString(dict6.ElementAt(i).Value, 2);
+                                if (dict4.Count > i && !dict5.ContainsKey(mac))
+                                {
+                                    dict8.Add(mac, dict7.ElementAt(i).Value);
+                                }
+                            }
+                        }
+
                         var dict0 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaPhysAddress);
                         var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
                         var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaType);
@@ -618,9 +634,32 @@ namespace LanMonitor
                                         }
                                     }
 
+                                    if (dict8.ContainsKey(mac))
+                                    {
+                                        dict8.Remove(mac);
+                                    }
+
                                     list.Add(host);
                                 }
                             }
+                        }
+
+                        for (int i = 0; i < dict8.Count; i += 1)
+                        {
+                            string mac = dict8.ElementAt(i).Key;
+                            var port = switchDevice.PortList.FirstOrDefault(item => item.Name == dict8.ElementAt(i).Value);
+                            var index = port == null ? 0 : port.Index;
+
+                            SwitchHost host = new SwitchHost
+                            {
+                                MACAddress = mac.Replace('-', ':'),
+                                IPAddress = "未知IP地址",
+                                State = HostState.Invalid,
+                                PortIndex = index,
+                                Port = port
+                            };
+
+                            list.Add(host);
                         }
 
                         switchDevice.RefreshHostList(list);
