@@ -16,6 +16,7 @@ namespace LanMonitor
         public long OutCount { get; set; }
         public string InSpeed { get; set; } = "0B/s";
         public string OutSpeed { get; set; } = "0B/s";
+        public bool IsHover { get; set; }
         public string Tip => string.Format("网口号：{1}{0}接口名称：{2}{0}当前状态：{3}{0}传入速度：{4}{0}传出速度：{5}", Environment.NewLine, Name, Brief, IsUp ? "已连接" : "未连接", InSpeed, OutSpeed);
         public void Refresh(SwitchPort port)
         {
@@ -46,6 +47,11 @@ namespace LanMonitor
             OutCount = port.OutCount;
 
             Notify(new { Index, Name, Brief, IsUp, IsFiber, InSpeed, OutSpeed, Tip });
+        }
+        public void SetHover(bool flag)
+        {
+            IsHover = flag;
+            Notify(new { IsHover });
         }
     }
     public class SwitchHost : CustomINotifyPropertyChanged
@@ -112,6 +118,10 @@ namespace LanMonitor
         public void SetHover(bool flag)
         {
             IsHover = flag;
+            if (Host != null && Host.Port != null)
+            {
+                Host.Port.SetHover(flag);
+            }
             Notify(new { IsHover });
         }
         public void Refresh()
