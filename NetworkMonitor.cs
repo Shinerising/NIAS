@@ -111,9 +111,9 @@ namespace LanMonitor
         public List<LANComputerModelView> ComputerCollection { get; set; }
         public List<SwitchDeviceModelView> SwitchDeviceList { get; set; }
         public List<LanHostModelView> LanHostList { get; set; }
-        public string SwitchPortCount => SwitchDeviceList == null ? "0" : string.Join(",", SwitchDeviceList.Select(item => item.PortCount));
-        public string SwitchHostCount => SwitchDeviceList == null ? "0" : string.Join(",", SwitchDeviceList.Select(item => item.HostCount));
-        public string LanHostCount => SwitchDeviceList == null ? "0" : string.Join(",", LanHostList.Select(item => item.ActiveCount));
+        public string SwitchPortCount => SwitchDeviceList == null ? "0" : string.Join(", ", SwitchDeviceList.Select(item => item.PortCount));
+        public string SwitchHostCount => SwitchDeviceList == null ? "0" : string.Join(", ", SwitchDeviceList.Select(item => item.HostCount));
+        public string LanHostCount => SwitchDeviceList == null ? "0" : string.Join(", ", LanHostList.Select(item => item.ActiveCount));
 
         private readonly NetworkMonitor networkMoniter;
         private readonly LocalNetworkManager lanMonitor;
@@ -121,7 +121,7 @@ namespace LanMonitor
 
         public bool IsSwitchEnabled { get; set; } = true;
         private long LastSwitchRefreshTimeStamp;
-        private Stopwatch RefreshStopwatch = new Stopwatch();
+        private readonly Stopwatch RefreshStopwatch = new Stopwatch();
 
         public string GlobalUploadSpeed { get; set; }
         public string GlobalDownloadSpeed { get; set; }
@@ -526,7 +526,6 @@ namespace LanMonitor
                         {
                             AddToast("消息提示", string.Format("无法使用IP地址[{0}]采集交换机[{1}]的信息，请检查设备连接状态！", switchDevice.Address, switchDevice.Name));
                         }
-                        switchDevice.State = DeviceState.Offline;
                         switchDevice.SetIdle();
                         switchDevice.Refresh();
                         continue;
@@ -534,21 +533,26 @@ namespace LanMonitor
                     switchDevice.State = DeviceState.Online;
 
                     {
-                        var dict0 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
-                        var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysUpTime);
-                        switchDevice.Information = dict0?.FirstOrDefault().Value;
-                        var upTime = dict1?.FirstOrDefault().Value.Split('.');
-                        switchDevice.UpTime = (upTime == null || upTime.Length < 2) ? "未知" : (upTime.Length >= 3 ? string.Format("{0}天 {1}", upTime[0], upTime[1]) : string.Format("{0}", upTime[0]));
+                        if (switchDevice.Information == null)
+                        {
+                            var dict0 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
+                            switchDevice.Information = dict0?.FirstOrDefault().Value;
+                        }
+                        var dict1 = SnmpHelper.FetchTimeSpanData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysUpTime);
+                        TimeSpan upTime = dict1 == null ? new TimeSpan() : dict1.FirstOrDefault().Value;
+                        switchDevice.UpTime = upTime.TotalMilliseconds == 0 ? "未知" : string.Format("{0}天 {1:00}:{2:00}:{3:00}", upTime.Days, upTime.Hours, upTime.Minutes, upTime.Seconds);
                     }
 
                     {
-                        var dict0 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifIndex);
-                        var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
+                        var dict0 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifIndex);
+                        var dict1 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
                         var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
-                        var dict3 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
-                        var dict4 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifInOctets);
-                        var dict5 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOutOctets);
+                        var dict3 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
+                        var dict4 = SnmpHelper.FetchCounterData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifInOctets);
+                        var dict5 = SnmpHelper.FetchCounterData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOutOctets);
                         List<SwitchPort> list = new List<SwitchPort>();
+
+                        var duration = RefreshStopwatch.ElapsedMilliseconds - LastSwitchRefreshTimeStamp;
 
                         if (dict0 != null && dict1 != null && dict2 != null && dict3 != null)
                         {
@@ -556,7 +560,7 @@ namespace LanMonitor
                             {
                                 if (dict1.Count > i && dict2.Count > i && dict3.Count > i)
                                 {
-                                    if (dict1.ElementAt(i).Value == "6")
+                                    if (dict1.ElementAt(i).Value == 6)
                                     {
                                         string text = dict2.ElementAt(i).Value;
                                         long inCount = 0;
@@ -564,18 +568,19 @@ namespace LanMonitor
 
                                         if (dict4 != null && dict5 != null && dict4.Count > i && dict5.Count > i)
                                         {
-                                            inCount = long.Parse(dict4.ElementAt(i).Value);
-                                            outCount = long.Parse(dict5.ElementAt(i).Value);
+                                            inCount = dict4.ElementAt(i).Value;
+                                            outCount = dict5.ElementAt(i).Value;
                                         }
 
                                         SwitchPort port = new SwitchPort
                                         {
-                                            Index = int.Parse(dict0.ElementAt(i).Value),
+                                            Index = dict0.ElementAt(i).Value,
                                             Name = text.Split('/').Last(),
                                             Brief = text,
-                                            IsUp = dict3.ElementAt(i).Value == "1",
+                                            IsUp = dict3.ElementAt(i).Value == 1,
                                             InCount = inCount,
-                                            OutCount = outCount
+                                            OutCount = outCount,
+                                            RefreshDelay = duration
                                         };
                                         list.Add(port);
                                     }
@@ -636,7 +641,7 @@ namespace LanMonitor
 
                         var dict0 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaPhysAddress);
                         var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
-                        var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaType);
+                        var dict2 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaType);
 
                         List<SwitchHost> list = new List<SwitchHost>();
 
@@ -652,7 +657,7 @@ namespace LanMonitor
                                     {
                                         MACAddress = mac.Replace('-', ':'),
                                         IPAddress = dict1.ElementAt(i).Value,
-                                        State = (HostState)(int.Parse(dict2.ElementAt(i).Value)),
+                                        State = (HostState)dict2.ElementAt(i).Value,
                                         PortIndex = portIndex,
                                         Port = switchDevice.PortList.FirstOrDefault(item => item.Index == portIndex)
                                     };
@@ -686,7 +691,7 @@ namespace LanMonitor
                             SwitchHost host = new SwitchHost
                             {
                                 MACAddress = mac.Replace('-', ':'),
-                                IPAddress = "未知IP地址",
+                                IPAddress = "未知",
                                 State = HostState.Invalid,
                                 PortIndex = index,
                                 Port = port

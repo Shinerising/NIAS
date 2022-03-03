@@ -1,6 +1,7 @@
 ﻿using Lextm.SharpSnmpLib;
 using Lextm.SharpSnmpLib.Messaging;
 using Lextm.SharpSnmpLib.Security;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -84,7 +85,7 @@ namespace LanMonitor
             return new string(charArray);
         }
 
-        public static Dictionary<string, string> FetchStringData(ReportMessage report, IPEndPoint endpoint, string OID)
+        private static List<Variable> FetchData(ReportMessage report, IPEndPoint endpoint, string OID)
         {
             try
             {
@@ -104,7 +105,20 @@ namespace LanMonitor
                                   WalkMode.WithinSubtree,
                                   priv,
                                   report);
-                return result.ToDictionary(item => item.Id.ToString(), item => item.Data.ToString());
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static Dictionary<string, string> FetchStringData(ReportMessage report, IPEndPoint endpoint, string OID)
+        {
+            try
+            {
+                List<Variable> result = FetchData(report, endpoint, OID);
+                return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToString());
             }
             catch
             {
@@ -116,23 +130,44 @@ namespace LanMonitor
         {
             try
             {
-#pragma warning disable CS0618 // 类型或成员已过时
-                SHA1AuthenticationProvider auth = new SHA1AuthenticationProvider(new OctetString(AuthPassword));
-#pragma warning restore CS0618 // 类型或成员已过时
-                AESPrivacyProvider priv = new AESPrivacyProvider(new OctetString(PrivPassword), auth);
-                List<Variable> result = new List<Variable>();
-                _ = Messenger.BulkWalk(VersionCode.V3,
-                                  endpoint,
-                                  new OctetString(Username),
-                                  OctetString.Empty,
-                                  new ObjectIdentifier(OID),
-                                  result,
-                                  Timeout,
-                                  RetryCount,
-                                  WalkMode.WithinSubtree,
-                                  priv,
-                                  report);
-                return result.ToDictionary(item => item.Id.ToString(), item => item.Data.ToBytes());
+                List<Variable> result = FetchData(report, endpoint, OID);
+                return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToBytes());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public static Dictionary<string, int> FetchIntData(ReportMessage report, IPEndPoint endpoint, string OID)
+        {
+            try
+            {
+                List<Variable> result = FetchData(report, endpoint, OID);
+                return result?.ToDictionary(item => item.Id.ToString(), item => ((Integer32)item.Data).ToInt32());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public static Dictionary<string, uint> FetchCounterData(ReportMessage report, IPEndPoint endpoint, string OID)
+        {
+            try
+            {
+                List<Variable> result = FetchData(report, endpoint, OID);
+                return result?.ToDictionary(item => item.Id.ToString(), item => ((Counter32)item.Data).ToUInt32());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public static Dictionary<string, TimeSpan> FetchTimeSpanData(ReportMessage report, IPEndPoint endpoint, string OID)
+        {
+            try
+            {
+                List<Variable> result = FetchData(report, endpoint, OID);
+                return result?.ToDictionary(item => item.Id.ToString(), item => ((TimeTicks)item.Data).ToTimeSpan());
             }
             catch
             {

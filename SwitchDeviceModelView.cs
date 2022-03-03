@@ -14,6 +14,7 @@ namespace LanMonitor
         public bool IsFiber { get; set; }
         public long InCount { get; set; }
         public long OutCount { get; set; }
+        public long RefreshDelay { get; set; } = 1;
         public string InSpeed { get; set; } = "0B/s";
         public string OutSpeed { get; set; } = "0B/s";
         public bool IsHover { get; set; }
@@ -28,7 +29,7 @@ namespace LanMonitor
 
             if (port.InCount >= InCount)
             {
-                InSpeed = NetworkAdapter.GetSpeedString(port.InCount - InCount);
+                InSpeed = NetworkAdapter.GetSpeedString((port.InCount - InCount) * 1000 / port.RefreshDelay);
             }
             else
             {
@@ -38,7 +39,7 @@ namespace LanMonitor
 
             if (port.OutCount >= OutCount)
             {
-                OutSpeed = NetworkAdapter.GetSpeedString(port.OutCount - OutCount);
+                OutSpeed = NetworkAdapter.GetSpeedString((port.OutCount - OutCount) * 1000 / port.RefreshDelay);
             }
             else
             {
@@ -166,7 +167,7 @@ namespace LanMonitor
         public string Information { get; set; }
         public DeviceState State { get; set; } = DeviceState.Unknown;
         public string UpTime { get; set; }
-        public string Tip => string.Format("设备名称：{1}{0}通信IP地址：{2}{0}当前状态：{3}{0}运行时间：{4}", Environment.NewLine, Name, Address, State == DeviceState.Online ? "在线" : (State == DeviceState.Offline ? "离线" : "未知"), UpTime == null ? "未知" : UpTime);
+        public string Tip => string.Format("设备名称：{1}{0}通信IP地址：{2}{0}当前状态：{3}{0}运行时间：{4}", Environment.NewLine, Name, Address, State == DeviceState.Online ? "在线" : (State == DeviceState.Offline ? "离线" : "未知"), UpTime ?? "未知");
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
         public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();
@@ -223,6 +224,10 @@ namespace LanMonitor
         }
         public void SetIdle()
         {
+            State = DeviceState.Offline;
+            UpTime = "未知";
+            Information = null;
+
             RefreshPortList(null);
             RefreshHostList(null);
         }
