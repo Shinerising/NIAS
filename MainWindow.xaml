@@ -543,7 +543,7 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
-                                            <Grid Height="64" ToolTip="{Binding ToolTip}">
+                                            <Grid Height="64" ToolTip="{Binding Tip}">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" MaxWidth="128"/>
                                                     <ColumnDefinition Width="*"/>
@@ -634,7 +634,7 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
-                                            <Grid Height="64" ToolTip="{Binding ToolTip}">
+                                            <Grid Height="64" ToolTip="{Binding Tip}">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" MaxWidth="128"/>
                                                     <ColumnDefinition Width="*"/>

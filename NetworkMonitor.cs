@@ -120,6 +120,8 @@ namespace LanMonitor
         private readonly PortMonitor portMonitor;
 
         public bool IsSwitchEnabled { get; set; } = true;
+        private long LastSwitchRefreshTimeStamp;
+        private Stopwatch RefreshStopwatch = new Stopwatch();
 
         public string GlobalUploadSpeed { get; set; }
         public string GlobalDownloadSpeed { get; set; }
@@ -188,7 +190,6 @@ namespace LanMonitor
         private readonly Queue<long> downloadSpeedQueue;
 
         private long speedGraphLimit = 1024;
-
         public string ComputerName => Dns.GetHostEntry("").HostName;
         public string SystemName
         {
@@ -285,6 +286,7 @@ namespace LanMonitor
             Task.Factory.StartNew(ActivePortMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(NetworkStatusMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(SwitchMonitoring, TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(SwitchRefreshMonitoring, TaskCreationOptions.LongRunning);
         }
 
         public void Dispose()
@@ -475,6 +477,34 @@ namespace LanMonitor
             }
         }
 
+        private void SwitchRefreshMonitoring()
+        {
+            if (!IsSwitchEnabled)
+            {
+                return;
+            }
+
+            bool isRefreshExpiredAlert = false;
+
+            while (true)
+            {
+                if (RefreshStopwatch.IsRunning && RefreshStopwatch.ElapsedMilliseconds - LastSwitchRefreshTimeStamp > 10000)
+                {
+                    if (!isRefreshExpiredAlert)
+                    {
+                        AddToast("消息提示", "交换机数据已超过10秒未能正常刷新，请尝试重启监控程序！");
+                        isRefreshExpiredAlert = true;
+                    }
+                }
+                else
+                {
+                    isRefreshExpiredAlert = false;
+                }
+
+                Thread.Sleep(1000);
+            }
+        }
+
         private void SwitchMonitoring()
         {
             if (!IsSwitchEnabled)
@@ -482,8 +512,11 @@ namespace LanMonitor
                 return;
             }
 
+            RefreshStopwatch.Start();
+
             while (true)
             {
+
                 foreach (SwitchDeviceModelView switchDevice in SwitchDeviceList)
                 {
                     var report = SnmpHelper.GetReportMessage(switchDevice.EndPoint);
@@ -725,6 +758,8 @@ namespace LanMonitor
                 }
 
                 Notify(new { SwitchPortCount, SwitchHostCount, LanHostCount });
+
+                LastSwitchRefreshTimeStamp = RefreshStopwatch.ElapsedMilliseconds;
 
                 Thread.Sleep(1000);
             }
