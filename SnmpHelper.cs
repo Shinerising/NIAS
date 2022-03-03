@@ -32,8 +32,8 @@ namespace LanMonitor
         public static string Username;
         public static string AuthPassword;
         public static string PrivPassword;
-        public const int Timeout = 2000;
-        public const int RetryCount = 5;
+        public const int Timeout = 1000;
+        public const int RetryCount = 3;
 
         public static void Initialize(string user, string auth, string priv)
         {
