@@ -516,191 +516,200 @@ namespace LanMonitor
 
             while (true)
             {
-
                 foreach (SwitchDeviceModelView switchDevice in SwitchDeviceList)
                 {
-                    var report = SnmpHelper.GetReportMessage(switchDevice.EndPoint);
-                    if (report == null)
+                    try
+                    {
+                        var report = SnmpHelper.GetReportMessage(switchDevice.EndPoint);
+                        if (report == null)
+                        {
+                            throw new TimeoutException();
+                        }
+
+                        if (switchDevice.State == DeviceState.Offline)
+                        {
+                            AddToast("消息提示", string.Format("已成功使用IP地址 [{0}] 重新连接至交换机 [{1}]！", switchDevice.Address, switchDevice.Name));
+                        }
+                        switchDevice.State = DeviceState.Online;
+
+                        {
+                            if (switchDevice.Information == null)
+                            {
+                                var dict0 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
+                                switchDevice.Information = dict0?.FirstOrDefault().Value;
+                            }
+                            var dict1 = SnmpHelper.FetchTimeSpanData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysUpTime);
+                            TimeSpan upTime = dict1 == null ? new TimeSpan() : dict1.FirstOrDefault().Value;
+                            switchDevice.UpTime = upTime.TotalMilliseconds == 0 ? "未知" : string.Format("{0}天 {1:00}:{2:00}:{3:00}", upTime.Days, upTime.Hours, upTime.Minutes, upTime.Seconds);
+                        }
+
+                        {
+                            var dict0 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifIndex);
+                            var dict1 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
+                            var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
+                            var dict3 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
+                            var dict4 = SnmpHelper.FetchCounterData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifInOctets);
+                            var dict5 = SnmpHelper.FetchCounterData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOutOctets);
+                            List<SwitchPort> list = new List<SwitchPort>();
+
+                            var duration = RefreshStopwatch.ElapsedMilliseconds - LastSwitchRefreshTimeStamp;
+
+                            if (dict0 != null && dict1 != null && dict2 != null && dict3 != null)
+                            {
+                                for (int i = 0; i < dict0.Count; i += 1)
+                                {
+                                    if (dict1.Count > i && dict2.Count > i && dict3.Count > i)
+                                    {
+                                        if (dict1.ElementAt(i).Value == 6)
+                                        {
+                                            string text = dict2.ElementAt(i).Value;
+                                            long inCount = 0;
+                                            long outCount = 0;
+
+                                            if (dict4 != null && dict5 != null && dict4.Count > i && dict5.Count > i)
+                                            {
+                                                inCount = dict4.ElementAt(i).Value;
+                                                outCount = dict5.ElementAt(i).Value;
+                                            }
+
+                                            SwitchPort port = new SwitchPort
+                                            {
+                                                Index = dict0.ElementAt(i).Value,
+                                                Name = text.Split('/').Last(),
+                                                Brief = text,
+                                                IsUp = dict3.ElementAt(i).Value == 1,
+                                                InCount = inCount,
+                                                OutCount = outCount,
+                                                RefreshDelay = duration
+                                            };
+                                            list.Add(port);
+                                        }
+                                    }
+                                }
+
+                                for (int i = 0; i < list.Count; i += 1)
+                                {
+                                    if (i >= 24)
+                                    {
+                                        list[i].IsFiber = true;
+                                    }
+                                    else if (i % 2 == 0)
+                                    {
+                                        var tmp = list[i];
+                                        list[i] = list[i + 1];
+                                        list[i + 1] = tmp;
+                                    }
+                                }
+
+                            }
+
+                            switchDevice.RefreshPortList(list);
+                        }
+
+                        {
+                            var dict3 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwArpDynMacAdd);
+                            var dict4 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwArpDynOutIfIndex);
+                            var dict5 = new Dictionary<string, string>();
+
+                            if (dict3 != null && dict4 != null)
+                            {
+                                for (int i = 0; i < dict3.Count; i += 1)
+                                {
+                                    string mac = BitConverter.ToString(dict3.ElementAt(i).Value, 2);
+                                    if (dict4.Count > i && !dict5.ContainsKey(mac))
+                                    {
+                                        dict5.Add(mac, dict4.ElementAt(i).Value);
+                                    }
+                                }
+                            }
+
+                            var dict6 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_dot1dTpFdbAddress);
+                            var dict7 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_dot1dTpFdbPort);
+                            var dict8 = new Dictionary<string, string>();
+
+                            if (dict6 != null && dict7 != null)
+                            {
+                                for (int i = 0; i < dict6.Count; i += 1)
+                                {
+                                    string mac = BitConverter.ToString(dict6.ElementAt(i).Value, 2);
+                                    if (dict4.Count > i && !dict5.ContainsKey(mac))
+                                    {
+                                        dict8.Add(mac, dict7.ElementAt(i).Value);
+                                    }
+                                }
+                            }
+
+                            var dict0 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaPhysAddress);
+                            var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
+                            var dict2 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaType);
+
+                            List<SwitchHost> list = new List<SwitchHost>();
+
+                            if (dict0 != null && dict1 != null && dict2 != null)
+                            {
+                                for (int i = 0; i < dict0.Count; i += 1)
+                                {
+                                    if (dict1.Count > i && dict2.Count > i)
+                                    {
+                                        string mac = BitConverter.ToString(dict0.ElementAt(i).Value, 2);
+                                        int portIndex = dict5.ContainsKey(mac) ? int.Parse(dict5[mac]) : 0;
+                                        SwitchHost host = new SwitchHost
+                                        {
+                                            MACAddress = mac.Replace('-', ':'),
+                                            IPAddress = dict1.ElementAt(i).Value,
+                                            State = (HostState)dict2.ElementAt(i).Value,
+                                            PortIndex = portIndex,
+                                            Port = switchDevice.PortList.FirstOrDefault(item => item.Index == portIndex)
+                                        };
+
+                                        if (portIndex != 0)
+                                        {
+                                            var find = list.Find(item => item.PortIndex == portIndex);
+                                            if (find != null)
+                                            {
+                                                find.IsCascade = true;
+                                                host.IsCascade = true;
+                                            }
+                                        }
+
+                                        if (dict8.ContainsKey(mac))
+                                        {
+                                            dict8.Remove(mac);
+                                        }
+
+                                        list.Add(host);
+                                    }
+                                }
+                            }
+
+                            for (int i = 0; i < dict8.Count; i += 1)
+                            {
+                                string mac = dict8.ElementAt(i).Key;
+                                var port = switchDevice.PortList.FirstOrDefault(item => item.Name == dict8.ElementAt(i).Value);
+                                var index = port == null ? 0 : port.Index;
+
+                                SwitchHost host = new SwitchHost
+                                {
+                                    MACAddress = mac.Replace('-', ':'),
+                                    IPAddress = "未知IP地址",
+                                    State = HostState.Invalid,
+                                    PortIndex = index,
+                                    Port = port
+                                };
+
+                                list.Add(host);
+                            }
+
+                            switchDevice.RefreshHostList(list);
+                        }
+                    }
+                    catch
                     {
                         if (switchDevice.State == DeviceState.Online)
                         {
-                            AddToast("消息提示", string.Format("无法使用IP地址[{0}]采集交换机[{1}]的信息，请检查设备连接状态！", switchDevice.Address, switchDevice.Name));
+                            AddToast("消息提示", string.Format("无法使用IP地址 [{0}] 采集交换机 [{1}] 的信息，请检查设备连接状态！", switchDevice.Address, switchDevice.Name));
                         }
                         switchDevice.SetIdle();
-                        switchDevice.Refresh();
-                        continue;
-                    }
-                    switchDevice.State = DeviceState.Online;
-
-                    {
-                        if (switchDevice.Information == null)
-                        {
-                            var dict0 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
-                            switchDevice.Information = dict0?.FirstOrDefault().Value;
-                        }
-                        var dict1 = SnmpHelper.FetchTimeSpanData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysUpTime);
-                        TimeSpan upTime = dict1 == null ? new TimeSpan() : dict1.FirstOrDefault().Value;
-                        switchDevice.UpTime = upTime.TotalMilliseconds == 0 ? "未知" : string.Format("{0}天 {1:00}:{2:00}:{3:00}", upTime.Days, upTime.Hours, upTime.Minutes, upTime.Seconds);
-                    }
-
-                    {
-                        var dict0 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifIndex);
-                        var dict1 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
-                        var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
-                        var dict3 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
-                        var dict4 = SnmpHelper.FetchCounterData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifInOctets);
-                        var dict5 = SnmpHelper.FetchCounterData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOutOctets);
-                        List<SwitchPort> list = new List<SwitchPort>();
-
-                        var duration = RefreshStopwatch.ElapsedMilliseconds - LastSwitchRefreshTimeStamp;
-
-                        if (dict0 != null && dict1 != null && dict2 != null && dict3 != null)
-                        {
-                            for (int i = 0; i < dict0.Count; i += 1)
-                            {
-                                if (dict1.Count > i && dict2.Count > i && dict3.Count > i)
-                                {
-                                    if (dict1.ElementAt(i).Value == 6)
-                                    {
-                                        string text = dict2.ElementAt(i).Value;
-                                        long inCount = 0;
-                                        long outCount = 0;
-
-                                        if (dict4 != null && dict5 != null && dict4.Count > i && dict5.Count > i)
-                                        {
-                                            inCount = dict4.ElementAt(i).Value;
-                                            outCount = dict5.ElementAt(i).Value;
-                                        }
-
-                                        SwitchPort port = new SwitchPort
-                                        {
-                                            Index = dict0.ElementAt(i).Value,
-                                            Name = text.Split('/').Last(),
-                                            Brief = text,
-                                            IsUp = dict3.ElementAt(i).Value == 1,
-                                            InCount = inCount,
-                                            OutCount = outCount,
-                                            RefreshDelay = duration
-                                        };
-                                        list.Add(port);
-                                    }
-                                }
-                            }
-
-                            for (int i = 0; i < list.Count; i += 1)
-                            {
-                                if (i >= 24)
-                                {
-                                    list[i].IsFiber = true;
-                                }
-                                else if (i % 2 == 0)
-                                {
-                                    var tmp = list[i];
-                                    list[i] = list[i + 1];
-                                    list[i + 1] = tmp;
-                                }
-                            }
-
-                        }
-
-                        switchDevice.RefreshPortList(list);
-                    }
-
-                    {
-                        var dict3 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwArpDynMacAdd);
-                        var dict4 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwArpDynOutIfIndex);
-                        var dict5 = new Dictionary<string, string>();
-
-                        if (dict3 != null && dict4 != null)
-                        {
-                            for (int i = 0; i < dict3.Count; i += 1)
-                            {
-                                string mac = BitConverter.ToString(dict3.ElementAt(i).Value, 2);
-                                if (dict4.Count > i && !dict5.ContainsKey(mac))
-                                {
-                                    dict5.Add(mac, dict4.ElementAt(i).Value);
-                                }
-                            }
-                        }
-
-                        var dict6 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_dot1dTpFdbAddress);
-                        var dict7 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_dot1dTpFdbPort);
-                        var dict8 = new Dictionary<string, string>();
-
-                        if (dict6 != null && dict7 != null)
-                        {
-                            for (int i = 0; i < dict6.Count; i += 1)
-                            {
-                                string mac = BitConverter.ToString(dict6.ElementAt(i).Value, 2);
-                                if (dict4.Count > i && !dict5.ContainsKey(mac))
-                                {
-                                    dict8.Add(mac, dict7.ElementAt(i).Value);
-                                }
-                            }
-                        }
-
-                        var dict0 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaPhysAddress);
-                        var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
-                        var dict2 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaType);
-
-                        List<SwitchHost> list = new List<SwitchHost>();
-
-                        if (dict0 != null && dict1 != null && dict2 != null)
-                        {
-                            for (int i = 0; i < dict0.Count; i += 1)
-                            {
-                                if (dict1.Count > i && dict2.Count > i)
-                                {
-                                    string mac = BitConverter.ToString(dict0.ElementAt(i).Value, 2);
-                                    int portIndex = dict5.ContainsKey(mac) ? int.Parse(dict5[mac]) : 0;
-                                    SwitchHost host = new SwitchHost
-                                    {
-                                        MACAddress = mac.Replace('-', ':'),
-                                        IPAddress = dict1.ElementAt(i).Value,
-                                        State = (HostState)dict2.ElementAt(i).Value,
-                                        PortIndex = portIndex,
-                                        Port = switchDevice.PortList.FirstOrDefault(item => item.Index == portIndex)
-                                    };
-
-                                    if (portIndex != 0)
-                                    {
-                                        var find = list.Find(item => item.PortIndex == portIndex);
-                                        if (find != null)
-                                        {
-                                            find.IsCascade = true;
-                                            host.IsCascade = true;
-                                        }
-                                    }
-
-                                    if (dict8.ContainsKey(mac))
-                                    {
-                                        dict8.Remove(mac);
-                                    }
-
-                                    list.Add(host);
-                                }
-                            }
-                        }
-
-                        for (int i = 0; i < dict8.Count; i += 1)
-                        {
-                            string mac = dict8.ElementAt(i).Key;
-                            var port = switchDevice.PortList.FirstOrDefault(item => item.Name == dict8.ElementAt(i).Value);
-                            var index = port == null ? 0 : port.Index;
-
-                            SwitchHost host = new SwitchHost
-                            {
-                                MACAddress = mac.Replace('-', ':'),
-                                IPAddress = "未知IP地址",
-                                State = HostState.Invalid,
-                                PortIndex = index,
-                                Port = port
-                            };
-
-                            list.Add(host);
-                        }
-
-                        switchDevice.RefreshHostList(list);
                     }
 
                     switchDevice.Refresh();
@@ -738,7 +747,7 @@ namespace LanMonitor
                                 else
                                 {
                                     list[i].State = DeviceState.Offline;
-                                    AddToast("消息提示", string.Format("主机[{0}]的网络适配器[{1}]已断开连接！", host.Name, list[i].IPAddress));
+                                    AddToast("消息提示", string.Format("主机 [{0}] 的网络适配器 [{1}] 已断开连接！", host.Name, list[i].IPAddress));
                                 }
                             }
                             list[i].SwitchIPAddress = null;
@@ -749,7 +758,7 @@ namespace LanMonitor
                         {
                             if (list[i].State == DeviceState.Offline)
                             {
-                                AddToast("消息提示", string.Format("主机[{0}]的网络适配器[{1}]已连接至交换机[{2}]！", host.Name, list[i].IPAddress, switchParent.Name));
+                                AddToast("消息提示", string.Format("主机 [{0}] 的网络适配器 [{1}] 已连接至交换机 [{2}] ！", host.Name, list[i].IPAddress, switchParent.Name));
                             }
                             list[i].SwitchIPAddress = switchIP;
                             list[i].SwitchDevice = switchParent;

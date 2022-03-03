@@ -44,16 +44,9 @@ namespace LanMonitor
 
         public static ReportMessage GetReportMessage(IPEndPoint endpoint)
         {
-            try
-            {
-                Discovery discovery = Messenger.GetNextDiscovery(SnmpType.GetBulkRequestPdu);
-                ReportMessage report = discovery.GetResponse(Timeout, endpoint);
-                return report;
-            }
-            catch
-            {
-                return null;
-            }
+            Discovery discovery = Messenger.GetNextDiscovery(SnmpType.GetBulkRequestPdu);
+            ReportMessage report = discovery.GetResponse(Timeout, endpoint);
+            return report;
         }
         public static string ByteArrayToHexString(byte[] bytes, int offset = 0, int count = -1)
         {
@@ -87,92 +80,50 @@ namespace LanMonitor
 
         private static List<Variable> FetchData(ReportMessage report, IPEndPoint endpoint, string OID)
         {
-            try
-            {
 #pragma warning disable CS0618 // 类型或成员已过时
-                SHA1AuthenticationProvider auth = new SHA1AuthenticationProvider(new OctetString(AuthPassword));
+            SHA1AuthenticationProvider auth = new SHA1AuthenticationProvider(new OctetString(AuthPassword));
 #pragma warning restore CS0618 // 类型或成员已过时
-                AESPrivacyProvider priv = new AESPrivacyProvider(new OctetString(PrivPassword), auth);
-                List<Variable> result = new List<Variable>();
-                _ = Messenger.BulkWalk(VersionCode.V3,
-                                  endpoint,
-                                  new OctetString(Username),
-                                  OctetString.Empty,
-                                  new ObjectIdentifier(OID),
-                                  result,
-                                  Timeout,
-                                  RetryCount,
-                                  WalkMode.WithinSubtree,
-                                  priv,
-                                  report);
-                return result;
-            }
-            catch
-            {
-                return null;
-            }
+            AESPrivacyProvider priv = new AESPrivacyProvider(new OctetString(PrivPassword), auth);
+            List<Variable> result = new List<Variable>();
+            _ = Messenger.BulkWalk(VersionCode.V3,
+                              endpoint,
+                              new OctetString(Username),
+                              OctetString.Empty,
+                              new ObjectIdentifier(OID),
+                              result,
+                              Timeout,
+                              RetryCount,
+                              WalkMode.WithinSubtree,
+                              priv,
+                              report);
+            return result;
         }
 
         public static Dictionary<string, string> FetchStringData(ReportMessage report, IPEndPoint endpoint, string OID)
         {
-            try
-            {
-                List<Variable> result = FetchData(report, endpoint, OID);
-                return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToString());
-            }
-            catch
-            {
-                return null;
-            }
+            List<Variable> result = FetchData(report, endpoint, OID);
+            return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToString());
         }
 
         public static Dictionary<string, byte[]> FetchBytesData(ReportMessage report, IPEndPoint endpoint, string OID)
         {
-            try
-            {
-                List<Variable> result = FetchData(report, endpoint, OID);
-                return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToBytes());
-            }
-            catch
-            {
-                return null;
-            }
+            List<Variable> result = FetchData(report, endpoint, OID);
+            return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToBytes());
         }
         public static Dictionary<string, int> FetchIntData(ReportMessage report, IPEndPoint endpoint, string OID)
         {
-            try
-            {
-                List<Variable> result = FetchData(report, endpoint, OID);
-                return result?.ToDictionary(item => item.Id.ToString(), item => ((Integer32)item.Data).ToInt32());
-            }
-            catch
-            {
-                return null;
-            }
+            List<Variable> result = FetchData(report, endpoint, OID);
+            return result?.ToDictionary(item => item.Id.ToString(), item => ((Integer32)item.Data).ToInt32());
         }
         public static Dictionary<string, uint> FetchCounterData(ReportMessage report, IPEndPoint endpoint, string OID)
         {
-            try
-            {
-                List<Variable> result = FetchData(report, endpoint, OID);
-                return result?.ToDictionary(item => item.Id.ToString(), item => ((Counter32)item.Data).ToUInt32());
-            }
-            catch
-            {
-                return null;
-            }
+            List<Variable> result = FetchData(report, endpoint, OID);
+            return result?.ToDictionary(item => item.Id.ToString(), item => ((Counter32)item.Data).ToUInt32());
         }
         public static Dictionary<string, TimeSpan> FetchTimeSpanData(ReportMessage report, IPEndPoint endpoint, string OID)
         {
-            try
-            {
-                List<Variable> result = FetchData(report, endpoint, OID);
-                return result?.ToDictionary(item => item.Id.ToString(), item => ((TimeTicks)item.Data).ToTimeSpan());
-            }
-            catch
-            {
-                return null;
-            }
+            List<Variable> result = FetchData(report, endpoint, OID);
+            return result?.ToDictionary(item => item.Id.ToString(), item => ((TimeTicks)item.Data).ToTimeSpan());
         }
     }
 }
