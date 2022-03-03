@@ -691,7 +691,7 @@ namespace LanMonitor
                             SwitchHost host = new SwitchHost
                             {
                                 MACAddress = mac.Replace('-', ':'),
-                                IPAddress = "未知",
+                                IPAddress = "未知IP地址",
                                 State = HostState.Invalid,
                                 PortIndex = index,
                                 Port = port
