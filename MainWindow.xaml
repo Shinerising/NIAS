@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LanMonitor"
         mc:Ignorable="d"
         Title="{StaticResource Title}" Height="800" Width="1280" MinWidth="640" MinHeight="360"
-        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}" Loaded="Window_Loaded">
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}" Loaded="Window_Loaded" FontFamily="Tahoma, Microsoft YaHei UI, Arial">
     <Window.Resources>
         <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
             <Grid x:Name="Grid" Background="{TemplateBinding Background}">
@@ -791,9 +791,9 @@
                                                 <DataTemplate>
                                                     <Border x:Name="Border" Padding="12,0" VerticalAlignment="Stretch">
                                                         <Canvas MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
-                                                            <Line x:Name="Line" X1="0" X2="0" Y1="{Binding Top}" Y2="{Binding Bottom}" Stroke="#333" StrokeThickness="2"/>
-                                                            <Line x:Name="Dot1" Canvas.Top="{Binding Top}" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                            <Line x:Name="Dot2" Canvas.Top="{Binding Bottom}" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                            <Line x:Name="Line" X1="0" X2="0" Y1="{Binding Top}" Y2="{Binding Bottom}" Stroke="#666" StrokeThickness="2"/>
+                                                            <Line x:Name="Dot1" Canvas.Top="{Binding Top}" StrokeThickness="8" Stroke="#666" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                            <Line x:Name="Dot2" Canvas.Top="{Binding Bottom}" StrokeThickness="8" Stroke="#666" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                             <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                             <Path x:Name="Path1" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
                                                             <Line x:Name="Dot4" Visibility="Collapsed" Canvas.Top="{Binding Bottom}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
