@@ -188,6 +188,7 @@ namespace LanMonitor
             if (deviceA == null || deviceB == null || indexA == indexB)
             {
                 IsHidden = true;
+                return;
             }
 
             double top = 66;

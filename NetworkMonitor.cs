@@ -789,8 +789,12 @@ namespace LanMonitor
 
                 foreach (SwitchConnectonModelView connection in ConnectionList)
                 {
-                    var hostA = connection.DeviceA.HostList.FirstOrDefault(item => item.MACAddress == connection.DeviceB.MACAddress);
-                    var hostB = connection.DeviceB.HostList.FirstOrDefault(item => item.MACAddress == connection.DeviceA.MACAddress);
+                    if (connection.IsHidden)
+                    {
+                        continue;
+                    }
+                    var hostA = connection.DeviceA.HostList?.FirstOrDefault(item => item.MACAddress == connection.DeviceB.MACAddress);
+                    var hostB = connection.DeviceB.HostList?.FirstOrDefault(item => item.MACAddress == connection.DeviceA.MACAddress);
                     if (hostA == null || hostB == null)
                     {
                         if (connection.State == DeviceState.Online)
