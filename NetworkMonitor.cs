@@ -503,11 +503,11 @@ namespace LanMonitor
 
             while (true)
             {
-                if (RefreshStopwatch.IsRunning && RefreshStopwatch.ElapsedMilliseconds - LastSwitchRefreshTimeStamp > 10000)
+                if (RefreshStopwatch.IsRunning && RefreshStopwatch.ElapsedMilliseconds - LastSwitchRefreshTimeStamp > 20000)
                 {
                     if (!isRefreshExpiredAlert)
                     {
-                        AddToast("消息提示", "交换机数据已超过10秒未能正常刷新，请尝试重启监控程序！");
+                        AddToast("消息提示", "交换机数据已超过20秒未能正常刷新，请尝试重启监控程序！");
                         isRefreshExpiredAlert = true;
                     }
                 }
