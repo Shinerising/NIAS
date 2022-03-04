@@ -23,13 +23,13 @@ namespace LanMonitor
             public const string OID_ifOutOctets = "1.3.6.1.2.1.2.2.1.16";
             public const string OID_sysDescr = "1.3.6.1.2.1.1.1";
             public const string OID_sysUpTime = "1.3.6.1.2.1.1.3";
+            public const string OID_hwStackSystemMac = "1.3.6.1.4.1.2011.5.25.183.1.4";
             public const string OID_hwArpDynMacAdd = "1.3.6.1.4.1.2011.5.25.123.1.17.1.11";
             public const string OID_hwArpDynOutIfIndex = "1.3.6.1.4.1.2011.5.25.123.1.17.1.14";
             public const string OID_hwArpDynTable = "1.3.6.1.4.1.2011.5.25.123.1.17.1";
             public const string OID_hwArpCfgTable = "1.3.6.1.4.1.2011.5.25.123.1.18.1";
             public const string OID_dot1dTpFdbAddress = "1.3.6.1.2.1.17.4.3.1.1";
             public const string OID_dot1dTpFdbPort = "1.3.6.1.2.1.17.4.3.1.2";
-            public const string OID_hwStackSystemMac = "1.3.6.1.4.1.2011.5.25.183.1.4";
         }
 
         public static string Username;

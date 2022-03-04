@@ -22,6 +22,7 @@ using System.Configuration;
 using System.Collections.Specialized;
 using System.Text;
 using System.Windows.Threading;
+using System.Media;
 
 namespace LanMonitor
 {
@@ -801,7 +802,10 @@ namespace LanMonitor
                         {
                             AddToast("消息提示", string.Format("交换机 [{0}] 与交换机 [{1}] 之间的连接已断开！", connection.DeviceA.Name, connection.DeviceB.Name));
                         }
-                        connection.State = DeviceState.Offline;
+                        else if (connection.State != DeviceState.Unknown)
+                        {
+                            connection.State = DeviceState.Offline;
+                        }
                     }
                     else
                     {
@@ -842,6 +846,7 @@ namespace LanMonitor
                     ToastCollection.RemoveAt(0);
                 }
                 ToastCollection.Add(new ToastMessage(title, message));
+                SystemSounds.Exclamation.Play();
             });
         }
 
