@@ -5,7 +5,12 @@ using System.Net;
 
 namespace LanMonitor
 {
-    public class SwitchPort : CustomINotifyPropertyChanged
+    public interface IHoverable
+    {
+        bool IsHover { get; }
+        void SetHover(bool flag);
+    }
+    public class SwitchPort : CustomINotifyPropertyChanged, IHoverable
     {
         public int Index { get; set; }
         public string Name { get; set; }
@@ -77,7 +82,7 @@ namespace LanMonitor
             Notify(new { HostName, IPAddress, MACAddress, Port, PortIndex, IsCascade, State, Tip });
         }
     }
-    public class LanHostAdapter : CustomINotifyPropertyChanged
+    public class LanHostAdapter : CustomINotifyPropertyChanged, IHoverable
     {
         public struct LineVector
         {
@@ -159,15 +164,66 @@ namespace LanMonitor
         Dynamic = 3,
         Static = 4,
     }
+    public class SwitchConnectonModelView : CustomINotifyPropertyChanged, IHoverable
+    {
+        public double Top { get; set; }
+        public double Bottom { get; set; }
+        public string Brief { get; set; }
+        public bool IsHidden { get; set; }
+        public DeviceState State { get; set; }
+        public SwitchDeviceModelView DeviceA { get; set; }
+        public SwitchHost HostA { get; set; }
+        public SwitchDeviceModelView DeviceB { get; set; }
+        public SwitchHost HostB { get; set; }
+        public string Tip => string.Format("连接方式：{1}{0}交换机A：{2}{0}网口A：{3}{0}交换机B：{4}{0}网口B：{5}{0}连接状态：{6}", Environment.NewLine, "交换机级联", DeviceA?.Name, HostA?.Port == null ? "未知" : HostA.Port.Name, DeviceB?.Name, HostB?.Port == null ? "未知" : HostB.Port.Name, State == DeviceState.Unknown ? "未知" : (State == DeviceState.Online ? "已连接" : "未连接"));
+        public bool IsHover { get; set; }
+        public void SetHover(bool flag)
+        {
+            IsHover = flag;
+            Notify(new { IsHover });
+        }
+        public SwitchConnectonModelView(string brief, SwitchDeviceModelView deviceA, SwitchDeviceModelView deviceB, int indexA, int indexB)
+        {
+            Brief = brief;
+            if (deviceA == null || deviceB == null || indexA == indexB)
+            {
+                IsHidden = true;
+            }
+
+            double top = 66;
+            double height = 92;
+
+            if (indexA < indexB)
+            {
+                DeviceA = deviceA;
+                DeviceB = deviceB;
+                Top = indexA * height + top;
+                Bottom = indexB * height + top;
+            }
+            else
+            {
+                DeviceA = deviceB;
+                DeviceB = deviceA;
+                Top = indexB * height + top;
+                Bottom = indexA * height + top;
+            }
+        }
+        public void Refresh()
+        {
+            Notify(new { State });
+        }
+
+    }
     public class SwitchDeviceModelView : CustomINotifyPropertyChanged
     {
         public string Name { get; set; }
         public string Address { get; set; }
         public IPEndPoint EndPoint { get; set; }
+        public string MACAddress { get; set; }
         public string Information { get; set; }
         public DeviceState State { get; set; } = DeviceState.Unknown;
         public string UpTime { get; set; }
-        public string Tip => string.Format("设备名称：{1}{0}通信IP地址：{2}{0}当前状态：{3}{0}运行时间：{4}", Environment.NewLine, Name, Address, State == DeviceState.Online ? "在线" : (State == DeviceState.Offline ? "离线" : "未知"), UpTime ?? "未知");
+        public string Tip => string.Format("设备名称：{1}{0}通信IP地址：{2}{0}MAC地址：{3}{0}当前状态：{4}{0}运行时间：{5}", Environment.NewLine, Name, Address, MACAddress, State == DeviceState.Online ? "在线" : (State == DeviceState.Offline ? "离线" : "未知"), UpTime ?? "未知");
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
         public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();

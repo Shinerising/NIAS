@@ -146,14 +146,14 @@ namespace LanMonitor
             networkManager.RemoveToast(((FrameworkElement)sender).DataContext as ToastMessage);
         }
 
-        private void Line_MouseEnter(object sender, MouseEventArgs e)
+        private void Element_MouseEnter(object sender, MouseEventArgs e)
         {
-            (((FrameworkElement)sender).DataContext as LanHostAdapter).SetHover(true);
+            (((FrameworkElement)sender).DataContext as IHoverable).SetHover(true);
         }
 
-        private void Line_MouseLeave(object sender, MouseEventArgs e)
+        private void Element_MouseLeave(object sender, MouseEventArgs e)
         {
-            (((FrameworkElement)sender).DataContext as LanHostAdapter).SetHover(false);
+            (((FrameworkElement)sender).DataContext as IHoverable).SetHover(false);
         }
     }
 }
