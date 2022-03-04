@@ -210,7 +210,7 @@ namespace LanMonitor
         }
         public void Refresh()
         {
-            Notify(new { State });
+            Notify(new { State, Tip });
         }
 
     }

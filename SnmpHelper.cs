@@ -25,8 +25,11 @@ namespace LanMonitor
             public const string OID_sysUpTime = "1.3.6.1.2.1.1.3";
             public const string OID_hwArpDynMacAdd = "1.3.6.1.4.1.2011.5.25.123.1.17.1.11";
             public const string OID_hwArpDynOutIfIndex = "1.3.6.1.4.1.2011.5.25.123.1.17.1.14";
+            public const string OID_hwArpDynTable = "1.3.6.1.4.1.2011.5.25.123.1.17.1";
+            public const string OID_hwArpCfgTable = "1.3.6.1.4.1.2011.5.25.123.1.18.1";
             public const string OID_dot1dTpFdbAddress = "1.3.6.1.2.1.17.4.3.1.1";
             public const string OID_dot1dTpFdbPort = "1.3.6.1.2.1.17.4.3.1.2";
+            public const string OID_hwStackSystemMac = "1.3.6.1.4.1.2011.5.25.183.1.4";
         }
 
         public static string Username;
@@ -47,35 +50,6 @@ namespace LanMonitor
             Discovery discovery = Messenger.GetNextDiscovery(SnmpType.GetBulkRequestPdu);
             ReportMessage report = discovery.GetResponse(Timeout, endpoint);
             return report;
-        }
-        public static string ByteArrayToHexString(byte[] bytes, int offset = 0, int count = -1)
-        {
-            if (bytes == null)
-            {
-                return string.Empty;
-            }
-            if (count == -1)
-            {
-                count = bytes.Length;
-            }
-            if (offset < 0 || count <= 0)
-            {
-                return string.Empty;
-            }
-            if (bytes.Length < offset + count)
-            {
-                count = bytes.Length - offset;
-            }
-            char[] charArray = new char[count * 2];
-            int b;
-            for (int i = 0; i < count; i += 1)
-            {
-                b = bytes[offset + i] >> 4;
-                charArray[i * 2] = (char)(55 + b + (((b - 10) >> 31) & -7));
-                b = bytes[offset + i] & 0xF;
-                charArray[i * 2 + 1] = (char)(55 + b + (((b - 10) >> 31) & -7));
-            }
-            return new string(charArray);
         }
 
         private static List<Variable> FetchData(ReportMessage report, IPEndPoint endpoint, string OID)

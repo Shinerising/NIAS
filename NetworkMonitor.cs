@@ -553,8 +553,10 @@ namespace LanMonitor
                                 switchDevice.Information = dict0?.FirstOrDefault().Value;
                             }
                             var dict1 = SnmpHelper.FetchTimeSpanData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysUpTime);
+                            var dict2 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwStackSystemMac);
                             TimeSpan upTime = dict1 == null ? new TimeSpan() : dict1.FirstOrDefault().Value;
                             switchDevice.UpTime = upTime.TotalMilliseconds == 0 ? "未知" : string.Format("{0}天 {1:00}:{2:00}:{3:00}", upTime.Days, upTime.Hours, upTime.Minutes, upTime.Seconds);
+                            switchDevice.MACAddress = BitConverter.ToString(dict2.FirstOrDefault().Value, 2).Replace("-", ":");
                         }
 
                         {
@@ -783,6 +785,33 @@ namespace LanMonitor
 
                         list[i].Refresh();
                     }
+                }
+
+                foreach (SwitchConnectonModelView connection in ConnectionList)
+                {
+                    var hostA = connection.DeviceA.HostList.FirstOrDefault(item => item.MACAddress == connection.DeviceB.MACAddress);
+                    var hostB = connection.DeviceB.HostList.FirstOrDefault(item => item.MACAddress == connection.DeviceA.MACAddress);
+                    if (hostA == null || hostB == null)
+                    {
+                        if (connection.State == DeviceState.Online)
+                        {
+                            AddToast("消息提示", string.Format("交换机 [{0}] 与交换机 [{1}] 之间的连接已断开！", connection.DeviceA.Name, connection.DeviceB.Name));
+                        }
+                        connection.State = DeviceState.Offline;
+                    }
+                    else
+                    {
+                        if (connection.State == DeviceState.Offline)
+                        {
+                            AddToast("消息提示", string.Format("交换机 [{0}] 与交换机 [{1}] 已连接！", connection.DeviceA.Name, connection.DeviceB.Name));
+                        }
+                        connection.State = DeviceState.Online;
+                    }
+
+                    connection.HostA = hostA;
+                    connection.HostB = hostB;
+
+                    connection.Refresh();
                 }
 
                 Notify(new { SwitchPortCount, SwitchHostCount, LanHostCount });
