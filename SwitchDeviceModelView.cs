@@ -60,7 +60,7 @@ namespace LanMonitor
             Notify(new { IsHover });
         }
     }
-    public class SwitchHost : CustomINotifyPropertyChanged
+    public class SwitchHost : CustomINotifyPropertyChanged, IHoverable
     {
         public string HostName { get; set; }
         public string IPAddress { get; set; }
@@ -70,6 +70,16 @@ namespace LanMonitor
         public bool IsCascade { get; set; }
         public HostState State { get; set; }
         public string Tip => string.Format("IP地址：{0}{4}MAC地址：{1}{4}网口号：{2}{4}地址类型：{3}", IPAddress, MACAddress, Port == null ? "未知" : Port.Name, State == HostState.Dynamic ? "动态" : (State == HostState.Static ? "静态" : "其他"), Environment.NewLine);
+        public bool IsHover { get; set; }
+        public void SetHover(bool flag)
+        {
+            IsHover = flag;
+            if (Port != null)
+            {
+                Port.SetHover(flag);
+            }
+            Notify(new { IsHover });
+        }
         public void Refresh(SwitchHost host)
         {
             HostName = host.HostName;
@@ -79,6 +89,7 @@ namespace LanMonitor
             Port = host.Port;
             IsCascade = host.IsCascade;
             State = host.State;
+
             Notify(new { HostName, IPAddress, MACAddress, Port, PortIndex, IsCascade, State, Tip });
         }
     }
@@ -180,6 +191,14 @@ namespace LanMonitor
         public void SetHover(bool flag)
         {
             IsHover = flag;
+            if (HostA != null && HostA.Port != null)
+            {
+                HostA.Port.SetHover(flag);
+            }
+            if (HostB != null && HostB.Port != null)
+            {
+                HostB.Port.SetHover(flag);
+            }
             Notify(new { IsHover });
         }
         public SwitchConnectonModelView(string brief, SwitchDeviceModelView deviceA, SwitchDeviceModelView deviceB, int indexA, int indexB)

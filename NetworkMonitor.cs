@@ -399,7 +399,7 @@ namespace LanMonitor
         {
             while (true)
             {
-                List<ActivePort> portList = portMonitor.ListActivePort();
+                List<ActivePort> portList = portMonitor.ListActivePort().Take(256).ToList();
 
                 if (PortCollection != null && portList.Count == PortCollection.Count)
                 {
@@ -841,7 +841,7 @@ namespace LanMonitor
             }
             dispatcher?.Invoke(() =>
             {
-                while (ToastCollection.Count > 3)
+                while (ToastCollection.Count > 4)
                 {
                     ToastCollection.RemoveAt(0);
                 }
@@ -963,7 +963,7 @@ namespace LanMonitor
                 }
             });
 
-            return computerList;
+            return computerList.ToList();
         }
 
         public void ListLANComputers()
@@ -1175,71 +1175,69 @@ namespace LanMonitor
 
         public void EnumerateNetworkAdapters()
         {
-            lock (adapterList)
+            PerformanceCounterCategory category = new PerformanceCounterCategory("Network Interface");
+            string[] interfaceArray = category.GetInstanceNames();
+
+            IEnumerable networkCollection = NetworkInterface
+                .GetAllNetworkInterfaces()
+                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback && nic.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                .OrderBy(nic => nic.OperationalStatus != OperationalStatus.Up)
+                .Select(nic => nic);
+
+            int index = 0;
+            foreach (NetworkInterface network in networkCollection)
             {
-                PerformanceCounterCategory category = new PerformanceCounterCategory("Network Interface");
-                string[] interfaceArray = category.GetInstanceNames();
-
-                IEnumerable networkCollection = NetworkInterface
-                    .GetAllNetworkInterfaces()
-                    .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback && nic.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
-                    .OrderBy(nic => nic.OperationalStatus != OperationalStatus.Up)
-                    .Select(nic => nic);
-
-                int index = 0;
-                foreach (NetworkInterface network in networkCollection)
+                if (adapterList.Count > index && adapterList[index].ID == network.Id)
                 {
-                    if (adapterList.Count > index && adapterList[index].ID == network.Id)
-                    {
-                        adapterList[index].SetNetwork(network);
-                        index += 1;
-                        continue;
-                    }
-                    string name = network.Name;
-                    string description = network.Description;
-                    string flag = string.Empty;
-                    foreach (string interfaceName in interfaceArray)
-                    {
-                        if (GetLetter(name) == GetLetter(interfaceName) || GetLetter(description) == GetLetter(interfaceName))
-                        {
-                            flag = interfaceName;
-                            break;
-                        }
-                    }
-                    if (flag != string.Empty)
-                    {
-                        NetworkAdapter adapter = new NetworkAdapter(network)
-                        {
-                            downloadCount = new PerformanceCounter("Network Interface", "Bytes Received/sec", flag),
-                            uploadCounter = new PerformanceCounter("Network Interface", "Bytes Sent/sec", flag),
-                            bandwidthCounter = new PerformanceCounter("Network Interface", "Current Bandwidth", flag)
-                        };
-
-                        if (adapterList.Count > index)
-                        {
-                            adapterList[index] = adapter;
-                        }
-                        else
-                        {
-                            adapterList.Add(adapter);
-                        }
-                    }
+                    adapterList[index].SetNetwork(network);
                     index += 1;
+                    continue;
                 }
-                while (adapterList.Count > index)
+                string name = network.Name;
+                string description = network.Description;
+                string flag = string.Empty;
+                foreach (string interfaceName in interfaceArray)
                 {
-                    adapterList.RemoveAt(index);
+                    if (GetLetter(name) == GetLetter(interfaceName) || GetLetter(description) == GetLetter(interfaceName))
+                    {
+                        flag = interfaceName;
+                        break;
+                    }
                 }
+                if (flag != string.Empty)
+                {
+                    NetworkAdapter adapter = new NetworkAdapter(network)
+                    {
+                        downloadCount = new PerformanceCounter("Network Interface", "Bytes Received/sec", flag),
+                        uploadCounter = new PerformanceCounter("Network Interface", "Bytes Sent/sec", flag),
+                        bandwidthCounter = new PerformanceCounter("Network Interface", "Current Bandwidth", flag)
+                    };
+
+                    if (adapterList.Count > index)
+                    {
+                        adapterList[index] = adapter;
+                    }
+                    else
+                    {
+                        adapterList.Add(adapter);
+                    }
+                }
+                index += 1;
+            }
+            while (adapterList.Count > index)
+            {
+                adapterList.RemoveAt(index);
             }
         }
 
         public List<NetworkAdapter> Refresh()
         {
-            foreach (NetworkAdapter adapter in adapterList)
+            var list = adapterList.ToList();
+            foreach (NetworkAdapter adapter in list)
             {
                 adapter.Refresh();
             }
-            return adapterList;
+            return list;
         }
 
         public void StartMonitoring()
