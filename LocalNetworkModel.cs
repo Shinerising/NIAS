@@ -73,7 +73,7 @@ namespace LanMonitor
                 catch
                 {
                 }
-                return Application.Current.FindResource("UnknownIP").ToString();
+                return AppResource.GetString(AppResource.StringKey.UnknownIP);
             }
         }
         public string MACAddress => string.Join(":", (from c in networkInterface?.GetPhysicalAddress().GetAddressBytes() select c.ToString("X2")).ToArray());

@@ -12,7 +12,7 @@ namespace LanMonitor
         public string Status { get; set; }
         public string MaxSpeed { get; set; }
         public string Description { get; set; }
-        public string ToolTip => string.Format(Application.Current.FindResource("NetworkToolTip").ToString(), Environment.NewLine, Description, IPAddress, MacAddress, MaxSpeed);
+        public string ToolTip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_NetworkDevice), Environment.NewLine, Description, IPAddress, MacAddress, MaxSpeed);
         public string DownloadSpeed { get; set; }
         public string UploadSpeed { get; set; }
 

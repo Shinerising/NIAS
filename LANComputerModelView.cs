@@ -12,7 +12,7 @@ namespace LanMonitor
         public string Status { get; set; }
         public string UID { get; set; }
         public string Latency { get; set; }
-        public string ToolTip => string.Format(Application.Current.FindResource("ComputerToolTip").ToString(), Environment.NewLine, Name, IPAddress, UID);
+        public string ToolTip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Computer), Environment.NewLine, Name, IPAddress, UID);
 
         public LANComputerModelView()
         {

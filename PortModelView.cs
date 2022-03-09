@@ -13,7 +13,7 @@ namespace LanMonitor
         public string ProcessName { get; set; }
 
         public string State { get; set; }
-        public string ToolTip => string.Format(Application.Current.FindResource("PortToolTip").ToString(), Environment.NewLine, Type, LocalEndPoint, RemoteEndPoint);
+        public string ToolTip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_ActivePort), Environment.NewLine, Type, LocalEndPoint, RemoteEndPoint);
 
         public string StateText
         {
@@ -22,18 +22,18 @@ namespace LanMonitor
                 switch (State)
                 {
                     case "Established":
-                        return Application.Current.FindResource("Port_Established").ToString();
+                        return AppResource.GetString(AppResource.StringKey.Port_Established);
                     case "Listen":
-                        return Application.Current.FindResource("Port_Listening").ToString();
+                        return AppResource.GetString(AppResource.StringKey.Port_Listening);
                     case "CloseWait":
-                        return Application.Current.FindResource("Port_CloseWait").ToString();
+                        return AppResource.GetString(AppResource.StringKey.Port_CloseWait);
                     case "TimeWait":
-                        return Application.Current.FindResource("Port_TimeWait").ToString();
+                        return AppResource.GetString(AppResource.StringKey.Port_TimeWait);
                     case "SynSent":
-                        return Application.Current.FindResource("Port_SynSent").ToString();
+                        return AppResource.GetString(AppResource.StringKey.Port_SynSent);
                     case "":
                     default:
-                        return Application.Current.FindResource("Port_Default").ToString();
+                        return AppResource.GetString(AppResource.StringKey.Port_Default);
                 }
             }
         }

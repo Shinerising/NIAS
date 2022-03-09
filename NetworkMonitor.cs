@@ -507,7 +507,7 @@ namespace LanMonitor
                 {
                     if (!isRefreshExpiredAlert)
                     {
-                        AddToast("消息提示", "交换机数据已超过20秒未能正常刷新，请尝试重启监控程序！");
+                        AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), AppResource.GetString(AppResource.StringKey.Message_SNMPWarning));
                         isRefreshExpiredAlert = true;
                     }
                 }
@@ -546,7 +546,7 @@ namespace LanMonitor
 
                         if (switchDevice.State == DeviceState.Offline)
                         {
-                            AddToast("消息提示", string.Format("已成功使用IP地址 [{0}] 重新连接至交换机 [{1}]！", switchDevice.Address, switchDevice.Name));
+                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchReconnect), switchDevice.Address, switchDevice.Name));
                         }
                         switchDevice.State = DeviceState.Online;
 
@@ -559,7 +559,7 @@ namespace LanMonitor
                             var dict1 = SnmpHelper.FetchTimeSpanData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysUpTime);
                             var dict2 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwStackSystemMac);
                             TimeSpan upTime = dict1 == null ? new TimeSpan() : dict1.FirstOrDefault().Value;
-                            switchDevice.UpTime = upTime.TotalMilliseconds == 0 ? "未知" : string.Format("{0}天 {1:00}:{2:00}:{3:00}", upTime.Days, upTime.Hours, upTime.Minutes, upTime.Seconds);
+                            switchDevice.UpTime = upTime.TotalMilliseconds == 0 ? AppResource.GetString(AppResource.StringKey.Unknown) : string.Format(AppResource.GetString(AppResource.StringKey.TimeSpan), upTime.Days, upTime.Hours, upTime.Minutes, upTime.Seconds);
                             switchDevice.MACAddress = BitConverter.ToString(dict2.FirstOrDefault().Value, 2).Replace("-", ":");
                         }
 
@@ -713,7 +713,7 @@ namespace LanMonitor
                                 SwitchHost host = new SwitchHost
                                 {
                                     MACAddress = mac.Replace('-', ':'),
-                                    IPAddress = "未知IP地址",
+                                    IPAddress = AppResource.GetString(AppResource.StringKey.UnknownIPAddress),
                                     State = HostState.Invalid,
                                     PortIndex = index,
                                     Port = port
@@ -734,7 +734,7 @@ namespace LanMonitor
                         {
                             if (switchDevice.State == DeviceState.Online)
                             {
-                                AddToast("消息提示", string.Format("无法使用IP地址 [{0}] 采集交换机 [{1}] 的信息，请检查设备连接状态！", switchDevice.Address, switchDevice.Name));
+                                AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchDisconnect), switchDevice.Address, switchDevice.Name));
                             }
                             switchDevice.SetIdle();
                         }
@@ -775,7 +775,7 @@ namespace LanMonitor
                                 else
                                 {
                                     list[i].State = DeviceState.Offline;
-                                    AddToast("消息提示", string.Format("主机 [{0}] 的网络适配器 [{1}] 已断开连接！", host.Name, list[i].IPAddress));
+                                    AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_HostDisconnect), host.Name, list[i].IPAddress));
                                 }
                             }
                             list[i].SwitchIPAddress = null;
@@ -786,7 +786,7 @@ namespace LanMonitor
                         {
                             if (list[i].State == DeviceState.Offline)
                             {
-                                AddToast("消息提示", string.Format("主机 [{0}] 的网络适配器 [{1}] 已连接至交换机 [{2}] ！", host.Name, list[i].IPAddress, switchParent.Name));
+                                AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_HostReconnect), host.Name, list[i].IPAddress, switchParent.Name));
                             }
                             list[i].SwitchIPAddress = switchIP;
                             list[i].SwitchDevice = switchParent;
@@ -821,7 +821,7 @@ namespace LanMonitor
                     {
                         if (connection.State == DeviceState.Online)
                         {
-                            AddToast("消息提示", string.Format("交换机 [{0}] 与交换机 [{1}] 之间的连接已断开！", connection.DeviceA.Name, connection.DeviceB.Name));
+                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_LineDisconnect), connection.DeviceA.Name, connection.DeviceB.Name));
                         }
                         if (connection.State != DeviceState.Unknown)
                         {
@@ -832,7 +832,7 @@ namespace LanMonitor
                     {
                         if (connection.State == DeviceState.Offline)
                         {
-                            AddToast("消息提示", string.Format("交换机 [{0}] 与交换机 [{1}] 已连接！", connection.DeviceA.Name, connection.DeviceB.Name));
+                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_LineReconnect), connection.DeviceA.Name, connection.DeviceB.Name));
                         }
                         connection.State = DeviceState.Online;
                     }

@@ -536,7 +536,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
-                                <TextBlock Text="交换机接口"/>
+                                <TextBlock Text="{StaticResource Row_SwitchPort}"/>
                                 <TextBlock Text="{Binding SwitchPortCount, StringFormat=({0})}"/>
                             </StackPanel>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
@@ -630,7 +630,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
-                                <TextBlock Text="交换机设备"/>
+                                <TextBlock Text="{StaticResource Row_SwitchHost}"/>
                                 <TextBlock Text="{Binding SwitchHostCount, StringFormat=({0})}"/>
                             </StackPanel>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
@@ -713,7 +713,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
-                                <TextBlock Text="网络结构图"/>
+                                <TextBlock Text="{StaticResource Row_NetworkStructure}"/>
                                 <TextBlock Text="{Binding LanHostCount, StringFormat=({0})}"/>
                             </StackPanel>
                             <Border Grid.Row="1" Margin="12,0,12,12" Padding="0" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}">

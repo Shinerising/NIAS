@@ -83,6 +83,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppResource.cs" />
     <Compile Include="LANComputerModelView.cs" />
     <Compile Include="NetworkModelView.cs" />
     <Compile Include="PortModelView.cs" />

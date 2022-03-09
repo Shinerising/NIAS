@@ -23,7 +23,7 @@ namespace LanMonitor
         public string InSpeed { get; set; } = "0B/s";
         public string OutSpeed { get; set; } = "0B/s";
         public bool IsHover { get; set; }
-        public string Tip => string.Format("网口号：{1}{0}接口名称：{2}{0}当前状态：{3}{0}传入速度：{4}{0}传出速度：{5}", Environment.NewLine, Name, Brief, IsUp ? "已连接" : "未连接", InSpeed, OutSpeed);
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchPort), Environment.NewLine, Name, Brief, IsUp ? AppResource.GetString(AppResource.StringKey.Connected) : AppResource.GetString(AppResource.StringKey.Disconnected), InSpeed, OutSpeed);
         public void Refresh(SwitchPort port)
         {
             Index = port.Index;
@@ -69,7 +69,7 @@ namespace LanMonitor
         public SwitchPort Port { get; set; }
         public bool IsCascade { get; set; }
         public HostState State { get; set; }
-        public string Tip => string.Format("IP地址：{0}{4}MAC地址：{1}{4}网口号：{2}{4}地址类型：{3}", IPAddress, MACAddress, Port == null ? "未知" : Port.Name, State == HostState.Dynamic ? "动态" : (State == HostState.Static ? "静态" : "其他"), Environment.NewLine);
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchHost), IPAddress, MACAddress, Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Port.Name, State == HostState.Dynamic ? AppResource.GetString(AppResource.StringKey.Dynamic) : (State == HostState.Static ? AppResource.GetString(AppResource.StringKey.Static) : AppResource.GetString(AppResource.StringKey.Other)), Environment.NewLine);
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
         {
@@ -127,7 +127,7 @@ namespace LanMonitor
         public string SwitchIPAddress { get; set; }
         public LineVector Vector { get; set; }
         public DeviceState State { get; set; }
-        public string Tip => string.Format("IP地址：{0}{5}MAC地址：{1}{5}接入交换机：{2}{5}网口号：{3}{5}连接状态：{4}", IPAddress, Host == null ? "未知" : Host.MACAddress, SwitchDevice == null ? "未知" : SwitchDevice.Name, Host == null || Host.Port == null ? "未知" : Host.Port.Name, State == DeviceState.Online ? "已连接" : (State == DeviceState.Offline ? "连接断开" : "未知"), Environment.NewLine);
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Adapter), IPAddress, Host == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.MACAddress, SwitchDevice == null ? AppResource.GetString(AppResource.StringKey.Unknown) : SwitchDevice.Name, Host == null || Host.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.Port.Name, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Disconnected) : AppResource.GetString(AppResource.StringKey.Unknown)), Environment.NewLine);
         public SwitchHost Host { get; set; }
         public SwitchDeviceModelView SwitchDevice { get; set; }
 
@@ -186,7 +186,7 @@ namespace LanMonitor
         public SwitchHost HostA { get; set; }
         public SwitchDeviceModelView DeviceB { get; set; }
         public SwitchHost HostB { get; set; }
-        public string Tip => string.Format("连接方式：{1}{0}交换机A：{2}{0}网口A：{3}{0}交换机B：{4}{0}网口B：{5}{0}连接状态：{6}", Environment.NewLine, "交换机级联", DeviceA?.Name, HostA?.Port == null ? "未知" : HostA.Port.Name, DeviceB?.Name, HostB?.Port == null ? "未知" : HostB.Port.Name, State == DeviceState.Unknown ? "未知" : (State == DeviceState.Online ? "已连接" : "未连接"));
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchConnection), Environment.NewLine, AppResource.GetString(AppResource.StringKey.SwitchCascading), DeviceA?.Name, HostA?.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : HostA.Port.Name, DeviceB?.Name, HostB?.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : HostB.Port.Name, State == DeviceState.Unknown ? AppResource.GetString(AppResource.StringKey.Unknown) : (State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : AppResource.GetString(AppResource.StringKey.Disconnected)));
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
         {
@@ -243,7 +243,7 @@ namespace LanMonitor
         public string Information { get; set; }
         public DeviceState State { get; set; } = DeviceState.Unknown;
         public string UpTime { get; set; }
-        public string Tip => string.Format("设备名称：{1}{0}通信IP地址：{2}{0}MAC地址：{3}{0}当前状态：{4}{0}运行时间：{5}", Environment.NewLine, Name, Address, MACAddress, State == DeviceState.Online ? "在线" : (State == DeviceState.Offline ? "离线" : "未知"), UpTime ?? "未知");
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchDevice), Environment.NewLine, Name, Address, MACAddress, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Online) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Offline) : AppResource.GetString(AppResource.StringKey.Unknown)), UpTime ?? AppResource.GetString(AppResource.StringKey.Unknown));
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
         public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();
@@ -301,7 +301,7 @@ namespace LanMonitor
         public void SetIdle()
         {
             State = DeviceState.Offline;
-            UpTime = "未知";
+            UpTime = AppResource.GetString(AppResource.StringKey.Unknown);
             Information = null;
 
             RefreshPortList(null);
