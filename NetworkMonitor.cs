@@ -529,6 +529,9 @@ namespace LanMonitor
 
             RefreshStopwatch.Start();
 
+            int errorLimit = 3;
+            int errorCount = 0;
+
             while (true)
             {
                 foreach (SwitchDeviceModelView switchDevice in SwitchDeviceList)
@@ -604,6 +607,7 @@ namespace LanMonitor
                                     }
                                 }
 
+                                #region Adjust Switch Port Arrangement
                                 for (int i = 0; i < list.Count; i += 1)
                                 {
                                     if (i >= 24)
@@ -617,6 +621,7 @@ namespace LanMonitor
                                         list[i + 1] = tmp;
                                     }
                                 }
+                                #endregion
 
                             }
 
@@ -719,14 +724,20 @@ namespace LanMonitor
 
                             switchDevice.RefreshHostList(list);
                         }
+
+                        errorCount = 0;
                     }
                     catch
                     {
-                        if (switchDevice.State == DeviceState.Online)
+                        errorCount += 1;
+                        if (errorCount > errorLimit)
                         {
-                            AddToast("消息提示", string.Format("无法使用IP地址 [{0}] 采集交换机 [{1}] 的信息，请检查设备连接状态！", switchDevice.Address, switchDevice.Name));
+                            if (switchDevice.State == DeviceState.Online)
+                            {
+                                AddToast("消息提示", string.Format("无法使用IP地址 [{0}] 采集交换机 [{1}] 的信息，请检查设备连接状态！", switchDevice.Address, switchDevice.Name));
+                            }
+                            switchDevice.SetIdle();
                         }
-                        switchDevice.SetIdle();
                     }
 
                     switchDevice.Refresh();
@@ -794,6 +805,16 @@ namespace LanMonitor
                     {
                         continue;
                     }
+
+                    if (connection.DeviceA.State != DeviceState.Online || connection.DeviceB.State != DeviceState.Online)
+                    {
+                        connection.State = DeviceState.Unknown;
+                        connection.HostA = null;
+                        connection.HostB = null;
+                        connection.Refresh();
+                        continue;
+                    }
+
                     var hostA = connection.DeviceA.HostList?.FirstOrDefault(item => item.MACAddress == connection.DeviceB.MACAddress);
                     var hostB = connection.DeviceB.HostList?.FirstOrDefault(item => item.MACAddress == connection.DeviceA.MACAddress);
                     if (hostA == null || hostB == null)
@@ -802,7 +823,7 @@ namespace LanMonitor
                         {
                             AddToast("消息提示", string.Format("交换机 [{0}] 与交换机 [{1}] 之间的连接已断开！", connection.DeviceA.Name, connection.DeviceB.Name));
                         }
-                        else if (connection.State != DeviceState.Unknown)
+                        if (connection.State != DeviceState.Unknown)
                         {
                             connection.State = DeviceState.Offline;
                         }
