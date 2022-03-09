@@ -38,25 +38,29 @@
 
 ```xml
 <appSettings>
-	<!-- 是否启用交换机监视功能 -->
-	<add key="switch_enable" value="true"/>
-	<!-- 交换机用户名称 -->
-	<add key="switch_username" value="username"/>
-	<!-- 交换机Auth密码 -->
-	<add key="switch_auth" value="password"/>
-	<!-- 交换机Priv密码 -->
-	<add key="switch_priv" value="password"/>
+    <!-- 是否启用交换机监视功能 -->
+    <add key="switch_enable" value="true"/>
+    <!-- 交换机用户名称 -->
+    <add key="switch_username" value="username"/>
+    <!-- 交换机Auth密码 -->
+    <add key="switch_auth" value="password"/>
+    <!-- 交换机Priv密码 -->
+    <add key="switch_priv" value="password"/>
 </appSettings>
 <!-- 交换机IP列表 -->
 <switchList>
-	<add key="Switch01" value="172.16.24.1"/>
-	<add key="Switch02" value="172.16.25.1"/>
+    <add key="Switch01" value="172.16.24.1"/>
+    <add key="Switch02" value="172.16.25.1"/>
 </switchList>
 <!-- 局域网设备IP地址列表 -->
 <deviceList>
-	<add key="Host-A" value="172.16.24.101;172.16.25.101"/>
-	<add key="Host-B" value="172.16.24.102;172.16.25.102"/>
-	<add key="Host-C" value="172.16.24.103;172.16.25.103"/>
-	<add key="Host-D" value="172.16.24.104;172.16.25.104"/>
+    <add key="Host-A" value="172.16.24.101;172.16.25.101"/>
+    <add key="Host-B" value="172.16.24.102;172.16.25.102"/>
+    <add key="Host-C" value="172.16.24.103;172.16.25.103"/>
+    <add key="Host-D" value="172.16.24.104;172.16.25.104"/>
 </deviceList>
+<!-- 交换机互联列表 -->
+<connectionList>
+    <add key="conn-A" value="Switch01;Switch02"/>
+</connectionList>
 ```
