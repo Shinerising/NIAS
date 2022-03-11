@@ -3,7 +3,8 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xmlns:local="clr-namespace:LanMonitor">
 
-    <system:String x:Key="Title">局域网监控工具</system:String>
+    <system:String x:Key="Title">网络智能分析系统</system:String>
+    <system:String x:Key="Name">NIAS 网络智能分析系统</system:String>
     <system:String x:Key="UploadSpeed">上传速度</system:String>
     <system:String x:Key="DownloadSpeed">下载速度</system:String>
     <system:String x:Key="Connected">已连接</system:String>

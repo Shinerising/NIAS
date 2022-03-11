@@ -172,17 +172,19 @@
                 <Border HorizontalAlignment="Left">
                     <Image Source="images/title.png" RenderOptions.BitmapScalingMode="HighQuality" Width="20" Height="20" Margin="6"/>
                 </Border>
-                <TextBlock Margin="32,0,0,0" Padding="0,8" LineHeight="16" Text="{StaticResource Title}">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
+                <StackPanel Margin="32,0,0,0" Orientation="Horizontal">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsActive}" Value="False">
-                                    <Setter Property="Foreground" Value="{StaticResource Color_TextLight}"/>
+                                    <Setter Property="TextElement.Foreground" Value="{StaticResource Color_TextLight}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                    </StackPanel.Style>
+                    <TextBlock Padding="0,8" LineHeight="16" Text="{StaticResource Name}"/>
+                    <TextBlock Margin="8,0,0,0" Padding="0,8" LineHeight="16" Text="{Binding Source={x:Static local:App.Version}, StringFormat=V{0}}"/>
+                </StackPanel>
                 <Border HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True">
                         <Button Style="{StaticResource Button_Window}" Click="WindowMinimize_Click">

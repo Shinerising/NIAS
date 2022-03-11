@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 
 namespace LanMonitor
@@ -12,6 +13,7 @@ namespace LanMonitor
     /// </summary>
     public partial class App : Application
     {
+        public static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
         protected override void OnStartup(StartupEventArgs e)
         {
             Process[] processList = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
