@@ -186,7 +186,7 @@ namespace LanMonitor
         public SwitchHost HostA { get; set; }
         public SwitchDeviceModelView DeviceB { get; set; }
         public SwitchHost HostB { get; set; }
-        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchConnection), Environment.NewLine, AppResource.GetString(AppResource.StringKey.SwitchCascading), DeviceA?.Name, HostA?.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : HostA.Port.Name, DeviceB?.Name, HostB?.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : HostB.Port.Name, State == DeviceState.Unknown ? AppResource.GetString(AppResource.StringKey.Unknown) : (State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : AppResource.GetString(AppResource.StringKey.Disconnected)));
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchConnection), Environment.NewLine, AppResource.GetString(AppResource.StringKey.SwitchCascading), string.Format("{0} - {1}", DeviceA?.Name, DeviceB?.Name), string.Format("{0} - {1}", HostA?.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : HostA.Port.Name, HostB?.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : HostB.Port.Name), State == DeviceState.Unknown ? AppResource.GetString(AppResource.StringKey.Unknown) : (State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : AppResource.GetString(AppResource.StringKey.Disconnected)));
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
         {

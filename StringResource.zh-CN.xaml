@@ -49,7 +49,7 @@
     <system:String x:Key="Tip_SwitchHost">IP地址：{0}{4}MAC地址：{1}{4}网口号：{2}{4}地址类型：{3}</system:String>
     <system:String x:Key="Tip_SwitchDevice">设备名称：{1}{0}通信IP地址：{2}{0}MAC地址：{3}{0}当前状态：{4}{0}运行时间：{5}</system:String>
     <system:String x:Key="Tip_Adapter">IP地址：{0}{5}MAC地址：{1}{5}接入交换机：{2}{5}网口号：{3}{5}连接状态：{4}</system:String>
-    <system:String x:Key="Tip_SwitchConnection">连接方式：{1}{0}交换机A：{2}{0}网口A：{3}{0}交换机B：{4}{0}网口B：{5}{0}连接状态：{6}</system:String>
+    <system:String x:Key="Tip_SwitchConnection">连接方式：{1}{0}交换机连接：{2}{0}交换机对应网口：{3}{0}连接状态：{4}</system:String>
     <system:String x:Key="Status_Offline">网络不在线</system:String>
     <system:String x:Key="Status_LAN">局域网在线</system:String>
     <system:String x:Key="Status_Internet">互联网在线</system:String>
