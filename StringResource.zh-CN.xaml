@@ -58,7 +58,7 @@
     <system:String x:Key="Message_SwitchDisconnect">无法使用IP地址 [{0}] 采集交换机 [{1}] 的信息，请检查设备连接状态！</system:String>
     <system:String x:Key="Message_HostReconnect">主机 [{0}] 的网络适配器 [{1}] 已连接至交换机 [{2}] ！</system:String>
     <system:String x:Key="Message_HostDisconnect">主机 [{0}] 的网络适配器 [{1}] 已断开连接！</system:String>
-    <system:String x:Key="Message_LineReconnect">交换机 [{0}] 与交换机 [{1}] 之间的连接已断开！</system:String>
-    <system:String x:Key="Message_LineDisconnect">交换机 [{0}] 与交换机 [{1}] 已连接！</system:String>
+    <system:String x:Key="Message_LineReconnect">交换机 [{0}] 与交换机 [{1}] 已连接！</system:String>
+    <system:String x:Key="Message_LineDisconnect">交换机 [{0}] 与交换机 [{1}] 之间的连接已断开！</system:String>
     
 </ResourceDictionary>
