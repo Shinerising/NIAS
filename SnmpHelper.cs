@@ -78,46 +78,14 @@ namespace LanMonitor
         }
 
         public static string Username;
-        public static string AuthPassword;
-        public static string PrivPassword;
         public const int Timeout = 1000;
         public const int RetryCount = 3;
 
-        public static void Initialize(string user, string auth, string priv)
+        public static void Initialize(string user)
         {
             Username = user;
-            AuthPassword = auth;
-            PrivPassword = priv;
         }
-
-        public static ReportMessage GetReportMessage(IPEndPoint endpoint)
-        {
-            Discovery discovery = Messenger.GetNextDiscovery(SnmpType.GetBulkRequestPdu);
-            ReportMessage report = discovery.GetResponse(Timeout, endpoint);
-            return report;
-        }
-
-        private static List<Variable> FetchDataV3(ReportMessage report, IPEndPoint endpoint, string OID)
-        {
-#pragma warning disable CS0618 // 类型或成员已过时
-            SHA1AuthenticationProvider auth = new SHA1AuthenticationProvider(new OctetString(AuthPassword));
-#pragma warning restore CS0618 // 类型或成员已过时
-            AESPrivacyProvider priv = new AESPrivacyProvider(new OctetString(PrivPassword), auth);
-            List<Variable> result = new List<Variable>();
-            _ = Messenger.BulkWalk(VersionCode.V3,
-                              endpoint,
-                              new OctetString(Username),
-                              OctetString.Empty,
-                              new ObjectIdentifier(OID),
-                              result,
-                              Timeout,
-                              RetryCount,
-                              WalkMode.WithinSubtree,
-                              priv,
-                              report);
-            return result;
-        }
-        private static List<Variable> FetchData(ReportMessage report, IPEndPoint endpoint, string OID)
+        private static List<Variable> FetchData(IPEndPoint endpoint, string OID)
         {
             List<Variable> result = new List<Variable>();
             _ = Messenger.BulkWalk(VersionCode.V2,
@@ -147,35 +115,35 @@ namespace LanMonitor
             SetData(endpoint, DISMAN_PING.GetEntryList(targetIP));
         }
 
-        public static Dictionary<string, string> FetchStringData(ReportMessage report, IPEndPoint endpoint, string OID)
+        public static Dictionary<string, string> FetchStringData(IPEndPoint endpoint, string OID)
         {
-            List<Variable> result = FetchData(report, endpoint, OID);
+            List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToString());
         }
 
-        public static Dictionary<string, byte[]> FetchBytesData(ReportMessage report, IPEndPoint endpoint, string OID)
+        public static Dictionary<string, byte[]> FetchBytesData(IPEndPoint endpoint, string OID)
         {
-            List<Variable> result = FetchData(report, endpoint, OID);
+            List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToBytes());
         }
-        public static Dictionary<string, int> FetchIntData(ReportMessage report, IPEndPoint endpoint, string OID)
+        public static Dictionary<string, int> FetchIntData(IPEndPoint endpoint, string OID)
         {
-            List<Variable> result = FetchData(report, endpoint, OID);
+            List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => ((Integer32)item.Data).ToInt32());
         }
-        public static Dictionary<string, uint> FetchUIntData(ReportMessage report, IPEndPoint endpoint, string OID)
+        public static Dictionary<string, uint> FetchUIntData(IPEndPoint endpoint, string OID)
         {
-            List<Variable> result = FetchData(report, endpoint, OID);
+            List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => ((Gauge32)item.Data).ToUInt32());
         }
-        public static Dictionary<string, uint> FetchCounterData(ReportMessage report, IPEndPoint endpoint, string OID)
+        public static Dictionary<string, uint> FetchCounterData(IPEndPoint endpoint, string OID)
         {
-            List<Variable> result = FetchData(report, endpoint, OID);
+            List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => ((Counter32)item.Data).ToUInt32());
         }
-        public static Dictionary<string, TimeSpan> FetchTimeSpanData(ReportMessage report, IPEndPoint endpoint, string OID)
+        public static Dictionary<string, TimeSpan> FetchTimeSpanData(IPEndPoint endpoint, string OID)
         {
-            List<Variable> result = FetchData(report, endpoint, OID);
+            List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => ((TimeTicks)item.Data).ToTimeSpan());
         }
     }

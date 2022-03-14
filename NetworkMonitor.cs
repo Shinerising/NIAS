@@ -323,8 +323,6 @@ namespace LanMonitor
             IsSwitchEnabled = true;
 
             string name = ConfigurationManager.AppSettings.Get("switch_username");
-            string auth = ConfigurationManager.AppSettings.Get("switch_auth");
-            string priv = ConfigurationManager.AppSettings.Get("switch_priv");
 
             NameValueCollection switchList = (NameValueCollection)ConfigurationManager.GetSection("switchList");
             NameValueCollection deviceList = (NameValueCollection)ConfigurationManager.GetSection("deviceList");
@@ -344,7 +342,7 @@ namespace LanMonitor
                 return new SwitchConnectonModelView(item, deviceA, deviceB, deviceA == null ? 0 : SwitchDeviceList.IndexOf(deviceA), deviceB == null ? 0 : SwitchDeviceList.IndexOf(deviceB));
             }).ToList();
 
-            SnmpHelper.Initialize(name, auth, priv);
+            SnmpHelper.Initialize(name);
         }
 
         private void NetworkStatusMonitoring()
@@ -561,14 +559,13 @@ namespace LanMonitor
                                 }
                                 try
                                 {
-                                    result = SnmpHelper.FetchUIntData(null, switchDevice.EndPoint, SnmpHelper.DISMAN_PING.OID_pingResultsMaxRtt).Values.First();
-                                    Console.WriteLine(result);
+                                    result = SnmpHelper.FetchUIntData(switchDevice.EndPoint, SnmpHelper.DISMAN_PING.OID_pingResultsMaxRtt).Values.First();
                                     break;
                                 }
                                 catch (InvalidOperationException)
                                 {
                                     waitCount += 1;
-                                    Thread.Sleep(500);
+                                    Thread.Sleep(1000);
                                 }
                                 catch (Exception)
                                 {
@@ -576,7 +573,7 @@ namespace LanMonitor
                                 }
                             }
                         }
-                        Thread.Sleep(500);
+                        Thread.Sleep(1000);
                     }
                 }, TaskCreationOptions.LongRunning);
             });
@@ -600,12 +597,6 @@ namespace LanMonitor
                 {
                     try
                     {
-                        var report = SnmpHelper.GetReportMessage(switchDevice.EndPoint);
-                        if (report == null)
-                        {
-                            throw new TimeoutException();
-                        }
-
                         if (switchDevice.State == DeviceState.Offline)
                         {
                             AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchReconnect), switchDevice.Address, switchDevice.Name));
@@ -615,23 +606,23 @@ namespace LanMonitor
                         {
                             if (switchDevice.Information == null)
                             {
-                                var dict0 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
+                                var dict0 = SnmpHelper.FetchStringData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysDescr);
                                 switchDevice.Information = dict0?.FirstOrDefault().Value;
                             }
-                            var dict1 = SnmpHelper.FetchTimeSpanData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysUpTime);
-                            var dict2 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwStackSystemMac);
+                            var dict1 = SnmpHelper.FetchTimeSpanData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysUpTime);
+                            var dict2 = SnmpHelper.FetchBytesData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwStackSystemMac);
                             TimeSpan upTime = dict1 == null ? new TimeSpan() : dict1.FirstOrDefault().Value;
                             switchDevice.UpTime = upTime.TotalMilliseconds == 0 ? AppResource.GetString(AppResource.StringKey.Unknown) : string.Format(AppResource.GetString(AppResource.StringKey.TimeSpan), upTime.Days, upTime.Hours, upTime.Minutes, upTime.Seconds);
                             switchDevice.MACAddress = BitConverter.ToString(dict2.FirstOrDefault().Value, 2).Replace("-", ":");
                         }
 
                         {
-                            var dict0 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifIndex);
-                            var dict1 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
-                            var dict2 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
-                            var dict3 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
-                            var dict4 = SnmpHelper.FetchCounterData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifInOctets);
-                            var dict5 = SnmpHelper.FetchCounterData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOutOctets);
+                            var dict0 = SnmpHelper.FetchIntData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifIndex);
+                            var dict1 = SnmpHelper.FetchIntData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifType);
+                            var dict2 = SnmpHelper.FetchStringData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifDescr);
+                            var dict3 = SnmpHelper.FetchIntData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
+                            var dict4 = SnmpHelper.FetchCounterData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifInOctets);
+                            var dict5 = SnmpHelper.FetchCounterData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOutOctets);
                             List<SwitchPort> list = new List<SwitchPort>();
 
                             var duration = RefreshStopwatch.ElapsedMilliseconds - LastSwitchRefreshTimeStamp;
@@ -691,8 +682,8 @@ namespace LanMonitor
                         }
 
                         {
-                            var dict3 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwArpDynMacAdd);
-                            var dict4 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwArpDynOutIfIndex);
+                            var dict3 = SnmpHelper.FetchBytesData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwArpDynMacAdd);
+                            var dict4 = SnmpHelper.FetchStringData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwArpDynOutIfIndex);
                             var dict5 = new Dictionary<string, string>();
 
                             if (dict3 != null && dict4 != null)
@@ -707,8 +698,8 @@ namespace LanMonitor
                                 }
                             }
 
-                            var dict6 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_dot1dTpFdbAddress);
-                            var dict7 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_dot1dTpFdbPort);
+                            var dict6 = SnmpHelper.FetchBytesData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_dot1dTpFdbAddress);
+                            var dict7 = SnmpHelper.FetchStringData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_dot1dTpFdbPort);
                             var dict8 = new Dictionary<string, string>();
 
                             if (dict6 != null && dict7 != null)
@@ -723,9 +714,9 @@ namespace LanMonitor
                                 }
                             }
 
-                            var dict0 = SnmpHelper.FetchBytesData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaPhysAddress);
-                            var dict1 = SnmpHelper.FetchStringData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
-                            var dict2 = SnmpHelper.FetchIntData(report, switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaType);
+                            var dict0 = SnmpHelper.FetchBytesData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaPhysAddress);
+                            var dict1 = SnmpHelper.FetchStringData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
+                            var dict2 = SnmpHelper.FetchIntData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaType);
 
                             List<SwitchHost> list = new List<SwitchHost>();
 
