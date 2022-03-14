@@ -290,6 +290,8 @@ namespace LanMonitor
             Task.Factory.StartNew(NetworkStatusMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(SwitchMonitoring, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(SwitchRefreshMonitoring, TaskCreationOptions.LongRunning);
+
+            StartSwitchPingMonitoring();
         }
 
         public void Dispose()
@@ -518,6 +520,66 @@ namespace LanMonitor
 
                 Thread.Sleep(1000);
             }
+        }
+
+        private void StartSwitchPingMonitoring()
+        {
+            List<string> ipList = new List<string>();
+
+            ipList.AddRange(SwitchDeviceList.Select(item => item.Address));
+            LanHostList.ForEach(item => ipList.AddRange(item.AdapterList.Select(adapter => adapter.IPAddress)));
+
+            SwitchDeviceList.ForEach(switchDevice =>
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    while (true)
+                    {
+                        foreach (string targetIP in ipList)
+                        {
+                            if (targetIP == switchDevice.Address)
+                            {
+                                continue;
+                            }
+
+                            try
+                            {
+                                SnmpHelper.SendPing(switchDevice.EndPoint, targetIP);
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+
+                            uint result = 0;
+                            int waitCount = 0;
+                            while (true)
+                            {
+                                if (waitCount > 10)
+                                {
+                                    break;
+                                }
+                                try
+                                {
+                                    result = SnmpHelper.FetchUIntData(null, switchDevice.EndPoint, SnmpHelper.DISMAN_PING.OID_pingResultsMaxRtt).Values.First();
+                                    Console.WriteLine(result);
+                                    break;
+                                }
+                                catch (InvalidOperationException)
+                                {
+                                    waitCount += 1;
+                                    Thread.Sleep(500);
+                                }
+                                catch (Exception)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        Thread.Sleep(500);
+                    }
+                }, TaskCreationOptions.LongRunning);
+            });
         }
 
         private void SwitchMonitoring()
