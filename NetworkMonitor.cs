@@ -877,6 +877,35 @@ namespace LanMonitor
                                 }
                             }
 
+                            if (switchIP == null)
+                            {
+                                switchIndex = 0;
+                                foreach (SwitchDeviceModelView device in SwitchDeviceList)
+                                {
+                                    switchHost = device.HostList?.FirstOrDefault(item => item.IPAddress == list[i].IPAddress && item.MACAddress == list[i].MACAddress && item.IsCascade);
+                                    if (switchHost != null)
+                                    {
+                                        var secondList = device.HostList?.Where(item => item.PortIndex == switchHost.PortIndex && item.IsCascade).Select(item => item.MACAddress).ToList();
+                                        if (secondList.Count >= 2)
+                                        {
+                                            list.ForEach(item =>
+                                            {
+                                                if (item.MACAddress != null && secondList.Contains(item.MACAddress))
+                                                {
+                                                    secondList.Remove(item.MACAddress);
+                                                }
+                                            });
+                                            if (secondList.Count == 0)
+                                            {
+                                                switchIP = device.Address;
+                                                switchParent = device;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    switchIndex += 1;
+                                }
+                            }
                         }
 
                         if (switchIP == null)
