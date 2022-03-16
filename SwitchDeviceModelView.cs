@@ -124,10 +124,11 @@ namespace LanMonitor
             Notify(new { Vector });
         }
         public string IPAddress { get; set; }
+        public string MACAddress { get; set; }
         public string SwitchIPAddress { get; set; }
         public LineVector Vector { get; set; }
         public DeviceState State { get; set; }
-        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Adapter), IPAddress, Host == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.MACAddress, SwitchDevice == null ? AppResource.GetString(AppResource.StringKey.Unknown) : SwitchDevice.Name, Host == null || Host.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.Port.Name, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Disconnected) : AppResource.GetString(AppResource.StringKey.Unknown)), Environment.NewLine);
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Adapter), IPAddress, MACAddress ?? (Host == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.MACAddress), SwitchDevice == null ? AppResource.GetString(AppResource.StringKey.Unknown) : SwitchDevice.Name, Host == null || Host.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.Port.Name, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Disconnected) : (State == DeviceState.Reserve ? AppResource.GetString(AppResource.StringKey.Reserve) : AppResource.GetString(AppResource.StringKey.Unknown))), Environment.NewLine);
         public SwitchHost Host { get; set; }
         public SwitchDeviceModelView SwitchDevice { get; set; }
 
@@ -149,6 +150,11 @@ namespace LanMonitor
         {
             IPAddress = ip;
         }
+        public LanHostAdapter(string ip, string mac)
+        {
+            IPAddress = ip;
+            MACAddress = mac.ToUpper();
+        }
     }
     public class LanHostModelView
     {
@@ -159,14 +165,29 @@ namespace LanMonitor
         public LanHostModelView(string name, string iplist)
         {
             Name = name;
-            AdapterList = iplist == null ? new List<LanHostAdapter>() : iplist.Split(';').Select(item => new LanHostAdapter(item.Trim())).ToList();
+            AdapterList = iplist == null ? new List<LanHostAdapter>() : iplist.Split(';').Select(item =>
+            {
+                if (item.Contains("|"))
+                {
+                    var arr = item.Trim().Split('|');
+                    var ip = arr[0];
+                    var mac = arr[1];
+                    return new LanHostAdapter(ip, mac);
+                }
+                else
+                {
+                    var ip = item.Trim();
+                    return new LanHostAdapter(ip);
+                }
+            }).ToList();
         }
     }
     public enum DeviceState
     {
         Unknown,
         Online,
-        Offline
+        Offline,
+        Reserve
     }
     public enum HostState
     {

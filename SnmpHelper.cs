@@ -40,7 +40,7 @@ namespace LanMonitor
 1.3.6.1.2.1.80.1.2.1.3.1.49.1.51 i 1
 1.3.6.1.2.1.80.1.2.1.4.1.49.1.51 s 0.0.0.0
 1.3.6.1.2.1.80.1.2.1.5.1.49.1.51 u 16
-1.3.6.1.2.1.80.1.2.1.7.1.49.1.51 u 2
+1.3.6.1.2.1.80.1.2.1.7.1.49.1.51 u 1
 1.3.6.1.2.1.80.1.2.1.8.1.49.1.51 i 1
 1.3.6.1.2.1.80.1.2.1.10.1.49.1.51 u 0
 1.3.6.1.2.1.80.1.2.1.16.1.49.1.51 o 1.3.6.1.2.1.80.3.1
@@ -72,8 +72,9 @@ namespace LanMonitor
                         return new Variable(new ObjectIdentifier(fragments[0]), data);
                     }).ToList();
                 }
-                entryDict[1] = new Variable(entryDict[1].Id, new OctetString(targetIP));
-                return entryDict;
+                var dict = entryDict.ToList();
+                dict[1] = new Variable(dict[1].Id, new OctetString(targetIP));
+                return dict;
             }
         }
 

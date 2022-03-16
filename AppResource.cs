@@ -17,6 +17,7 @@ namespace LanMonitor
             SwitchCascading,
             Online,
             Offline,
+            Reserve,
             UnknownIP,
             Unknown,
             UnknownIPAddress,

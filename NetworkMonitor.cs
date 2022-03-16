@@ -533,6 +533,7 @@ namespace LanMonitor
 
             ipList.AddRange(SwitchDeviceList.Select(item => item.Address));
             LanHostList.ForEach(item => ipList.AddRange(item.AdapterList.Select(adapter => adapter.IPAddress)));
+            ipList = ipList.Distinct().ToList();
 
             SwitchDeviceList.ForEach(switchDevice =>
             {
@@ -775,6 +776,16 @@ namespace LanMonitor
                                         Port = port
                                     };
 
+                                    if (index != 0)
+                                    {
+                                        var find = list.Find(item => item.PortIndex == index);
+                                        if (find != null)
+                                        {
+                                            find.IsCascade = true;
+                                            host.IsCascade = true;
+                                        }
+                                    }
+
                                     list.Add(host);
                                 }
 
@@ -820,21 +831,57 @@ namespace LanMonitor
                         SwitchHost switchHost = null;
                         SwitchDeviceModelView switchParent = null;
                         int switchIndex = 0;
-                        foreach (SwitchDeviceModelView device in SwitchDeviceList)
+                        bool isReserved = false;
+                        if (list[i].MACAddress == null)
                         {
-                            switchHost = device.HostList?.FirstOrDefault(item => item.IPAddress == list[i].IPAddress && !item.IsCascade);
-                            if (switchHost != null)
+                            foreach (SwitchDeviceModelView device in SwitchDeviceList)
                             {
-                                switchIP = device.Address;
-                                switchParent = device;
-                                break;
+                                switchHost = device.HostList?.FirstOrDefault(item => item.IPAddress == list[i].IPAddress && !item.IsCascade);
+                                if (switchHost != null)
+                                {
+                                    switchIP = device.Address;
+                                    switchParent = device;
+                                    break;
+                                }
+                                switchIndex += 1;
                             }
-                            switchIndex += 1;
+                        }
+                        else
+                        {
+                            foreach (SwitchDeviceModelView device in SwitchDeviceList)
+                            {
+                                switchHost = device.HostList?.FirstOrDefault(item => item.IPAddress == list[i].IPAddress && item.MACAddress == list[i].MACAddress && !item.IsCascade);
+                                if (switchHost != null)
+                                {
+                                    switchIP = device.Address;
+                                    switchParent = device;
+                                    break;
+                                }
+                                switchIndex += 1;
+                            }
+
+                            if (switchIP == null)
+                            {
+                                switchIndex = 0;
+                                foreach (SwitchDeviceModelView device in SwitchDeviceList)
+                                {
+                                    switchHost = device.HostList?.FirstOrDefault(item => item.State == HostState.Invalid && item.MACAddress == list[i].MACAddress && !item.IsCascade);
+                                    if (switchHost != null)
+                                    {
+                                        isReserved = true;
+                                        switchIP = device.Address;
+                                        switchParent = device;
+                                        break;
+                                    }
+                                    switchIndex += 1;
+                                }
+                            }
+
                         }
 
                         if (switchIP == null)
                         {
-                            if (list[i].State == DeviceState.Online)
+                            if (list[i].State == DeviceState.Online || list[i].State == DeviceState.Reserve)
                             {
                                 if (list[i].SwitchDevice.State == DeviceState.Offline)
                                 {
@@ -860,7 +907,7 @@ namespace LanMonitor
                             list[i].SwitchDevice = switchParent;
                             list[i].Host = switchHost;
                             list[i].RefreshVector(i, list.Count, switchIndex, SwitchDeviceList.Count);
-                            list[i].State = DeviceState.Online;
+                            list[i].State = isReserved ? DeviceState.Reserve : DeviceState.Online;
                         }
 
                         list[i].Refresh();

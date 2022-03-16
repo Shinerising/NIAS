@@ -811,6 +811,11 @@
                                                             <Setter TargetName="Dot1" Property="Stroke" Value="#34D345"/>
                                                             <Setter TargetName="Dot2" Property="Stroke" Value="#34D345"/>
                                                         </DataTrigger>
+                                                        <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                            <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
+                                                            <Setter TargetName="Dot1" Property="Stroke" Value="#F8A33A"/>
+                                                            <Setter TargetName="Dot2" Property="Stroke" Value="#F8A33A"/>
+                                                        </DataTrigger>
                                                         <DataTrigger Binding="{Binding State}" Value="Offline">
                                                             <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
                                                             <Setter TargetName="Dot1" Property="Visibility" Value="Collapsed"/>
@@ -876,6 +881,11 @@
                                                                                     <Setter TargetName="Dot1" Property="Stroke" Value="#34D345"/>
                                                                                     <Setter TargetName="Dot2" Property="Stroke" Value="#34D345"/>
                                                                                 </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
+                                                                                    <Setter TargetName="Dot1" Property="Stroke" Value="#F8A33A"/>
+                                                                                    <Setter TargetName="Dot2" Property="Stroke" Value="#F8A33A"/>
+                                                                                </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding State}" Value="Offline">
                                                                                     <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
                                                                                     <Setter TargetName="Dot1" Property="Visibility" Value="Collapsed"/>
@@ -904,6 +914,9 @@
                                                                             <DataTemplate.Triggers>
                                                                                 <DataTrigger Binding="{Binding State}" Value="Online">
                                                                                     <Setter TargetName="Border" Property="BorderBrush" Value="#34D345"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#F8A33A"/>
                                                                                 </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding State}" Value="Offline">
                                                                                     <Setter TargetName="Border" Property="BorderBrush" Value="#FB3C42"/>
@@ -938,6 +951,9 @@
                                                                             <DataTemplate.Triggers>
                                                                                 <DataTrigger Binding="{Binding State}" Value="Online">
                                                                                     <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
                                                                                 </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding State}" Value="Offline">
                                                                                     <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>

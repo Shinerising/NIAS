@@ -149,12 +149,12 @@ namespace LanMonitor
 
         private void Element_MouseEnter(object sender, MouseEventArgs e)
         {
-            (((FrameworkElement)sender).DataContext as IHoverable).SetHover(true);
+            (((FrameworkElement)sender).DataContext as IHoverable)?.SetHover(true);
         }
 
         private void Element_MouseLeave(object sender, MouseEventArgs e)
         {
-            (((FrameworkElement)sender).DataContext as IHoverable).SetHover(false);
+            (((FrameworkElement)sender).DataContext as IHoverable)?.SetHover(false);
         }
     }
 }

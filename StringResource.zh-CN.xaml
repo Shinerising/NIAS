@@ -15,6 +15,7 @@
     <system:String x:Key="SwitchCascading">交换机级联</system:String>
     <system:String x:Key="Online">在线</system:String>
     <system:String x:Key="Offline">离线</system:String>
+    <system:String x:Key="Reserve">后备</system:String>
     <system:String x:Key="UnknownIP">不可用</system:String>
     <system:String x:Key="Unknown">未知</system:String>
     <system:String x:Key="UnknownIPAddress">未知IP地址</system:String>
