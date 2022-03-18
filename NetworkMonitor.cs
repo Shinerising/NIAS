@@ -97,7 +97,7 @@ namespace LanMonitor
         };
 
         public List<SwitchDeviceModelView> SwitchDeviceList => new List<string>() { "172.16.24.1", "172.16.24.188" }.Select(item => SwitchDeviceModelView.GetPreviewInstance(item)).ToList();
-        public List<SwitchConnectonModelView> ConnectionList => new List<SwitchConnectonModelView>() { new SwitchConnectonModelView("", SwitchDeviceModelView.GetPreviewInstance("172.16.24.1"), SwitchDeviceModelView.GetPreviewInstance("172.16.24.2"), 0, 1) };
+        public List<SwitchConnectonModelView> ConnectionList => new List<SwitchConnectonModelView>() { new SwitchConnectonModelView("", SwitchDeviceModelView.GetPreviewInstance("172.16.24.1"), SwitchDeviceModelView.GetPreviewInstance("172.16.24.2"), 0, 1, null, null) };
         public List<LanHostModelView> LanHostList => new List<LanHostModelView>() {
             new LanHostModelView("Host01", "172.16.24.90,172.16.34.90"),
             new LanHostModelView("Host02", "172.16.24.91,172.16.34.91"),
@@ -344,9 +344,28 @@ namespace LanMonitor
                 {
                     values = new string[] { null, null };
                 }
-                SwitchDeviceModelView deviceA = values[0] == null ? null : SwitchDeviceList.FirstOrDefault(device => device.Name == values[0]);
-                SwitchDeviceModelView deviceB = values[1] == null ? null : SwitchDeviceList.FirstOrDefault(device => device.Name == values[1]);
-                return new SwitchConnectonModelView(item, deviceA, deviceB, deviceA == null ? 0 : SwitchDeviceList.IndexOf(deviceA), deviceB == null ? 0 : SwitchDeviceList.IndexOf(deviceB));
+                string nameA = null, portA = null, nameB = null, portB = null;
+                if (values != null && values[0].Contains("|"))
+                {
+                    nameA = values[0].Split('|')[0].Trim();
+                    portA = values[0].Split('|')[1].Trim();
+                }
+                else
+                {
+                    nameA = values[0].Trim();
+                }
+                if (values != null && values[1].Contains("|"))
+                {
+                    nameB = values[1].Split('|')[0].Trim();
+                    portB = values[1].Split('|')[1].Trim();
+                }
+                else
+                {
+                    nameB = values[1];
+                }
+                SwitchDeviceModelView deviceA = nameA == null ? null : SwitchDeviceList.FirstOrDefault(device => device.Name == nameA);
+                SwitchDeviceModelView deviceB = nameB == null ? null : SwitchDeviceList.FirstOrDefault(device => device.Name == nameB);
+                return new SwitchConnectonModelView(item, deviceA, deviceB, deviceA == null ? 0 : SwitchDeviceList.IndexOf(deviceA), deviceB == null ? 0 : SwitchDeviceList.IndexOf(deviceB), portA, portB);
             }).ToList();
 
             SnmpHelper.Initialize(name);
@@ -961,6 +980,22 @@ namespace LanMonitor
 
                     var hostA = connection.DeviceA.HostList?.FirstOrDefault(item => item.MACAddress == connection.DeviceB.MACAddress);
                     var hostB = connection.DeviceB.HostList?.FirstOrDefault(item => item.MACAddress == connection.DeviceA.MACAddress);
+                    if (connection.PortA != null)
+                    {
+                        var port = connection.DeviceA.PortList.FirstOrDefault(item => item.Name == connection.PortA);
+                        if (port == null || !port.IsUp)
+                        {
+                            hostA = null;
+                        }
+                    }
+                    if (connection.PortB != null)
+                    {
+                        var port = connection.DeviceB.PortList.FirstOrDefault(item => item.Name == connection.PortB);
+                        if (port == null || !port.IsUp)
+                        {
+                            hostB = null;
+                        }
+                    }
                     if (hostA == null || hostB == null)
                     {
                         if (connection.State == DeviceState.Online)

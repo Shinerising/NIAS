@@ -583,7 +583,7 @@
                                                             </ItemsControl.ItemsPanel>
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <Border x:Name="Port_Border" Margin="2" ToolTip="{Binding Tip}" CornerRadius="2" Background="Transparent">
+                                                                    <Border x:Name="Port_Border" Margin="2" ToolTip="{Binding Tip}" Background="Transparent" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave">
                                                                         <Grid x:Name="Port_Grid">
                                                                             <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10L4.5 16"/>
                                                                             <Border x:Name="Port_Label" Visibility="Collapsed" Margin="-4,-6,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="1" BorderBrush="#666" CornerRadius="2" Background="#F0FFFFFF">
@@ -605,9 +605,6 @@
                                                                         <DataTrigger Binding="{Binding IsHover}" Value="True">
                                                                             <Setter TargetName="Port_Label" Property="Visibility" Value="Visible"/>
                                                                         </DataTrigger>
-                                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                                            <Setter TargetName="Port_Label" Property="Visibility" Value="Visible"/>
-                                                                        </Trigger>
                                                                     </DataTemplate.Triggers>
                                                                 </DataTemplate>
                                                             </ItemsControl.ItemTemplate>

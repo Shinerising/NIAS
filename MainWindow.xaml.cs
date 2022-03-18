@@ -84,6 +84,8 @@ namespace LanMonitor
 
             DataContext = networkManager;
 
+            ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(60000));
+
             InitializeComponent();
 
             networkManager.Start();
