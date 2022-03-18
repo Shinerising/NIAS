@@ -14,6 +14,7 @@ namespace LanMonitor
             Dynamic,
             Static,
             Other,
+            Invalid,
             SwitchCascading,
             Online,
             Offline,

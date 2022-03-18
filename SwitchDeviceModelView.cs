@@ -69,7 +69,7 @@ namespace LanMonitor
         public SwitchPort Port { get; set; }
         public bool IsCascade { get; set; }
         public HostState State { get; set; }
-        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchHost), IPAddress, MACAddress, Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Port.Name, State == HostState.Dynamic ? AppResource.GetString(AppResource.StringKey.Dynamic) : (State == HostState.Static ? AppResource.GetString(AppResource.StringKey.Static) : AppResource.GetString(AppResource.StringKey.Other)), Environment.NewLine);
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchHost), IPAddress, MACAddress, Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Port.Name, State == HostState.Dynamic ? AppResource.GetString(AppResource.StringKey.Dynamic) : (State == HostState.Static ? AppResource.GetString(AppResource.StringKey.Static) : (State == HostState.Invalid ? AppResource.GetString(AppResource.StringKey.Invalid) : AppResource.GetString(AppResource.StringKey.Other))), Environment.NewLine);
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
         {

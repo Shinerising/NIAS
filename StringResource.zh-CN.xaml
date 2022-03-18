@@ -11,7 +11,8 @@
     <system:String x:Key="Disconnected">未连接</system:String>
     <system:String x:Key="Dynamic">动态</system:String>
     <system:String x:Key="Static">静态</system:String>
-    <system:String x:Key="Other">静态</system:String>
+    <system:String x:Key="Invalid">不可用</system:String>
+    <system:String x:Key="Other">其他</system:String>
     <system:String x:Key="SwitchCascading">交换机级联</system:String>
     <system:String x:Key="Online">在线</system:String>
     <system:String x:Key="Offline">离线</system:String>
