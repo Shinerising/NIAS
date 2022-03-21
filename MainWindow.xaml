@@ -1030,7 +1030,7 @@
                                         </Border>
                                         <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" FontSize="13" Foreground="{StaticResource Color_TextLight}" Margin="12,8,12,2"/>
                                         <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Content}" TextWrapping="Wrap" FontSize="14" Margin="12,2,12,12"/>
-                                        <Image Grid.Row="1" Grid.RowSpan="2" Width="48" Height="48" Margin="8,10,0,0" Source="Images/alert.png" VerticalAlignment="Top"/>
+                                        <Image x:Name="Image_Icon" Grid.Row="1" Grid.RowSpan="2" Width="48" Height="48" Margin="8,10,0,0" Source="Images/alert.png" VerticalAlignment="Top"/>
                                     </Grid>
                                 </Border>
                             </Border>
@@ -1043,6 +1043,9 @@
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="Info">
+                                    <Setter TargetName="Image_Icon" Property="Source" Value="Images/info.png"/>
+                                </DataTrigger>
                             </DataTemplate.Triggers>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

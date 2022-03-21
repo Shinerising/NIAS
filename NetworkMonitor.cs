@@ -814,7 +814,7 @@ namespace LanMonitor
                             errorCount = 0;
                             if (switchDevice.State == DeviceState.Offline)
                             {
-                                AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchReconnect), switchDevice.Address, switchDevice.Name));
+                                AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchReconnect), switchDevice.Address, switchDevice.Name), ToastMessage.ToastType.Info);
                             }
                             switchDevice.State = DeviceState.Online;
 
@@ -949,7 +949,7 @@ namespace LanMonitor
                         {
                             if (list[i].State == DeviceState.Offline)
                             {
-                                AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_HostReconnect), host.Name, list[i].IPAddress, switchParent.Name));
+                                AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_HostReconnect), host.Name, list[i].IPAddress, switchParent.Name), ToastMessage.ToastType.Info);
                             }
                             list[i].SwitchIPAddress = switchIP;
                             list[i].SwitchDevice = switchParent;
@@ -1011,7 +1011,7 @@ namespace LanMonitor
                     {
                         if (connection.State == DeviceState.Offline)
                         {
-                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_LineReconnect), connection.DeviceA.Name, connection.DeviceB.Name));
+                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_LineReconnect), connection.DeviceA.Name, connection.DeviceB.Name), ToastMessage.ToastType.Info);
                         }
                         connection.State = DeviceState.Online;
                     }
@@ -1032,7 +1032,7 @@ namespace LanMonitor
 
         public ObservableCollection<ToastMessage> ToastCollection { get; set; } = new ObservableCollection<ToastMessage>();
 
-        public void AddToast(string title, string message)
+        public void AddToast(string title, string message, ToastMessage.ToastType toastType = ToastMessage.ToastType.Alert)
         {
             Dispatcher dispatcher = Dispatcher.FromThread(Thread.CurrentThread);
             if (dispatcher == null)
@@ -1045,8 +1045,19 @@ namespace LanMonitor
                 {
                     ToastCollection.RemoveAt(0);
                 }
-                ToastCollection.Add(new ToastMessage(title, message));
-                SystemSounds.Exclamation.Play();
+                var toast = new ToastMessage(title, message)
+                {
+                    Type = toastType
+                };
+                ToastCollection.Add(toast);
+                if (toastType == ToastMessage.ToastType.Alert)
+                {
+                    SystemSounds.Exclamation.Play();
+                }
+                else
+                {
+                    SystemSounds.Beep.Play();
+                }
             });
         }
 
@@ -1062,9 +1073,15 @@ namespace LanMonitor
 
     public class ToastMessage
     {
+        public enum ToastType
+        {
+            Alert,
+            Info
+        }
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime Time { get; set; }
+        public ToastType Type { get; set; } = ToastType.Alert;
         public ToastMessage()
         {
 
