@@ -533,7 +533,9 @@ namespace LanMonitor
                 {
                     if (!isRefreshExpiredAlert)
                     {
-                        AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), AppResource.GetString(AppResource.StringKey.Message_SNMPWarning));
+                        string message = AppResource.GetString(AppResource.StringKey.Message_SNMPWarning);
+                        AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message);
+                        LogHelper.WriteLog("WARNING", message);
                         isRefreshExpiredAlert = true;
                     }
                 }
@@ -814,7 +816,9 @@ namespace LanMonitor
                             errorCount = 0;
                             if (switchDevice.State == DeviceState.Offline)
                             {
-                                AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchReconnect), switchDevice.Address, switchDevice.Name), ToastMessage.ToastType.Info);
+                                string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchReconnect), switchDevice.Address, switchDevice.Name);
+                                AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Info);
+                                LogHelper.WriteLog("INFO", message);
                             }
                             switchDevice.State = DeviceState.Online;
 
@@ -826,7 +830,9 @@ namespace LanMonitor
                             {
                                 if (switchDevice.State == DeviceState.Online)
                                 {
-                                    AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchDisconnect), switchDevice.Address, switchDevice.Name));
+                                    string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchDisconnect), switchDevice.Address, switchDevice.Name);
+                                    AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message);
+                                    LogHelper.WriteLog("WARNING", message);
                                 }
                                 switchDevice.SetIdle();
                             }
@@ -938,7 +944,9 @@ namespace LanMonitor
                                 else
                                 {
                                     list[i].State = DeviceState.Offline;
-                                    AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_HostDisconnect), host.Name, list[i].IPAddress));
+                                    string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_HostDisconnect), host.Name, list[i].IPAddress);
+                                    AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message);
+                                    LogHelper.WriteLog("WARNING", message);
                                 }
                             }
                             list[i].SwitchIPAddress = null;
@@ -949,7 +957,9 @@ namespace LanMonitor
                         {
                             if (list[i].State == DeviceState.Offline)
                             {
-                                AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_HostReconnect), host.Name, list[i].IPAddress, switchParent.Name), ToastMessage.ToastType.Info);
+                                string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_HostReconnect), host.Name, list[i].IPAddress, switchParent.Name);
+                                AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Info);
+                                LogHelper.WriteLog("INFO", message);
                             }
                             list[i].SwitchIPAddress = switchIP;
                             list[i].SwitchDevice = switchParent;
@@ -1000,7 +1010,9 @@ namespace LanMonitor
                     {
                         if (connection.State == DeviceState.Online)
                         {
-                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_LineDisconnect), connection.DeviceA.Name, connection.DeviceB.Name));
+                            string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_LineDisconnect), connection.DeviceA.Name, connection.DeviceB.Name);
+                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message);
+                            LogHelper.WriteLog("WARNING", message);
                         }
                         if (connection.State != DeviceState.Unknown)
                         {
@@ -1011,7 +1023,9 @@ namespace LanMonitor
                     {
                         if (connection.State == DeviceState.Offline)
                         {
-                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), string.Format(AppResource.GetString(AppResource.StringKey.Message_LineReconnect), connection.DeviceA.Name, connection.DeviceB.Name), ToastMessage.ToastType.Info);
+                            string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_LineReconnect), connection.DeviceA.Name, connection.DeviceB.Name);
+                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Info);
+                            LogHelper.WriteLog("INFO", message);
                         }
                         connection.State = DeviceState.Online;
                     }

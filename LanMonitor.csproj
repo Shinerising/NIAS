@@ -85,6 +85,7 @@
     </ApplicationDefinition>
     <Compile Include="AppResource.cs" />
     <Compile Include="LANComputerModelView.cs" />
+    <Compile Include="LogHelper.cs" />
     <Compile Include="NetworkModelView.cs" />
     <Compile Include="PortModelView.cs" />
     <Compile Include="SnmpHelper.cs" />
