@@ -122,6 +122,8 @@ namespace LanMonitor
         private readonly LocalNetworkManager lanMonitor;
         private readonly PortMonitor portMonitor;
 
+        private readonly CancellationTokenSource cancellation;
+
         public bool IsSwitchEnabled { get; set; } = true;
         public bool IsSwitchPingEnabled { get; set; } = true;
         private long LastSwitchRefreshTimeStamp;
@@ -267,6 +269,8 @@ namespace LanMonitor
 
         public NetworkManager()
         {
+            cancellation = new CancellationTokenSource();
+
             uploadSpeedQueue = new Queue<long>(Enumerable.Repeat<long>(0, 120));
             downloadSpeedQueue = new Queue<long>(Enumerable.Repeat<long>(0, 120));
 
@@ -283,14 +287,14 @@ namespace LanMonitor
 
         public void Start()
         {
-            Task.Factory.StartNew(NetworkMonitoring, TaskCreationOptions.LongRunning);
-            Task.Factory.StartNew(NetworkAdapterMonitoring, TaskCreationOptions.LongRunning);
-            Task.Factory.StartNew(LocalNetworkMonitoring, TaskCreationOptions.LongRunning);
-            Task.Factory.StartNew(LocalComputerMonitoring, TaskCreationOptions.LongRunning);
-            Task.Factory.StartNew(ActivePortMonitoring, TaskCreationOptions.LongRunning);
-            Task.Factory.StartNew(NetworkStatusMonitoring, TaskCreationOptions.LongRunning);
-            Task.Factory.StartNew(SwitchMonitoring, TaskCreationOptions.LongRunning);
-            Task.Factory.StartNew(SwitchRefreshMonitoring, TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(NetworkMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(NetworkAdapterMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(LocalNetworkMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(LocalComputerMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(ActivePortMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(NetworkStatusMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(SwitchMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(SwitchRefreshMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
             if (IsSwitchPingEnabled)
             {
@@ -308,6 +312,8 @@ namespace LanMonitor
         {
             if (disposing)
             {
+                cancellation.Cancel();
+
                 if (lanMonitor != null)
                 {
                     lanMonitor.Dispose();
@@ -604,7 +610,7 @@ namespace LanMonitor
                         }
                         Thread.Sleep(1000);
                     }
-                }, TaskCreationOptions.LongRunning);
+                }, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             });
         }
 
@@ -842,7 +848,7 @@ namespace LanMonitor
 
                         Thread.Sleep(1000);
                     }
-                }, TaskCreationOptions.LongRunning);
+                }, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             });
 
             while (true)
