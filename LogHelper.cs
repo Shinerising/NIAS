@@ -23,7 +23,7 @@ namespace LanMonitor
         /// <summary>
         /// 过期时间
         /// </summary>
-        private static int expiredDays = 60;
+        private static int expiredDays = 30;
         private static string lastMessage = "";
         private static int sameMessageCount = 0;
 

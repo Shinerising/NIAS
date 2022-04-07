@@ -158,5 +158,10 @@ namespace LanMonitor
         {
             (((FrameworkElement)sender).DataContext as IHoverable)?.SetHover(false);
         }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            Properties.Settings.Default.Save();
+        }
     }
 }

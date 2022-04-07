@@ -3,10 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:p="clr-namespace:LanMonitor.Properties"
         xmlns:local="clr-namespace:LanMonitor"
         mc:Ignorable="d"
-        Title="{StaticResource Title}" Height="800" Width="1280" MinWidth="640" MinHeight="360"
-        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}" Loaded="Window_Loaded" FontFamily="Tahoma, Microsoft YaHei UI, Arial">
+        Title="{StaticResource Title}" MinWidth="640" MinHeight="360"
+        Width="{Binding Width, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
+        Height="{Binding Height, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
+        Left="{Binding Left, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
+        Top="{Binding Top, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
+        WindowState="{Binding WindowState, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="Tahoma, Microsoft YaHei UI, Arial">
     <Window.Resources>
         <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
             <Grid x:Name="Grid" Background="{TemplateBinding Background}">
@@ -284,12 +290,12 @@
             </Grid>
             <Grid Grid.Row="2" Margin="8,0,8,8">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" MinWidth="240"/>
+                    <ColumnDefinition Width="{Binding Width_Column01, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=2*}" MinWidth="240"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition>
                         <ColumnDefinition.Style>
                             <Style TargetType="ColumnDefinition">
-                                <Setter Property="Width" Value="3*"/>
+                                <Setter Property="Width" Value="{Binding Width_Column02, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=3*}"/>
                                 <Setter Property="MinWidth" Value="240"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsSwitchEnabled}" Value="False">
@@ -303,11 +309,11 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Margin="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="2*" MinHeight="42"/>
+                        <RowDefinition Height="{Binding Height_Grid01, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="3*" MinHeight="42"/>
+                        <RowDefinition Height="{Binding Height_Grid02, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="3*" MinHeight="42"/>
+                        <RowDefinition Height="{Binding Height_Grid03, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
                     </Grid.RowDefinitions>
                     <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}">
                         <Grid>
@@ -525,11 +531,11 @@
                 <GridSplitter Grid.Column="1" Visibility="{Binding IsSwitchEnabled, Converter={StaticResource BoolToVisibility}}" Width="6" VerticalAlignment="Stretch" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Background="Transparent"/>
                 <Grid Grid.Column="2" Visibility="{Binding IsSwitchEnabled, Converter={StaticResource BoolToVisibility}}">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="2*" MinHeight="42"/>
+                        <RowDefinition Height="{Binding Height_Grid04, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="2*" MinHeight="42"/>
+                        <RowDefinition Height="{Binding Height_Grid05, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="3*" MinHeight="42"/>
+                        <RowDefinition Height="{Binding Height_Grid06, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
                     </Grid.RowDefinitions>
                     <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}">
                         <Grid>
