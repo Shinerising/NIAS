@@ -114,6 +114,7 @@ namespace LanMonitor
         public List<SwitchDeviceModelView> SwitchDeviceList { get; set; }
         public List<LanHostModelView> LanHostList { get; set; }
         public List<SwitchConnectonModelView> ConnectionList { get; set; }
+        public List<OverrideConnection> OverrideConnectionList { get; set; }
         public string SwitchPortCount => SwitchDeviceList == null ? "0" : string.Join(", ", SwitchDeviceList.Select(item => item.PortCount));
         public string SwitchHostCount => SwitchDeviceList == null ? "0" : string.Join(", ", SwitchDeviceList.Select(item => item.HostCount));
         public string LanHostCount => SwitchDeviceList == null ? "0" : string.Join(", ", LanHostList.Select(item => item.ActiveCount));
@@ -374,7 +375,45 @@ namespace LanMonitor
                 return new SwitchConnectonModelView(item, deviceA, deviceB, deviceA == null ? 0 : SwitchDeviceList.IndexOf(deviceA), deviceB == null ? 0 : SwitchDeviceList.IndexOf(deviceB), portA, portB);
             }).ToList();
 
+            LoadOverdriveConnectionList();
+
             SnmpHelper.Initialize(name);
+        }
+
+        private void LoadOverdriveConnectionList()
+        {
+            OverrideConnectionList = new List<OverrideConnection>();
+            string filename = "conn-override.conf";
+            try
+            {
+                if (!File.Exists(filename))
+                {
+                    return;
+                }
+
+                using (StreamReader sr = new StreamReader(filename, Encoding.UTF8))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        string text = sr.ReadLine();
+                        string[] options = text.Split(';');
+                        if (options.Length >= 5)
+                        {
+                            OverrideConnectionList.Add(new OverrideConnection()
+                            {
+                                Switch = options[0],
+                                HostIP = options[1],
+                                HostMacAddress = options[2],
+                                State = options[3],
+                                IsForced = options[4].ToUpper() == "TRUE",
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
         }
 
         private void NetworkStatusMonitoring()
@@ -938,6 +977,50 @@ namespace LanMonitor
                                 }
                             }
                         }
+
+                        #region Override Connection
+
+                        foreach (OverrideConnection conn in OverrideConnectionList)
+                        {
+                            bool flag = false;
+                            if (string.IsNullOrEmpty(conn.HostMacAddress))
+                            {
+                                flag = conn.HostIP == list[i].IPAddress;
+                            }
+                            else if (string.IsNullOrEmpty(conn.HostIP))
+                            {
+                                flag = conn.HostMacAddress == list[i].MACAddress;
+                            }
+                            else
+                            {
+                                flag = conn.HostIP == list[i].IPAddress && conn.HostMacAddress == list[i].MACAddress;
+                            }
+                            if (flag)
+                            {
+                                if (switchIP == null || conn.IsForced)
+                                {
+                                    SwitchDeviceModelView device = SwitchDeviceList.FirstOrDefault(item => item.Name == conn.Switch);
+                                    if (device != null)
+                                    {
+                                        if (conn.State == "0")
+                                        {
+                                            switchIP = null;
+                                            switchParent = null;
+                                        }
+                                        else
+                                        {
+                                            switchIP = device.Address;
+                                            switchParent = device;
+                                            switchIndex = SwitchDeviceList.IndexOf(device);
+                                            isReserved = conn.State == "1";
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        #endregion
 
                         if (switchIP == null)
                         {

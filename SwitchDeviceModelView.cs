@@ -399,4 +399,13 @@ namespace LanMonitor
             return switchDevice;
         }
     }
+
+    public class OverrideConnection
+    {
+        public string Switch { get; set; }
+        public string HostIP { get; set; }
+        public string HostMacAddress { get; set; }
+        public string State { get; set; }
+        public bool IsForced { get; set; }
+    }
 }
