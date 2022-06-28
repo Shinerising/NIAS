@@ -777,7 +777,7 @@ namespace LanMonitor
                                     for (int i = 0; i < dict6.Count; i += 1)
                                     {
                                         string mac = BitConverter.ToString(dict6.ElementAt(i).Value, 2);
-                                        if (dict4.Count > i && !dict5.ContainsKey(mac))
+                                        if (dict7.Count > i && !dict8.ContainsKey(mac))
                                         {
                                             dict8.Add(mac, dict7.ElementAt(i).Value);
                                         }
