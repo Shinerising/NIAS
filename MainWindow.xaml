@@ -12,7 +12,19 @@
         Left="{Binding Left, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
         Top="{Binding Top, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
         WindowState="{Binding WindowState, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
-        WindowStyle="None" AllowsTransparency="True" Background="Transparent" Foreground="{StaticResource Color_Text}" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="Tahoma, Microsoft YaHei UI, Arial">
+        Background="Transparent" Foreground="{StaticResource Color_Text}" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="Tahoma, Microsoft YaHei UI, Arial">
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="WindowStyle" Value="None"/>
+            <Setter Property="AllowsTransparency" Value="True"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Source={x:Static local:MainWindow.IsMicaEnabled}}" Value="True">
+                    <Setter Property="WindowStyle" Value="SingleBorderWindow"/>
+                    <Setter Property="AllowsTransparency" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
     <Window.Resources>
         <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
             <Grid x:Name="Grid" Background="{TemplateBinding Background}">
@@ -140,6 +152,7 @@
                 <Setter Property="Background" Value="{StaticResource Color_Window}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource Color_Border}"/>
                 <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="IsHitTestVisible" Value="True"/>
                 <Setter Property="CornerRadius" Value="8"/>
                 <Setter Property="Margin" Value="8"/>
                 <Setter Property="Effect">
@@ -165,6 +178,22 @@
                         <Setter Property="CornerRadius" Value="0"/>
                         <Setter Property="Effect" Value="{x:Null}"/>
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding Source={x:Static local:MainWindow.IsMicaEnabled}}" Value="True">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="CornerRadius" Value="0"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Effect" Value="{x:Null}"/>
+                    </DataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized"/>
+                            <Condition Binding="{Binding Source={x:Static local:MainWindow.IsMicaEnabled}}" Value="True"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="Padding" Value="8"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
                 </Style.Triggers>
             </Style>
         </Border.Style>
@@ -224,6 +253,15 @@
                             <Path Data="M0 0 L10 10 M10 0 L0 10" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6"/>
                         </Button>
                     </StackPanel>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Source={x:Static local:MainWindow.IsMicaEnabled}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                 </Border>
             </Grid>
             <Grid Grid.Row="1" Margin="12,0" Height="96">

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Management;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Shell;
 
 namespace LanMonitor
 {
@@ -78,6 +80,8 @@ namespace LanMonitor
 
         private readonly NetworkManager networkManager;
 
+        public static bool IsMicaEnabled => Environment.OSVersion.Version.Build >= 22000;
+
         public MainWindow()
         {
             networkManager = new NetworkManager();
@@ -88,7 +92,17 @@ namespace LanMonitor
 
             InitializeComponent();
 
+            if (IsMicaEnabled)
+            {
+                ContentRendered += MainWindow_ContentRendered;
+            }
+
             networkManager.Start();
+        }
+
+        private void MainWindow_ContentRendered(object sender, EventArgs e)
+        {
+            MicaMaterialHelper.Window_ContentRendered(sender, e);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
