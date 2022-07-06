@@ -12,7 +12,7 @@
         Left="{Binding Left, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
         Top="{Binding Top, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
         WindowState="{Binding WindowState, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
-        Background="Transparent" Foreground="{StaticResource Color_Text}" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="Tahoma, Microsoft YaHei UI, Arial">
+        Background="Transparent" Foreground="{DynamicResource Color_Text}" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="Tahoma, Microsoft YaHei UI, Arial">
     <Window.Style>
         <Style TargetType="Window">
             <Setter Property="WindowStyle" Value="None"/>
@@ -54,7 +54,7 @@
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="Thumb">
-                                                            <Rectangle Height="Auto" Width="8" RadiusX="4" RadiusY="4" Fill="{StaticResource Color_ButtonBorder}"/>
+                                                            <Rectangle Height="Auto" Width="8" RadiusX="4" RadiusY="4" Fill="{DynamicResource Color_ButtonBorder}"/>
                                                         </ControlTemplate>
                                                     </Setter.Value>
                                                 </Setter>
@@ -94,7 +94,7 @@
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="Thumb">
-                                                            <Rectangle Height="8" Width="Auto" RadiusX="4" RadiusY="4" Fill="{StaticResource Color_ButtonBorder}"/>
+                                                            <Rectangle Height="8" Width="Auto" RadiusX="4" RadiusY="4" Fill="{DynamicResource Color_ButtonBorder}"/>
                                                         </ControlTemplate>
                                                     </Setter.Value>
                                                 </Setter>
@@ -149,8 +149,8 @@
             <Style TargetType="Border">
                 <Setter Property="UseLayoutRounding" Value="True"/>
                 <Setter Property="SnapsToDevicePixels" Value="True"/>
-                <Setter Property="Background" Value="{StaticResource Color_Window}"/>
-                <Setter Property="BorderBrush" Value="{StaticResource Color_Border}"/>
+                <Setter Property="Background" Value="{DynamicResource Color_Window}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Color_Border}"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="IsHitTestVisible" Value="True"/>
                 <Setter Property="CornerRadius" Value="8"/>
@@ -162,8 +162,8 @@
                 </Setter>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsActive}" Value="False">
-                        <Setter Property="Background" Value="{StaticResource Color_WindowLight}"/>
-                        <Setter Property="BorderBrush" Value="{StaticResource Color_BorderLight}"/>
+                        <Setter Property="Background" Value="{DynamicResource Color_WindowLight}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource Color_BorderLight}"/>
                         <Setter Property="Effect">
                             <Setter.Value>
                                 <DropShadowEffect ShadowDepth="1" Direction="270" BlurRadius="4" Opacity=".2"/>
@@ -171,8 +171,8 @@
                         </Setter>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized">
-                        <Setter Property="Background" Value="{StaticResource Color_WindowLight}"/>
-                        <Setter Property="BorderBrush" Value="{StaticResource Color_BorderLight}"/>
+                        <Setter Property="Background" Value="{DynamicResource Color_WindowLight}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource Color_BorderLight}"/>
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="Margin" Value="6"/>
                         <Setter Property="CornerRadius" Value="0"/>
@@ -212,7 +212,7 @@
                         <Style TargetType="StackPanel">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsActive}" Value="False">
-                                    <Setter Property="TextElement.Foreground" Value="{StaticResource Color_TextLight}"/>
+                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource Color_TextLight}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -309,15 +309,15 @@
                     <TextBlock Text="{Binding Model, FallbackValue=Model}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_Model}" Height="20"/>
                 </StackPanel>
                 <Grid Grid.Column="2">
-                    <Border Margin="0,0,0,24" SnapsToDevicePixels="True" BorderThickness=".5" BorderBrush="#FB8C00" ToolTip="{StaticResource Tip_Graph}" Background="#FFF" ClipToBounds="True">
+                    <Border Margin="0,0,0,24" SnapsToDevicePixels="True" BorderThickness=".5" BorderBrush="#FB8C00" CornerRadius="4" ToolTip="{StaticResource Tip_Graph}" Background="{DynamicResource Color_Card}" ClipToBounds="True">
                         <Grid>
                             <Path Margin="0" Data="M0 0h12M0 1h12M0 2h12M0 3h12M0 4h12M0 5h12M0 6h12M0 7h12M0 8h12M0 0v8M1 0v8M2 0v8M3 0v8M4 0v8M5 0v8M6 0v8M7 0v8M8 0v8M9 0v8M10 0v8M11 0v8M12 0v8" Stretch="Fill" Stroke="#A0FB8C00" StrokeThickness=".5"/>
                             <Path Data="{Binding DownloadGeometry}" Stretch="Fill" Fill="#80039BE5" Stroke="#C0039BE5" StrokeThickness="1" StrokeLineJoin="Bevel"/>
                             <Path Data="{Binding UploadGeometry}" Stretch="Fill" Fill="#8043A047" Stroke="#C043A047" StrokeThickness="1" StrokeLineJoin="Bevel"/>
                         </Grid>
                     </Border>
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,4" Text="{StaticResource Text_Graph}" FontSize="11" Foreground="{StaticResource Color_TextLight}"/>
-                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="6,4" Text="{Binding SpeedLimit, FallbackValue=1MB/s}" FontSize="11" Foreground="{StaticResource Color_TextLight}"/>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,4" Text="{StaticResource Text_Graph}" FontSize="11" Foreground="{DynamicResource Color_TextLight}"/>
+                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="6,4" Text="{Binding SpeedLimit, FallbackValue=1MB/s}" FontSize="11" Foreground="{DynamicResource Color_TextLight}"/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
                         <Path Data="M 8 5 L 14 12 L 2 12 Z" Stroke="#43A047" Fill="#43A047" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
                         <TextBlock ToolTip="{StaticResource UploadSpeed}" Text="{Binding GlobalUploadSpeed, FallbackValue=128KB/s}" FontSize="13" Margin="2,2,8,2" LineHeight="16" Height="16"/>
@@ -359,14 +359,14 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
                                 <TextBlock Text="{StaticResource Row_Adapter}"/>
                                 <TextBlock Text="{Binding NetworkCollection.Count, StringFormat=({0})}"/>
                             </StackPanel>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding NetworkCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
                                             <Grid Height="64" ToolTip="{Binding ToolTip}">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -436,14 +436,14 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
                                 <TextBlock Text="{StaticResource Row_Port}"/>
                                 <TextBlock Text="{Binding PortCollection.Count, StringFormat=({0})}"/>
                             </StackPanel>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding PortCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}">
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}">
                                             <Grid Height="48" ToolTip="{Binding ToolTip}">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -511,14 +511,14 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
                                 <TextBlock Text="{StaticResource Row_LAN}"/>
                                 <TextBlock Text="{Binding ComputerCollection.Count, StringFormat=({0})}"/>
                             </StackPanel>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding ComputerCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
                                             <Grid Height="48" ToolTip="{Binding ToolTip}">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -581,14 +581,14 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
                                 <TextBlock Text="{StaticResource Row_SwitchPort}"/>
                                 <TextBlock Text="{Binding SwitchPortCount, StringFormat=({0})}"/>
                             </StackPanel>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
                                             <Grid Height="64" ToolTip="{Binding Tip}">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" MaxWidth="128"/>
@@ -613,7 +613,7 @@
                                                     </Image>
                                                     <TextBlock VerticalAlignment="Bottom" Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
                                                 </Grid>
-                                                <Border Grid.Column="1" Margin="0,0,8,0" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="8,4">
+                                                <Border Grid.Column="1" Margin="0,0,8,0" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="8,4">
                                                     <Grid Background="Transparent">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto"/>
@@ -629,8 +629,8 @@
                                                                 <DataTemplate>
                                                                     <Border x:Name="Port_Border" Margin="2" ToolTip="{Binding Tip}" Background="Transparent" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave">
                                                                         <Grid x:Name="Port_Grid">
-                                                                            <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="#565656" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10L4.5 16"/>
-                                                                            <Border x:Name="Port_Label" Visibility="Collapsed" Margin="-4,-6,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="1" BorderBrush="#666" CornerRadius="2" Background="#F0FFFFFF">
+                                                                            <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="{DynamicResource Color_Path}" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10L4.5 16"/>
+                                                                            <Border x:Name="Port_Label" Visibility="Collapsed" Margin="-4,-6,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="1" BorderBrush="{DynamicResource Color_Line}" CornerRadius="2" Background="#F0FFFFFF">
                                                                                 <TextBlock Padding="2,0" MinWidth="12" FontSize="10" TextAlignment="Center" Text="{Binding Name}"/>
                                                                             </Border>
                                                                         </Grid>
@@ -672,14 +672,14 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
                                 <TextBlock Text="{StaticResource Row_SwitchHost}"/>
                                 <TextBlock Text="{Binding SwitchHostCount, StringFormat=({0})}"/>
                             </StackPanel>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
                                             <Grid Height="64" ToolTip="{Binding Tip}">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" MaxWidth="128"/>
@@ -713,7 +713,7 @@
                                                         </ItemsControl.ItemsPanel>
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
-                                                                <Border x:Name="Border" Margin="3" Height="26" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="4,0" ToolTip="{Binding Tip}" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave">
+                                                                <Border x:Name="Border" Margin="3" Height="26" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="4,0" ToolTip="{Binding Tip}" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave">
                                                                     <Grid>
                                                                         <Grid.ColumnDefinitions>
                                                                             <ColumnDefinition Width="Auto"/>
@@ -725,7 +725,7 @@
                                                                 </Border>
                                                                 <DataTemplate.Triggers>
                                                                     <DataTrigger Binding="{Binding IsCascade}" Value="False">
-                                                                        <Setter TargetName="Border" Property="Background" Value="#FFFFFF"/>
+                                                                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource Color_Label}"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Binding="{Binding State}" Value="Invalid">
                                                                         <Setter TargetName="Border" Property="Opacity" Value=".75"/>
@@ -755,11 +755,11 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{StaticResource Color_TextLight}">
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
                                 <TextBlock Text="{StaticResource Row_NetworkStructure}"/>
                                 <TextBlock Text="{Binding LanHostCount, StringFormat=({0})}"/>
                             </StackPanel>
-                            <Border Grid.Row="1" Margin="12,0,12,12" Padding="0" BorderThickness="1" CornerRadius="4" BorderBrush="{StaticResource Color_Border}" Background="{StaticResource Color_Panel}">
+                            <Border Grid.Row="1" Margin="12,0,12,12" Padding="0" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}">
                                 <ScrollViewer Margin="2,2,0,0" HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerControlTemplate}">
                                     <Grid Margin="8">
                                         <Grid.ColumnDefinitions>
@@ -776,7 +776,7 @@
                                                 <DataTemplate>
                                                     <Border Margin="4,4,4,8" Padding="4">
                                                         <Grid Height="72">
-                                                            <Border x:Name="Border" Margin="30,44,-96,0" Background="#666" Height="2" CornerRadius="2"/>
+                                                            <Border x:Name="Border" Margin="30,44,-96,0" Background="{DynamicResource Color_Line}" Height="2" CornerRadius="2"/>
                                                         </Grid>
                                                     </Border>
                                                     <DataTemplate.Triggers>
@@ -811,7 +811,7 @@
                                                                     </Style>
                                                                 </Image.Style>
                                                             </Image>
-                                                            <Border x:Name="Border" VerticalAlignment="Bottom" Padding="4" Background="#FFF" BorderBrush="#333" BorderThickness="1" CornerRadius="2">
+                                                            <Border x:Name="Border" VerticalAlignment="Bottom" Padding="4" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_Line}" BorderThickness="1" CornerRadius="2">
                                                                 <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16" Height="16"/>
                                                             </Border>
                                                         </Grid>
@@ -837,9 +837,9 @@
                                                 <DataTemplate>
                                                     <Border x:Name="Border" Padding="12,0" VerticalAlignment="Stretch">
                                                         <Canvas MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
-                                                            <Line x:Name="Line" X1="0" X2="0" Y1="{Binding Top}" Y2="{Binding Bottom}" Stroke="#666" StrokeThickness="2"/>
-                                                            <Line x:Name="Dot1" Canvas.Top="{Binding Top}" StrokeThickness="8" Stroke="#666" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                            <Line x:Name="Dot2" Canvas.Top="{Binding Bottom}" StrokeThickness="8" Stroke="#666" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                            <Line x:Name="Line" X1="0" X2="0" Y1="{Binding Top}" Y2="{Binding Bottom}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2"/>
+                                                            <Line x:Name="Dot1" Canvas.Top="{Binding Top}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                            <Line x:Name="Dot2" Canvas.Top="{Binding Bottom}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                             <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                             <Path x:Name="Path1" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
                                                             <Line x:Name="Dot4" Visibility="Collapsed" Canvas.Top="{Binding Bottom}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
@@ -884,7 +884,7 @@
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <Border Margin="8" Padding="8,4" VerticalAlignment="Top" Background="{StaticResource Color_ButtonBack}" BorderBrush="{StaticResource Color_BorderLight}" BorderThickness="1" CornerRadius="3">
+                                                    <Border Margin="8" Padding="8,4" VerticalAlignment="Top" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3">
                                                         <Grid>
                                                             <Grid.RowDefinitions>
                                                                 <RowDefinition Height="Auto"/>
@@ -906,10 +906,10 @@
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <Canvas x:Name="Canvas" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
-                                                                                <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="#333" StrokeThickness="2" StrokeEndLineCap="Round"/>
+                                                                                <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" StrokeEndLineCap="Round"/>
                                                                                 <Line X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="Transparent" StrokeThickness="8" StrokeEndLineCap="Round"/>
-                                                                                <Line x:Name="Dot1" Canvas.Top="{Binding Vector.Length}" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                                <Line x:Name="Dot2" Canvas.Top="0" StrokeThickness="8" Stroke="#333" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                <Line x:Name="Dot1" Canvas.Top="{Binding Vector.Length}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                <Line x:Name="Dot2" Canvas.Top="0" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                                                 <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                                                 <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
                                                                             </Canvas>
@@ -947,7 +947,7 @@
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <Grid Margin="2,6" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
-                                                                                <Border x:Name="Border" Background="#FFF" BorderBrush="#333" BorderThickness="1" CornerRadius="2"/>
+                                                                                <Border x:Name="Border" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_Line}" BorderThickness="1" CornerRadius="2"/>
                                                                                 <Border Padding="6" MinWidth="72">
                                                                                     <TextBlock Text="{Binding IPAddress}" HorizontalAlignment="Center" Height="15"/>
                                                                                 </Border>
@@ -985,7 +985,7 @@
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <Canvas x:Name="Canvas" Visibility="Collapsed" IsHitTestVisible="False">
-                                                                                <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="#333" StrokeThickness="2" StrokeEndLineCap="Round"/>
+                                                                                <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" StrokeEndLineCap="Round"/>
                                                                                 <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                                                 <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
                                                                             </Canvas>
@@ -1072,7 +1072,7 @@
                                                 <Path Data="M0 0 L10 10 M10 0 L0 10" StrokeThickness="1" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10"/>
                                             </Button>
                                         </Border>
-                                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" FontSize="13" Foreground="{StaticResource Color_TextLight}" Margin="12,8,12,2"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" FontSize="13" Foreground="{DynamicResource Color_TextLight}" Margin="12,8,12,2"/>
                                         <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Content}" TextWrapping="Wrap" FontSize="14" Margin="12,2,12,12"/>
                                         <Image x:Name="Image_Icon" Grid.Row="1" Grid.RowSpan="2" Width="48" Height="48" Margin="8,10,0,0" Source="Images/alert.png" VerticalAlignment="Top"/>
                                     </Grid>

@@ -107,6 +107,7 @@ namespace LanMonitor
         {
             WindowState = WindowState.Minimized;
         }
+
         private void WindowMaximize_Click(object sender, RoutedEventArgs e)
         {
             if (WindowState == WindowState.Maximized)

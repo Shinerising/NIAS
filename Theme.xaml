@@ -11,7 +11,11 @@
     <SolidColorBrush x:Key="Color_ButtonDisabled">#BDBDBD</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Window">#F5F5F5</SolidColorBrush>
     <SolidColorBrush x:Key="Color_WindowLight">#FAFAFA</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Card">#FFFFFF</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Panel">#FAFAFA</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Label">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Line">#303030</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Path">#565656</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Border">#BDBDBD</SolidColorBrush>
     <SolidColorBrush x:Key="Color_BorderLight">#E0E0E0</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Text">#424242</SolidColorBrush>
@@ -72,7 +76,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ContentControl">
-                    <Border Background="White" CornerRadius="8" Margin="4">
+                    <Border Background="{DynamicResource Color_Card}" CornerRadius="8" Margin="4">
                         <Border.Effect>
                             <DropShadowEffect ShadowDepth="1" BlurRadius="4" Opacity=".2" Direction="-90"/>
                         </Border.Effect>

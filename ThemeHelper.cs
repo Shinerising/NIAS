@@ -89,6 +89,9 @@ namespace LanMonitor
             {
 
             }
+
+            UpdateWindowColor(useLightTheme);
+
             int trueValue = 0x01;
             int falseValue = 0x00;
 
@@ -99,6 +102,21 @@ namespace LanMonitor
             else
             {
                 DwmSetWindowAttribute(hwnd, DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE, ref trueValue, Marshal.SizeOf(typeof(int)));
+            }
+        }
+
+        private static void UpdateWindowColor(bool useLightTheme)
+        {
+            string name = "LanMonitor;component/DarkMode.xaml";
+            var resources = Application.Current.Resources.MergedDictionaries;
+            bool isDarkModeUsed = resources.FirstOrDefault(item => item.Source.OriginalString.Equals(name)) != null;
+            if (useLightTheme && isDarkModeUsed)
+            {
+                resources.Remove(resources.FirstOrDefault(item => item.Source.OriginalString.Equals(name)));
+            }
+            else if (!useLightTheme && !isDarkModeUsed)
+            {
+                resources.Add(new ResourceDictionary() {  Source = new Uri(name, UriKind.Relative) });
             }
         }
 

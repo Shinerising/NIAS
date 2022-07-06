@@ -91,6 +91,10 @@
     <Compile Include="PortModelView.cs" />
     <Compile Include="SnmpHelper.cs" />
     <Compile Include="SwitchDeviceModelView.cs" />
+    <Page Include="DarkMode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
