@@ -92,17 +92,9 @@ namespace LanMonitor
 
             InitializeComponent();
 
-            if (IsMicaEnabled)
-            {
-                ContentRendered += MainWindow_ContentRendered;
-            }
+            ThemeHelper.ApplyTheme(this);
 
             networkManager.Start();
-        }
-
-        private void MainWindow_ContentRendered(object sender, EventArgs e)
-        {
-            MicaMaterialHelper.Window_ContentRendered(sender, e);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
