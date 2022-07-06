@@ -265,6 +265,19 @@
                 </Border>
             </Grid>
             <Grid Grid.Row="1" Margin="12,0" Height="96">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*" MinWidth="240" MaxWidth="480"/>
@@ -353,7 +366,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="{Binding Height_Grid03, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
                     </Grid.RowDefinitions>
-                    <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}">
+                    <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -430,7 +443,7 @@
                         </Grid>
                     </ContentControl>
                     <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
-                    <ContentControl Grid.Row="2" Style="{StaticResource Control_Panel}">
+                    <ContentControl Grid.Row="2" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -505,7 +518,7 @@
                         </Grid>
                     </ContentControl>
                     <GridSplitter Grid.Row="3" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
-                    <ContentControl Grid.Row="4" Style="{StaticResource Control_Panel}">
+                    <ContentControl Grid.Row="4" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -575,7 +588,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="{Binding Height_Grid06, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
                     </Grid.RowDefinitions>
-                    <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}">
+                    <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -666,7 +679,7 @@
                         </Grid>
                     </ContentControl>
                     <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
-                    <ContentControl Grid.Row="2" Style="{StaticResource Control_Panel}">
+                    <ContentControl Grid.Row="2" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -749,7 +762,7 @@
                         </Grid>
                     </ContentControl>
                     <GridSplitter Grid.Row="3" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
-                    <ContentControl Grid.Row="4" Style="{StaticResource Control_Panel}">
+                    <ContentControl Grid.Row="4" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>

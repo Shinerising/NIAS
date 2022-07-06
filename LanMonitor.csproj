@@ -84,6 +84,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppResource.cs" />
+    <Compile Include="CustomControl.cs" />
     <Compile Include="LANComputerModelView.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="ThemeHelper.cs" />
