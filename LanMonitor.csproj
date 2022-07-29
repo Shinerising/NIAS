@@ -29,13 +29,12 @@
     <StartupObject>LanMonitor.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpSnmpLib">
-      <HintPath>lib\SharpSnmpLib.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <None Update="app.config.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +92,7 @@
     <Resource Include="images\info.png" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Lextm.SharpSnmpLib" Version="12.4.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.336902">
@@ -102,5 +102,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="appsettings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
