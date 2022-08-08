@@ -58,6 +58,10 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LanMonitorLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\LanMonitorLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="SharpSnmpLib">
       <HintPath>lib\SharpSnmpLib.dll</HintPath>
     </Reference>
@@ -196,12 +200,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\info.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="LanMonitorLibrary\LanMonitorLibrary.csproj">
-      <Project>{a0a79fe5-d12d-4ded-a950-401bd49d01c5}</Project>
-      <Name>LanMonitorLibrary</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
