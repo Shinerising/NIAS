@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.136
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanMonitor", "LanMonitor\LanMonitor.csproj", "{0B624859-158F-4841-90E1-F3C050566439}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "ReportTemplate", "ReportTemplate\ReportTemplate.esproj", "{561634F3-9AD4-43A8-890E-B55BEB32A120}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,12 @@ Global
 		{0B624859-158F-4841-90E1-F3C050566439}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B624859-158F-4841-90E1-F3C050566439}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B624859-158F-4841-90E1-F3C050566439}.Release|Any CPU.Build.0 = Release|Any CPU
+		{561634F3-9AD4-43A8-890E-B55BEB32A120}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{561634F3-9AD4-43A8-890E-B55BEB32A120}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{561634F3-9AD4-43A8-890E-B55BEB32A120}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{561634F3-9AD4-43A8-890E-B55BEB32A120}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{561634F3-9AD4-43A8-890E-B55BEB32A120}.Release|Any CPU.Build.0 = Release|Any CPU
+		{561634F3-9AD4-43A8-890E-B55BEB32A120}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
