@@ -59,7 +59,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpSnmpLib, Version=12.4.0.0, Culture=neutral, PublicKeyToken=4c00852d3788e005, processorArchitecture=MSIL">
-      <HintPath>packages\Lextm.SharpSnmpLib.12.4.0\lib\net471\SharpSnmpLib.dll</HintPath>
+      <HintPath>..\packages\Lextm.SharpSnmpLib.12.4.0\lib\net471\SharpSnmpLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
