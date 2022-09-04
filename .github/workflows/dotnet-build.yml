@@ -97,7 +97,6 @@ jobs:
       with:
         certificate: '${{ secrets.Base64_Encoded_PFX }}'
         password: '${{ secrets.PFX_KEY }}'
-        certificatesha1: '${{ secrets.PFX_SHA1 }}'
         certificatename: '${{ secrets.PFX_NAME }}'
         folder: '../_build'
         recursive: false
