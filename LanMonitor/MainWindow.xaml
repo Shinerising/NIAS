@@ -1,0 +1,1113 @@
+﻿<Window x:Class="LanMonitor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:p="clr-namespace:LanMonitor.Properties"
+        xmlns:local="clr-namespace:LanMonitor"
+        mc:Ignorable="d"
+        Title="{StaticResource Title}" MinWidth="640" MinHeight="360"
+        Width="{Binding Width, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
+        Height="{Binding Height, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
+        Left="{Binding Left, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
+        Top="{Binding Top, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
+        WindowState="{Binding WindowState, Source={x:Static p:Settings.Default}, Mode=TwoWay}"
+        Background="Transparent" Foreground="{DynamicResource Color_Text}" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="Tahoma, Microsoft YaHei UI, Arial">
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="WindowStyle" Value="None"/>
+            <Setter Property="AllowsTransparency" Value="True"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Source={x:Static local:MainWindow.IsMicaEnabled}}" Value="True">
+                    <Setter Property="WindowStyle" Value="SingleBorderWindow"/>
+                    <Setter Property="AllowsTransparency" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+    <Window.Resources>
+        <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
+            <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
+                <ScrollBar HorizontalAlignment="Right" Margin="0,0,0,12" VerticalAlignment="Stretch" x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Style="{DynamicResource VerticalScrollBarStyle}"/>
+                <ScrollBar VerticalAlignment="Bottom" Margin="0,0,12,0" HorizontalAlignment="Stretch" x:Name="PART_HorizontalScrollBar" Orientation="Horizontal" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Style="{DynamicResource HorizontalScrollBarStyle}"/>
+            </Grid>
+        </ControlTemplate>
+        <Style x:Key="VerticalScrollBarStyle" TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+            <Setter Property="Width" Value="12"/>
+            <Setter Property="MinWidth" Value="12"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid x:Name="Bg" Background="Transparent" SnapsToDevicePixels="true">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True" IsEnabled="{TemplateBinding IsMouseOver}" Opacity="0">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Style>
+                                            <Style TargetType="Thumb">
+                                                <Setter Property="OverridesDefaultStyle" Value="true"/>
+                                                <Setter Property="IsTabStop" Value="false"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Thumb">
+                                                            <Rectangle Height="Auto" Width="8" RadiusX="4" RadiusY="4" Fill="{DynamicResource Color_ButtonBorder}"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Thumb.Style>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" TargetName="PART_Track" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="HorizontalScrollBarStyle" TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="MinHeight" Value="12"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid x:Name="Bg" Background="Transparent" SnapsToDevicePixels="true">
+                            <Track x:Name="PART_Track" IsDirectionReversed="False" IsEnabled="{TemplateBinding IsMouseOver}" Opacity="0">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Style>
+                                            <Style TargetType="Thumb">
+                                                <Setter Property="OverridesDefaultStyle" Value="true"/>
+                                                <Setter Property="IsTabStop" Value="false"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Thumb">
+                                                            <Rectangle Height="8" Width="Auto" RadiusX="4" RadiusY="4" Fill="{DynamicResource Color_ButtonBorder}"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Thumb.Style>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" TargetName="PART_Track" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ListView">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListView">
+                        <Border>
+                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" Template="{DynamicResource ScrollViewerControlTemplate}">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ListViewItem">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="8" UseAeroCaptionButtons="True" GlassFrameThickness="-1" CornerRadius="8"/>
+    </WindowChrome.WindowChrome>
+    <Border x:Name="Border_Main">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="UseLayoutRounding" Value="True"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="Background" Value="{DynamicResource Color_Window}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Color_Border}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="IsHitTestVisible" Value="True"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="Margin" Value="8"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect ShadowDepth="1" Direction="270" BlurRadius="6" Opacity=".4"/>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsActive}" Value="False">
+                        <Setter Property="Background" Value="{DynamicResource Color_WindowLight}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource Color_BorderLight}"/>
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect ShadowDepth="1" Direction="270" BlurRadius="4" Opacity=".2"/>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized">
+                        <Setter Property="Background" Value="{DynamicResource Color_WindowLight}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource Color_BorderLight}"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Margin" Value="6"/>
+                        <Setter Property="CornerRadius" Value="0"/>
+                        <Setter Property="Effect" Value="{x:Null}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Source={x:Static local:MainWindow.IsMicaEnabled}}" Value="True">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="CornerRadius" Value="0"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Effect" Value="{x:Null}"/>
+                    </DataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized"/>
+                            <Condition Binding="{Binding Source={x:Static local:MainWindow.IsMicaEnabled}}" Value="True"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="Padding" Value="8"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Panel.ZIndex="10">
+                <Border HorizontalAlignment="Left">
+                    <Image Source="images/title.png" RenderOptions.BitmapScalingMode="HighQuality" Width="20" Height="20" Margin="6"/>
+                </Border>
+                <StackPanel Margin="32,0,0,0" Orientation="Horizontal">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsActive}" Value="False">
+                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource Color_TextLight}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <TextBlock Padding="0,8" LineHeight="16" Text="{StaticResource Name}"/>
+                    <TextBlock Margin="8,0,0,0" Padding="0,8" LineHeight="16" Text="{Binding Source={x:Static local:App.Version}, StringFormat=V{0}}"/>
+                </StackPanel>
+                <Border HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button Style="{StaticResource Button_Window}" Click="WindowMinimize_Click">
+                            <Path Data="M0 5 L10 5" RenderOptions.EdgeMode="Aliased" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6"/>
+                        </Button>
+                        <Button Style="{StaticResource Button_Window}" Click="WindowMaximize_Click">
+                            <Path RenderOptions.EdgeMode="Aliased" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6">
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Data" Value="M1 1 L1 9 L9 9 L9 1 L1 1Z"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized">
+                                                <Setter Property="Data" Value="M3 3 L3 1 L9 1 L9 7 L7 7M1 3 L7 3 L7 9 L1 9 L1 3Z"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Button>
+                        <Button Click="WindowClose_Click">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource Button_Close}">
+                                    <Setter Property="Border.CornerRadius" Value="0,7,0,0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized">
+                                            <Setter Property="Border.CornerRadius" Value="0,0,0,0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <Path Data="M0 0 L10 10 M10 0 L0 10" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6"/>
+                        </Button>
+                    </StackPanel>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Source={x:Static local:MainWindow.IsMicaEnabled}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+            </Grid>
+            <Grid Grid.Row="1" Margin="12,0" Height="96">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*" MinWidth="240" MaxWidth="480"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Width="96" Height="96" Margin="0,0,0,0">
+                    <Image Width="90" Height="90" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Source" Value="images/monitor.png"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MachineType}" Value="Laptop">
+                                        <Setter Property="Source" Value="images/laptop.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                    <Image Width="40" Height="40" VerticalAlignment="Top" Margin="0,12,0,0" RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Source" Value="images/offline.png"/>
+                                <Setter Property="ToolTip" Value="{StaticResource Status_Offline}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding NetworkStatus}" Value="0">
+                                        <Setter Property="Source" Value="images/network.png"/>
+                                        <Setter Property="ToolTip" Value="{StaticResource Status_LAN}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding NetworkStatus}" Value="1">
+                                        <Setter Property="Source" Value="images/internet.png"/>
+                                        <Setter Property="ToolTip" Value="{StaticResource Status_Internet}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Grid>
+                <StackPanel Grid.Column="1" Height="96" Margin="16,0,16,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <TextBlock Text="{Binding ComputerName, FallbackValue=ComputerName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_ComputerName}" FontSize="14" Height="20" FontWeight="Bold" Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding SystemName, FallbackValue=SystemName}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_SystemName}" Height="20"/>
+                    <TextBlock Text="{Binding Manufacturer, FallbackValue=Manufacturer}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_Manufacturer}" Height="20"/>
+                    <TextBlock Text="{Binding Model, FallbackValue=Model}" TextTrimming="CharacterEllipsis" ToolTip="{StaticResource Tip_Model}" Height="20"/>
+                </StackPanel>
+                <Grid Grid.Column="2">
+                    <Border Margin="0,0,0,24" SnapsToDevicePixels="True" BorderThickness=".5" BorderBrush="#FB8C00" CornerRadius="4" ToolTip="{StaticResource Tip_Graph}" Background="{DynamicResource Color_Card}" ClipToBounds="True">
+                        <Grid>
+                            <Path Margin="0" Data="M0 0h12M0 1h12M0 2h12M0 3h12M0 4h12M0 5h12M0 6h12M0 7h12M0 8h12M0 0v8M1 0v8M2 0v8M3 0v8M4 0v8M5 0v8M6 0v8M7 0v8M8 0v8M9 0v8M10 0v8M11 0v8M12 0v8" Stretch="Fill" Stroke="#A0FB8C00" StrokeThickness=".5"/>
+                            <Path Data="{Binding DownloadGeometry}" Stretch="Fill" Fill="#80039BE5" Stroke="#C0039BE5" StrokeThickness="1" StrokeLineJoin="Bevel"/>
+                            <Path Data="{Binding UploadGeometry}" Stretch="Fill" Fill="#8043A047" Stroke="#C043A047" StrokeThickness="1" StrokeLineJoin="Bevel"/>
+                        </Grid>
+                    </Border>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,4" Text="{StaticResource Text_Graph}" FontSize="11" Foreground="{DynamicResource Color_TextLight}"/>
+                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="6,4" Text="{Binding SpeedLimit, FallbackValue=1MB/s}" FontSize="11" Foreground="{DynamicResource Color_TextLight}"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                        <Path Data="M 8 5 L 14 12 L 2 12 Z" Stroke="#43A047" Fill="#43A047" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                        <TextBlock ToolTip="{StaticResource UploadSpeed}" Text="{Binding GlobalUploadSpeed, FallbackValue=128KB/s}" FontSize="13" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                        <Path Data="M 2 5 L 14 5 L 8 12 Z" Stroke="#039BE5" Fill="#039BE5" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                        <TextBlock ToolTip="{StaticResource DownloadSpeed}" Text="{Binding GlobalDownloadSpeed, FallbackValue=128KB/s}" FontSize="13" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="2" Margin="8,0,8,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding Width_Column01, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=2*}" MinWidth="240"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition>
+                        <ColumnDefinition.Style>
+                            <Style TargetType="ColumnDefinition">
+                                <Setter Property="Width" Value="{Binding Width_Column02, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=3*}"/>
+                                <Setter Property="MinWidth" Value="240"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSwitchEnabled}" Value="False">
+                                        <Setter Property="Width" Value="0"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ColumnDefinition.Style>
+                    </ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Margin="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="{Binding Height_Grid01, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="{Binding Height_Grid02, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="{Binding Height_Grid03, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
+                    </Grid.RowDefinitions>
+                    <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
+                                <TextBlock Text="{StaticResource Row_Adapter}"/>
+                                <TextBlock Text="{Binding NetworkCollection.Count, StringFormat=({0})}"/>
+                            </StackPanel>
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding NetworkCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                            <Grid Height="64" ToolTip="{Binding ToolTip}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Column="0" Width="64">
+                                                    <Image Width="36" Height="36" Margin="12,2,12,8" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="images/ethernet.png"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Type}" Value="71">
+                                                                        <Setter Property="Source" Value="images/router.png"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                    <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="images/idle.png"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="1">
+                                                                        <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="2">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="6">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="7">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                    <TextBlock VerticalAlignment="Bottom" Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
+                                                </Grid>
+                                                <StackPanel Grid.Column="1" Margin="8,0">
+                                                    <TextBlock Text="{Binding ToolTip}" TextTrimming="CharacterEllipsis" LineHeight="16"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Path Data="M 8 5 L 14 12 L 2 12 Z" Stroke="#43A047" Fill="#43A047" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                                                        <TextBlock ToolTip="{StaticResource UploadSpeed}" Text="{Binding UploadSpeed, FallbackValue=128KB/s}" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Path Data="M 2 5 L 14 5 L 8 12 Z" Stroke="#039BE5" Fill="#039BE5" StrokeThickness="3" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                                                        <TextBlock ToolTip="{StaticResource DownloadSpeed}" Text="{Binding DownloadSpeed, FallbackValue=128KB/s}" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </ContentControl>
+                    <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
+                    <ContentControl Grid.Row="2" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
+                                <TextBlock Text="{StaticResource Row_Port}"/>
+                                <TextBlock Text="{Binding PortCollection.Count, StringFormat=({0})}"/>
+                            </StackPanel>
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding PortCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}">
+                                            <Grid Height="48" ToolTip="{Binding ToolTip}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Column="0" Width="64">
+                                                    <Image Width="36" Height="36" Margin="12,2,12,8" RenderOptions.BitmapScalingMode="HighQuality">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="images/tcp.png"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Type}" Value="UDP">
+                                                                        <Setter Property="Source" Value="images/udp.png"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                    <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="images/idle.png"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Established">
+                                                                        <Setter Property="Source" Value="images/transfer.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Listen">
+                                                                        <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="SynSent">
+                                                                        <Setter Property="Source" Value="images/transfer.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="TimeWait">
+                                                                        <Setter Property="Source" Value="images/rotate.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="CloseWait">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                </Grid>
+                                                <StackPanel Grid.Column="1" Margin="8,0">
+                                                    <TextBlock Text="{Binding ToolTip}" TextTrimming="CharacterEllipsis" LineHeight="16"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                    <StackPanel Orientation="Horizontal" ToolTip="{StaticResource Tip_Port}">
+                                                        <Path Data="M 10 1 L 5 1 L 5 15 L10 15 M 1 8 L 15 8 M 11 4 L 15 8 L 11 12" Stroke="#1976d2" StrokeThickness="2" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                                                        <TextBlock Text="{Binding StateText}" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </ContentControl>
+                    <GridSplitter Grid.Row="3" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
+                    <ContentControl Grid.Row="4" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
+                                <TextBlock Text="{StaticResource Row_LAN}"/>
+                                <TextBlock Text="{Binding ComputerCollection.Count, StringFormat=({0})}"/>
+                            </StackPanel>
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding ComputerCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                            <Grid Height="48" ToolTip="{Binding ToolTip}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Column="0" Width="64">
+                                                    <Image DockPanel.Dock="Left" Width="36" Height="36" Margin="12,2,12,8" RenderOptions.BitmapScalingMode="HighQuality">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="images/computer.png"/>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                    <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="images/error.png"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="-1">
+                                                                        <Setter Property="Source" Value="images/idle.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="0">
+                                                                        <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                </Grid>
+                                                <StackPanel Grid.Column="1" Margin="8,0">
+                                                    <TextBlock Text="{Binding ToolTip}" TextTrimming="CharacterEllipsis" LineHeight="16"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                    <StackPanel Orientation="Horizontal" ToolTip="{StaticResource Tip_Latency}">
+                                                        <Path Data="M 0 6 L 15 6 L 11 2 M 16 10 L 13 10 M 11 10 L 8 10 M 6 10 L 1 10 L 5 14" Stroke="#FB8C00" StrokeThickness="2" StrokeLineJoin="Round" Margin="2" Width="16" Height="16"/>
+                                                        <TextBlock Text="{Binding Latency, FallbackValue=100ms}" Margin="2,2,8,2" LineHeight="16" Height="16"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </ContentControl>
+                </Grid>
+                <GridSplitter Grid.Column="1" Visibility="{Binding IsSwitchEnabled, Converter={StaticResource BoolToVisibility}}" Width="6" VerticalAlignment="Stretch" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Background="Transparent"/>
+                <Grid Grid.Column="2" Visibility="{Binding IsSwitchEnabled, Converter={StaticResource BoolToVisibility}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="{Binding Height_Grid04, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="{Binding Height_Grid05, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="{Binding Height_Grid06, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
+                    </Grid.RowDefinitions>
+                    <ContentControl Grid.Row="0" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
+                                <TextBlock Text="{StaticResource Row_SwitchPort}"/>
+                                <TextBlock Text="{Binding SwitchPortCount, StringFormat=({0})}"/>
+                            </StackPanel>
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                            <Grid Height="64" ToolTip="{Binding Tip}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" MaxWidth="128"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Column="0" Background="Transparent" ToolTip="{Binding Tip}">
+                                                    <Image Width="40" Height="40" Margin="10,0,10,6" VerticalAlignment="Top" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                    <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="images/idle.png"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                        <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                    <TextBlock VerticalAlignment="Bottom" Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
+                                                </Grid>
+                                                <Border Grid.Column="1" Margin="0,0,8,0" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="8,4">
+                                                    <Grid Background="Transparent">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <ItemsControl Grid.Column="0" ItemsSource="{Binding PortList}" AlternationCount="2">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <WrapPanel Orientation="Vertical" Height="44"/>
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Border x:Name="Port_Border" Margin="2" ToolTip="{Binding Tip}" Background="Transparent" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave">
+                                                                        <Grid x:Name="Port_Grid">
+                                                                            <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="{DynamicResource Color_Path}" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10L4.5 16"/>
+                                                                            <Border x:Name="Port_Label" Visibility="Collapsed" Margin="-4,-6,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="1" BorderBrush="{DynamicResource Color_Line}" CornerRadius="2" Background="#F0FFFFFF">
+                                                                                <TextBlock Padding="2,0" MinWidth="12" FontSize="10" TextAlignment="Center" Text="{Binding Name}"/>
+                                                                            </Border>
+                                                                        </Grid>
+                                                                    </Border>
+                                                                    <DataTemplate.Triggers>
+                                                                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M5 16L5 13L2 13L2 2L16 2L16 13L13 13L13 16ZM7.5 2L7.5 8M10.5 2L10.5 8M13.5 2L13.5 8L4.5 8L4.5 2"/>
+                                                                        </Trigger>
+                                                                        <DataTrigger Binding="{Binding IsFiber}" Value="True">
+                                                                            <Setter TargetName="Port_Grid" Property="Margin" Value="12,16,-8,6"/>
+                                                                            <Setter TargetName="Port_Icon" Property="Data" Value="M2 2L2 14L16 14L16 2ZM7.5 14L7.5 10M10.5 14L10.5 10M13.5 14L13.5 10L4.5 10L4.5 14M4.5 14L4.5 16L13.5 16L13.5 14"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding IsUp}" Value="True">
+                                                                            <Setter TargetName="Port_Icon" Property="Stroke" Value="#32D359"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding IsHover}" Value="True">
+                                                                            <Setter TargetName="Port_Label" Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </DataTemplate.Triggers>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                        <StackPanel Grid.Column="1" Margin="16,4,4,4">
+                                                            <TextBlock TextAlignment="Right" Text="{Binding Information}" TextTrimming="CharacterEllipsis" LineHeight="16" ToolTip="{Binding Information}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </ContentControl>
+                    <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
+                    <ContentControl Grid.Row="2" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
+                                <TextBlock Text="{StaticResource Row_SwitchHost}"/>
+                                <TextBlock Text="{Binding SwitchHostCount, StringFormat=({0})}"/>
+                            </StackPanel>
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
+                                            <Grid Height="64" ToolTip="{Binding Tip}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" MaxWidth="128"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Column="0" Background="Transparent" ToolTip="{Binding Tip}">
+                                                    <Image Width="40" Height="40" Margin="10,0,10,6" VerticalAlignment="Top" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                    <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="images/idle.png"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                        <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                        <Setter Property="Source" Value="images/error.png"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                    <TextBlock VerticalAlignment="Bottom" Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16"/>
+                                                </Grid>
+                                                <Border Grid.Column="1" Margin="0,0,8,0">
+                                                    <ItemsControl ItemsSource="{Binding HostList}" AlternationCount="2">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel Orientation="Vertical" Height="64"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Border x:Name="Border" Margin="3" Height="26" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="4,0" ToolTip="{Binding Tip}" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave">
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Image Width="16" Height="16" Margin="0,0,4,0" Source="Images/computer3.png"/>
+                                                                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding IPAddress}"/>
+                                                                    </Grid>
+                                                                </Border>
+                                                                <DataTemplate.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsCascade}" Value="False">
+                                                                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource Color_Label}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Invalid">
+                                                                        <Setter TargetName="Border" Property="Opacity" Value=".75"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Dynamic">
+                                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#32D359"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding State}" Value="Static">
+                                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#F8A33A"/>
+                                                                    </DataTrigger>
+                                                                </DataTemplate.Triggers>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </ContentControl>
+                    <GridSplitter Grid.Row="3" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
+                    <ContentControl Grid.Row="4" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
+                                <TextBlock Text="{StaticResource Row_NetworkStructure}"/>
+                                <TextBlock Text="{Binding LanHostCount, StringFormat=({0})}"/>
+                            </StackPanel>
+                            <Border Grid.Row="1" Margin="12,0,12,12" Padding="0" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}">
+                                <ScrollViewer Margin="2,2,0,0" HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerControlTemplate}">
+                                    <Grid Margin="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <ItemsControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="4,4,4,8" Padding="4">
+                                                        <Grid Height="72">
+                                                            <Border x:Name="Border" Margin="30,44,-96,0" Background="{DynamicResource Color_Line}" Height="2" CornerRadius="2"/>
+                                                        </Grid>
+                                                    </Border>
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding State}" Value="Online">
+                                                            <Setter TargetName="Border" Property="Background" Value="#34D345"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                            <Setter TargetName="Border" Property="Background" Value="#FB3C42"/>
+                                                        </DataTrigger>
+                                                    </DataTemplate.Triggers>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <ItemsControl Grid.Column="0" Grid.Row="0" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="4,4,4,8" Padding="4" Background="Transparent" ToolTip="{Binding Tip}">
+                                                        <Grid Height="72">
+                                                            <Image Width="40" Height="40" Margin="10,0,10,6" VerticalAlignment="Top" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                            <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                                <Image.Style>
+                                                                    <Style TargetType="Image">
+                                                                        <Setter Property="Source" Value="images/idle.png"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                                <Setter Property="Source" Value="images/error.png"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Image.Style>
+                                                            </Image>
+                                                            <Border x:Name="Border" VerticalAlignment="Bottom" Padding="4" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_Line}" BorderThickness="1" CornerRadius="2">
+                                                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16" Height="16"/>
+                                                            </Border>
+                                                        </Grid>
+                                                    </Border>
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding State}" Value="Online">
+                                                            <Setter TargetName="Border" Property="BorderBrush" Value="#34D345"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                            <Setter TargetName="Border" Property="BorderBrush" Value="#FB3C42"/>
+                                                        </DataTrigger>
+                                                    </DataTemplate.Triggers>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <ItemsControl Grid.Column="1" Grid.Row="0" ItemsSource="{Binding ConnectionList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border x:Name="Border" Padding="12,0" VerticalAlignment="Stretch">
+                                                        <Canvas MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
+                                                            <Line x:Name="Line" X1="0" X2="0" Y1="{Binding Top}" Y2="{Binding Bottom}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2"/>
+                                                            <Line x:Name="Dot1" Canvas.Top="{Binding Top}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                            <Line x:Name="Dot2" Canvas.Top="{Binding Bottom}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                            <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                            <Path x:Name="Path1" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
+                                                            <Line x:Name="Dot4" Visibility="Collapsed" Canvas.Top="{Binding Bottom}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                            <Path x:Name="Path2" Visibility="Collapsed" Canvas.Top="{Binding Bottom}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
+                                                        </Canvas>
+                                                    </Border>
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding State}" Value="Online">
+                                                            <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
+                                                            <Setter TargetName="Dot1" Property="Stroke" Value="#34D345"/>
+                                                            <Setter TargetName="Dot2" Property="Stroke" Value="#34D345"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                            <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
+                                                            <Setter TargetName="Dot1" Property="Stroke" Value="#F8A33A"/>
+                                                            <Setter TargetName="Dot2" Property="Stroke" Value="#F8A33A"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                            <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
+                                                            <Setter TargetName="Dot1" Property="Visibility" Value="Collapsed"/>
+                                                            <Setter TargetName="Dot2" Property="Visibility" Value="Collapsed"/>
+                                                            <Setter TargetName="Dot3" Property="Visibility" Value="Visible"/>
+                                                            <Setter TargetName="Dot4" Property="Visibility" Value="Visible"/>
+                                                            <Setter TargetName="Path1" Property="Visibility" Value="Visible"/>
+                                                            <Setter TargetName="Path2" Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                                            <Setter TargetName="Border" Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsHover}" Value="True">
+                                                            <Setter TargetName="Line" Property="StrokeThickness" Value="4"/>
+                                                        </DataTrigger>
+                                                    </DataTemplate.Triggers>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <ItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding LanHostList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="8" Padding="8,4" VerticalAlignment="Top" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3">
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid Grid.Row="0">
+                                                                <ItemsControl ItemsSource="{Binding AdapterList}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <Canvas Width="0"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemContainerStyle>
+                                                                        <Style TargetType="ContentPresenter">
+                                                                            <Setter Property="Canvas.Left" Value="{Binding Vector.Left}"/>
+                                                                            <Setter Property="Canvas.Top" Value="{Binding Vector.Top}"/>
+                                                                        </Style>
+                                                                    </ItemsControl.ItemContainerStyle>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Canvas x:Name="Canvas" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
+                                                                                <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" StrokeEndLineCap="Round"/>
+                                                                                <Line X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="Transparent" StrokeThickness="8" StrokeEndLineCap="Round"/>
+                                                                                <Line x:Name="Dot1" Canvas.Top="{Binding Vector.Length}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                <Line x:Name="Dot2" Canvas.Top="0" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
+                                                                            </Canvas>
+                                                                            <DataTemplate.Triggers>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Unknown">
+                                                                                    <Setter TargetName="Canvas" Property="Visibility" Value="Collapsed"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
+                                                                                    <Setter TargetName="Dot1" Property="Stroke" Value="#34D345"/>
+                                                                                    <Setter TargetName="Dot2" Property="Stroke" Value="#34D345"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
+                                                                                    <Setter TargetName="Dot1" Property="Stroke" Value="#F8A33A"/>
+                                                                                    <Setter TargetName="Dot2" Property="Stroke" Value="#F8A33A"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
+                                                                                    <Setter TargetName="Dot1" Property="Visibility" Value="Collapsed"/>
+                                                                                    <Setter TargetName="Dot2" Property="Stroke" Value="#FB3C42"/>
+                                                                                    <Setter TargetName="Dot3" Property="Visibility" Value="Visible"/>
+                                                                                    <Setter TargetName="Path" Property="Visibility" Value="Visible"/>
+                                                                                </DataTrigger>
+                                                                            </DataTemplate.Triggers>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                                <ItemsControl ItemsSource="{Binding AdapterList}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <StackPanel/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Grid Margin="2,6" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
+                                                                                <Border x:Name="Border" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_Line}" BorderThickness="1" CornerRadius="2"/>
+                                                                                <Border Padding="6" MinWidth="72">
+                                                                                    <TextBlock Text="{Binding IPAddress}" HorizontalAlignment="Center" Height="15"/>
+                                                                                </Border>
+                                                                            </Grid>
+                                                                            <DataTemplate.Triggers>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#34D345"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#F8A33A"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#FB3C42"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding IsHover}" Value="True">
+                                                                                    <Setter TargetName="Border" Property="BorderThickness" Value="2"/>
+                                                                                    <Setter TargetName="Border" Property="Margin" Value="-1"/>
+                                                                                </DataTrigger>
+                                                                            </DataTemplate.Triggers>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                                <ItemsControl ItemsSource="{Binding AdapterList}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <Canvas Width="0"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemContainerStyle>
+                                                                        <Style TargetType="ContentPresenter">
+                                                                            <Setter Property="Canvas.Left" Value="{Binding Vector.Left}"/>
+                                                                            <Setter Property="Canvas.Top" Value="{Binding Vector.Top}"/>
+                                                                        </Style>
+                                                                    </ItemsControl.ItemContainerStyle>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Canvas x:Name="Canvas" Visibility="Collapsed" IsHitTestVisible="False">
+                                                                                <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" StrokeEndLineCap="Round"/>
+                                                                                <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
+                                                                            </Canvas>
+                                                                            <DataTemplate.Triggers>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
+                                                                                    <Setter TargetName="Dot3" Property="Visibility" Value="Visible"/>
+                                                                                    <Setter TargetName="Path" Property="Visibility" Value="Visible"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding IsHover}" Value="True">
+                                                                                    <Setter TargetName="Canvas" Property="Visibility" Value="Visible"/>
+                                                                                    <Setter TargetName="Line" Property="StrokeThickness" Value="4"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Unknown">
+                                                                                    <Setter TargetName="Canvas" Property="Visibility" Value="Collapsed"/>
+                                                                                </DataTrigger>
+                                                                            </DataTemplate.Triggers>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </Grid>
+                                                            <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,4">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Image Width="20" Height="20" Margin="0,0,4,0" Source="Images/computer2.png"/>
+                                                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Grid>
+                    </ContentControl>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="1" Grid.RowSpan="2" Margin="12">
+                <ItemsControl HorizontalAlignment="Center" VerticalAlignment="Top" ItemsSource="{Binding ToastCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border x:Name="Border">
+                                <Border.RenderTransform>
+                                    <TranslateTransform/>
+                                </Border.RenderTransform>
+                                <Border Background="#FFF" CornerRadius="8" Padding="8" Margin="12,0,12,12" Width="360">
+                                    <Border.Effect>
+                                        <DropShadowEffect ShadowDepth="4" BlurRadius="12" Opacity=".4" Direction="-90"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.ColumnSpan="2" Text="{Binding Title}" VerticalAlignment="Center" FontSize="12.5" Margin="6,0,0,0"/>
+                                        <Border Grid.Column="2">
+                                            <Button Width="24" Height="24" Click="CloseToast_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource Button_Close}">
+                                                        <Setter Property="Border.CornerRadius" Value="4"/>
+                                                    </Style>
+                                                </Button.Style>
+                                                <Path Data="M0 0 L10 10 M10 0 L0 10" StrokeThickness="1" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10"/>
+                                            </Button>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" FontSize="13" Foreground="{DynamicResource Color_TextLight}" Margin="12,8,12,2"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Content}" TextWrapping="Wrap" FontSize="14" Margin="12,2,12,12"/>
+                                        <Image x:Name="Image_Icon" Grid.Row="1" Grid.RowSpan="2" Width="48" Height="48" Margin="8,10,0,0" Source="Images/alert.png" VerticalAlignment="Top"/>
+                                    </Grid>
+                                </Border>
+                            </Border>
+                            <DataTemplate.Triggers>
+                                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:.5"/>
+                                            <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)" From="24" To="0" Duration="0:0:.5"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="Info">
+                                    <Setter TargetName="Image_Icon" Property="Source" Value="Images/info.png"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
