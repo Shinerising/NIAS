@@ -59,6 +59,8 @@ jobs:
       Solution_Name: LanMonitor.sln
       Archive_Name: "../LanMonitor.zip"
       Project_Path: LanMonitor.csproj
+      SigningCertificate: certificate.pfx
+      Project_Directory: LanMonitor.Package
 
     steps:
     - name: Checkout
@@ -87,7 +89,18 @@ jobs:
         
     - name: Build Solution
       run: msbuild.exe $env:Solution_Name /t:Build /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:DebugSymbols=false /p:DebugType=None /p:OutputPath="../_build"
-      
+              
+    # Sign Binaries
+    - name: Sign Binaries
+      uses: DanaBear/code-sign-action@v4
+      with:
+        certificate: '${{ secrets.Base64_Encoded_PFX }}'
+        password: '${{ secrets.PFX_KEY }}'
+        certificatesha1: '${{ secrets.PFX_SHA1 }}'
+        certificatename: '${{ secrets.PFX_NAME }}'
+        folder: '../_build'
+        recursive: false
+        
     - name: Archive Release
       uses: thedoctor0/zip-release@main
       with:
