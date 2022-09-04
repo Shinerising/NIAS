@@ -86,7 +86,8 @@ jobs:
         
     - name: Restore Packages
       run: nuget restore $env:Solution_Name
-        
+    
+    # Build Solution
     - name: Build Solution
       run: msbuild.exe $env:Solution_Name /t:Build /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:DebugSymbols=false /p:DebugType=None /p:OutputPath="../_build"
               
