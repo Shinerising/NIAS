@@ -106,6 +106,7 @@ jobs:
       with:
         type: "zip"
         path: "../_build/*"
+        recursive_exclusions: "*.pdb"
         filename: ${{ env.Archive_Name }}
 
     - name: Generate Release
