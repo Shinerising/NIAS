@@ -97,9 +97,10 @@ jobs:
       with:
         certificate: '${{ secrets.Base64_Encoded_PFX }}'
         password: '${{ secrets.PFX_KEY }}'
-        certificatename: '${{ secrets.PFX_NAME }}'
-        folder: '../_build'
+        certificatename: ${{ secrets.PFX_NAME }}
+        folder: "../_build"
         recursive: false
+        timestampUrl: "http://timestamp.digicert.com"
         
     - name: Archive Release
       uses: thedoctor0/zip-release@main
