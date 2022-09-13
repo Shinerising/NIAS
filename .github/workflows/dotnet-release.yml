@@ -56,7 +56,7 @@ jobs:
 
     env:
       Solution_Name: NIAS.sln
-      Archive_Name: '../NIAS.zip'
+      Archive_Name: '../NIAS-${{github.ref_name}}.zip'
       Project_Path: 'LanMonitor/LanMonitor.csproj'
 
     steps:
