@@ -23,7 +23,7 @@
                             <ColumnDefinition SharedSizeGroup="Header"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Key}"/>
+                        <TextBlock Grid.Column="0" Text="{Binding Key}" Margin="0,0,4,0"/>
                         <TextBlock Grid.Column="1" Text="{Binding Value}" HorizontalAlignment="Right"/>
                     </Grid>
                 </DataTemplate>
