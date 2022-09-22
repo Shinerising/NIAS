@@ -63,5 +63,6 @@
     <system:String x:Key="Message_HostDisconnect">主机 [{0}] 的网络适配器 [{1}] 已断开连接！</system:String>
     <system:String x:Key="Message_LineReconnect">交换机 [{0}] 与交换机 [{1}] 已连接！</system:String>
     <system:String x:Key="Message_LineDisconnect">交换机 [{0}] 与交换机 [{1}] 之间的连接已断开！</system:String>
+    <system:String x:Key="About_Title">关于 NIAS 网络智能分析系统</system:String>
     
 </ResourceDictionary>

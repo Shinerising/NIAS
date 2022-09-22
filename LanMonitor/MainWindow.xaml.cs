@@ -18,7 +18,8 @@ namespace LanMonitor
     {
         #region Mouse Tilt Support
 
-        const int WM_MOUSEHWHEEL = 0x020E;
+        private const int WM_SYSCOMMAND = 0x112;
+        private const int WM_MOUSEHWHEEL = 0x020E;
 
         private IntPtr Hook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
@@ -28,6 +29,9 @@ namespace LanMonitor
                     int tilt = (short)HIWORD(wParam);
                     OnMouseTilt(tilt);
                     return (IntPtr)1;
+                case WM_SYSCOMMAND:
+                    HandleMenuCommand(SystemMenu.HandleMenuCommand(wParam.ToInt32()));
+                    break;
             }
             return IntPtr.Zero;
         }
@@ -101,6 +105,43 @@ namespace LanMonitor
         {
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
             source?.AddHook(Hook);
+
+            SystemMenu.ApplyCustomMenuItems(source.Handle);
+
+            CheckIfWindowInScreen();
+        }
+
+        private void CheckIfWindowInScreen()
+        {
+            bool outOfBounds =
+                (Left <= SystemParameters.VirtualScreenLeft - ActualWidth) ||
+                (Top <= SystemParameters.VirtualScreenTop - ActualHeight) ||
+                (SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth <= Left) ||
+                (SystemParameters.VirtualScreenTop + SystemParameters.VirtualScreenHeight <= Top);
+
+            if (outOfBounds)
+            {
+                Left = 100;
+                Top = 100;
+                WindowState = WindowState.Normal;
+            }
+        }
+
+        private void HandleMenuCommand(string tag)
+        {
+            if (string.IsNullOrEmpty(tag))
+            {
+                return;
+            }
+            switch(tag){
+                case "Menu_Help":
+                    break;
+                case "Menu_About":
+                    {
+                        new AboutWindow(this).ShowDialog();
+                    }
+                    break;
+            }
         }
 
         private void WindowMinimize_Click(object sender, RoutedEventArgs e)

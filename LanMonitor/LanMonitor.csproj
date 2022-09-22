@@ -83,15 +83,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AppResource.cs" />
     <Compile Include="CustomControl.cs" />
     <Compile Include="LANComputerModelView.cs" />
     <Compile Include="LogHelper.cs" />
+    <Compile Include="SystemMenu.cs" />
     <Compile Include="ThemeHelper.cs" />
     <Compile Include="NetworkModelView.cs" />
     <Compile Include="PortModelView.cs" />
     <Compile Include="SnmpHelper.cs" />
     <Compile Include="SwitchDeviceModelView.cs" />
+    <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DarkMode.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
