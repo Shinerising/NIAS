@@ -6,9 +6,11 @@
         xmlns:local="clr-namespace:LanMonitor"
         mc:Ignorable="d"
         Title="{StaticResource About_Title}"
-        Height="420" Width="360" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <Grid>
-        <ItemsControl ItemsSource="{Binding InfoList}">
+        Width="360" ResizeMode="NoResize" SizeToContent="Height" Background="{DynamicResource Color_WindowLight}" Foreground="{DynamicResource Color_Text}" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <StackPanel>
+        <Image Source="/images/icon.png" Margin="0,24,0,0" Width="96" Height="96"/>
+        <TextBlock Text="{StaticResource Name}" FontSize="16" Margin="0,8,0,16" HorizontalAlignment="Center"/>
+        <ItemsControl ItemsSource="{Binding InfoList}" HorizontalAlignment="Center">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel/>
@@ -16,9 +18,33 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}"/>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="Header"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Key}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Value}" HorizontalAlignment="Right"/>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-    </Grid>
+        <TextBlock Text="{Binding Copyright}" MaxWidth="280" TextWrapping="Wrap" TextAlignment="Center" Margin="0,2,0,24" HorizontalAlignment="Center"/>
+        <Border Background="{DynamicResource Color_Window}" Padding="0,6,0,12">
+            <StackPanel>
+                <TextBlock Text="{StaticResource About_ThirdParty}" Foreground="{DynamicResource Color_TextLight}" Margin="0,4" HorizontalAlignment="Center"/>
+                <TextBlock HorizontalAlignment="Center">            
+                    <Hyperlink NavigateUri="https://github.com/lextudio/sharpsnmplib" RequestNavigate="Hyperlink_RequestNavigate">
+                        SharpSnmpLib
+                    </Hyperlink>
+                    <Hyperlink NavigateUri="https://icons8.com" RequestNavigate="Hyperlink_RequestNavigate">
+                        Icons8
+                    </Hyperlink>
+                    <Hyperlink NavigateUri="https://flaticon.com/" RequestNavigate="Hyperlink_RequestNavigate">
+                        Flaticon
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </StackPanel>
 </Window>

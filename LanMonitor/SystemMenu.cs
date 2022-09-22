@@ -44,8 +44,8 @@ namespace LanMonitor
             IntPtr systemMenu = GetSystemMenu(handle, false);
             int count = GetMenuItemCount(systemMenu);
             InsertMenu(systemMenu, count - 1, MF_BYPOSITION | MF_SEPARATOR, 0, string.Empty);
-            InsertMenu(systemMenu, count - 1, MF_BYPOSITION | MF_STRING, COMMAND_HELP, "查看帮助");
-            InsertMenu(systemMenu, count, MF_BYPOSITION | MF_STRING, COMMAND_ABOUT, "关于");
+            InsertMenu(systemMenu, count - 1, MF_BYPOSITION | MF_STRING, COMMAND_HELP, AppResource.GetString("Menu_Help"));
+            InsertMenu(systemMenu, count, MF_BYPOSITION | MF_STRING, COMMAND_ABOUT, AppResource.GetString("Menu_About"));
         }
 
         public static string HandleMenuCommand(int menuID)

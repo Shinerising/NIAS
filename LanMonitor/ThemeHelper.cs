@@ -39,9 +39,14 @@ namespace LanMonitor
             DWMSBT_TABBEDWINDOW = 4 // Tabbed
         }
 
-        public static void ApplyTheme(MainWindow window)
+        public static void ApplyTheme(Window window)
         {
             window.ContentRendered += Window_ContentRendered;
+        }
+
+        public static void ApplySimpleTheme(Window window)
+        {
+            window.ContentRendered += Window_SimpleContentRendered;
         }
 
         private static void Window_ContentRendered(object sender, EventArgs e)
@@ -49,7 +54,12 @@ namespace LanMonitor
             IntPtr handle = new WindowInteropHelper(sender as Window).Handle;
             UpdateStyleAttributes(handle);
             ApplyThemeDetector(handle, WndProc);
-
+        }
+        private static void Window_SimpleContentRendered(object sender, EventArgs e)
+        {
+            IntPtr handle = new WindowInteropHelper(sender as Window).Handle;
+            UpdateSimpleStyleAttributes(handle);
+            ApplyThemeDetector(handle, WndProc);
         }
         private static void ApplyThemeDetector(IntPtr handle, HwndSourceHook handler)
         {
@@ -129,6 +139,11 @@ namespace LanMonitor
 
             DwmSetWindowAttribute(hwnd, DwmWindowAttribute.DWMWA_MICA_EFFECT, ref trueValue, Marshal.SizeOf(typeof(int)));
             DwmSetWindowAttribute(hwnd, DwmWindowAttribute.DWMWA_SYSTEMBACKDROP_TYPE, ref dwmType, Marshal.SizeOf(typeof(int)));
+        }
+        
+        private static void UpdateSimpleStyleAttributes(IntPtr hwnd)
+        {
+            UpdateDarkMode(hwnd);
         }
     }
 }

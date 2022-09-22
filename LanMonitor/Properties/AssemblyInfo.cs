@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CRSCD")]
 [assembly: AssemblyProduct("NIAS 网络智能分析系统")]
-[assembly: AssemblyCopyright("© 2022 Apollo Wayne")]
+[assembly: AssemblyCopyright("© 2022 CRSCD")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
