@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows10.0.22000.0</TargetFramework>
     <OutputType>WinExe</OutputType>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -27,6 +27,15 @@
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <StartupObject>LanMonitor.App</StartupObject>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RuntimeIdentifiers>win10-arm64;win10-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>full</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <None Update="app.config.xsd">
@@ -39,69 +48,35 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="app.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
+    <SplashScreen Include="splashscreen.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\monitor.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\ethernet.png" />
     <Resource Include="images\router.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\laptop.png" />
     <Resource Include="images\title.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\checkmark.png" />
     <Resource Include="images\error.png" />
     <Resource Include="images\idle.png" />
     <Resource Include="images\rotate.png" />
     <Resource Include="images\transfer.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\computer.png" />
     <Resource Include="images\tcp.png" />
     <Resource Include="images\udp.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\internet.png" />
     <Resource Include="images\network.png" />
     <Resource Include="images\offline.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\computer2.png" />
-    <Resource Include="images\hub.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\computer3.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="images\hub.png" />
     <Resource Include="images\alert.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <SplashScreen Include="splashscreen.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\info.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lextm.SharpSnmpLib" Version="12.4.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.336902">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="appsettings.json" />
+    <PackageReference Include="Microsoft.Management.Infrastructure" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

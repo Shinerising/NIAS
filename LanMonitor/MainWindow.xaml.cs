@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Management;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;

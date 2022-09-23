@@ -14,7 +14,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Management;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Reflection;
@@ -23,6 +22,9 @@ using System.Collections.Specialized;
 using System.Text;
 using System.Windows.Threading;
 using System.Media;
+using System.Xml.Linq;
+using System.Runtime.Versioning;
+using Microsoft.Management.Infrastructure;
 
 namespace LanMonitor
 {
@@ -198,32 +200,25 @@ namespace LanMonitor
 
         private long speedGraphLimit = 1024;
         public string ComputerName => Dns.GetHostEntry("").HostName;
+
+        [SupportedOSPlatform("windows")]
+        public static string ManagementQuery(string query, string property)
+        {
+            using CimSession session = CimSession.Create(null);
+            return session.QueryInstances(@"root\cimv2", "WQL", query).FirstOrDefault()?.CimInstanceProperties[property].Value.ToString();
+        }
         public string SystemName
         {
             get
             {
-                object name;
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem"))
-                {
-                    name = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Caption")).FirstOrDefault();
-                }
-                return name != null ? name.ToString() : "Unknown";
+                return ManagementQuery("SELECT Caption FROM Win32_OperatingSystem", "Caption") ?? "Unknown";
             }
         }
         public string MachineType
         {
             get
             {
-                object name0, name1;
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_Battery"))
-                {
-                    name0 = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Caption")).FirstOrDefault();
-                }
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_PortableBattery"))
-                {
-                    name1 = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Caption")).FirstOrDefault();
-                }
-                return (name0 != null || name1 != null) ? "Laptop" : "Desktop";
+                return (ManagementQuery("SELECT Caption FROM Win32_Battery", "Caption") != null || ManagementQuery("SELECT Caption FROM Win32_PortableBattery", "Caption") != null) ? "Laptop" : "Desktop";
             }
         }
 
@@ -231,24 +226,14 @@ namespace LanMonitor
         {
             get
             {
-                object name;
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Workgroup FROM Win32_ComputerSystem"))
-                {
-                    name = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Workgroup")).FirstOrDefault();
-                }
-                return name != null ? name.ToString() : "Unknown";
+                return ManagementQuery("SELECT Workgroup FROM Win32_ComputerSystem", "Workgroup") ?? "Unknown";
             }
         }
         public string Manufacturer
         {
             get
             {
-                object name;
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Manufacturer FROM Win32_ComputerSystem"))
-                {
-                    name = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Manufacturer")).FirstOrDefault();
-                }
-                return name != null ? name.ToString() : "Unknown";
+                return ManagementQuery("SELECT Manufacturer FROM Win32_ComputerSystem", "Manufacturer") ?? "Unknown";
             }
         }
 
@@ -256,12 +241,7 @@ namespace LanMonitor
         {
             get
             {
-                object name;
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Model FROM Win32_ComputerSystem"))
-                {
-                    name = searcher.Get().Cast<ManagementObject>().Select(item => item.GetPropertyValue("Model")).FirstOrDefault();
-                }
-                return name != null ? name.ToString() : "Unknown";
+                return ManagementQuery("SELECT Model FROM Win32_ComputerSystem", "Model") ?? "Unknown";
             }
         }
 
