@@ -2,6 +2,17 @@
 
 A small widget for Windows that keeps observing your network speed and LAN computers.
 
+[![.NET Build](https://github.com/Shinerising/NIAS/actions/workflows/dotnet-build.yml/badge.svg)](https://github.com/Shinerising/NIAS/actions/workflows/dotnet-build.yml)
+[![.NET Release](https://github.com/Shinerising/NIAS/actions/workflows/dotnet-release.yml/badge.svg)](https://github.com/Shinerising/NIAS/actions/workflows/dotnet-release.yml)
+[![GitHub Release Version](https://img.shields.io/github/v/release/Shinerising/NIAS)](https://github.com/Shinerising/NIAS/releases)
+![Code Count](https://tokei.rs/b1/github/Shinerising/NIAS)
+
+![](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows)
+![](https://img.shields.io/badge/Visual%20Studio-5C2D91?style=for-the-badge&logo=visualstudio)
+![](https://img.shields.io/badge/.NET%20Framework-512BD4?style=for-the-badge&logo=dotnet)
+![](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp)
+![](https://img.shields.io/badge/XAML-0C54C2?style=for-the-badge&logo=xaml)
+
 ![Preview](preview.png)
 
 ## Features

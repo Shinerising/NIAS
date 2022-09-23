@@ -1,0 +1,215 @@
+﻿using System;
+using System.ComponentModel;
+using System.Management;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Shell;
+
+namespace LanMonitor
+{
+    /// <summary>
+    /// MainWindow.xaml 的交互逻辑
+    /// </summary>
+    public partial class MainWindow : Window, IDisposable
+    {
+        #region Mouse Tilt Support
+
+        private const int WM_SYSCOMMAND = 0x112;
+        private const int WM_MOUSEHWHEEL = 0x020E;
+
+        private IntPtr Hook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            switch (msg)
+            {
+                case WM_MOUSEHWHEEL:
+                    int tilt = (short)HIWORD(wParam);
+                    OnMouseTilt(tilt);
+                    return (IntPtr)1;
+                case WM_SYSCOMMAND:
+                    HandleMenuCommand(SystemMenu.HandleMenuCommand(wParam.ToInt32()));
+                    break;
+            }
+            return IntPtr.Zero;
+        }
+
+        /// <summary>
+        /// Gets high bits values of the pointer.
+        /// </summary>
+        private static int HIWORD(IntPtr ptr)
+        {
+            int val32 = (int)ptr.ToInt64();
+            return ((val32 >> 16) & 0xFFFF);
+        }
+
+        /// <summary>
+        /// Gets low bits values of the pointer.
+        /// </summary>
+        private static int LOWORD(IntPtr ptr)
+        {
+            int val32 = (int)ptr.ToInt64();
+            return (val32 & 0xFFFF);
+        }
+
+        private void OnMouseTilt(int tilt)
+        {
+            UIElement element = Mouse.DirectlyOver as UIElement;
+
+            if (element == null) return;
+
+            ScrollViewer scrollViewer = element is ScrollViewer viewer ? viewer : FindParent<ScrollViewer>(element);
+
+            if (scrollViewer == null)
+                return;
+
+            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + tilt * 0.25);
+        }
+
+        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+            if (parentObject == null) return null;
+
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+            else
+                return FindParent<T>(parentObject);
+        }
+        #endregion
+
+        private readonly NetworkManager networkManager;
+
+        public static bool IsMicaEnabled => Environment.OSVersion.Version.Build >= 22000;
+
+        public MainWindow()
+        {
+            networkManager = new NetworkManager();
+
+            DataContext = networkManager;
+
+            ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(60000));
+
+            InitializeComponent();
+
+            ThemeHelper.ApplyTheme(this);
+
+            networkManager.Start();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
+            source?.AddHook(Hook);
+
+            SystemMenu.ApplyCustomMenuItems(source.Handle);
+
+            CheckIfWindowInScreen();
+        }
+
+        private void CheckIfWindowInScreen()
+        {
+            bool outOfBounds =
+                (Left <= SystemParameters.VirtualScreenLeft - ActualWidth) ||
+                (Top <= SystemParameters.VirtualScreenTop - ActualHeight) ||
+                (SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth <= Left) ||
+                (SystemParameters.VirtualScreenTop + SystemParameters.VirtualScreenHeight <= Top);
+
+            if (outOfBounds)
+            {
+                Left = 100;
+                Top = 100;
+                WindowState = WindowState.Normal;
+            }
+        }
+
+        private void HandleMenuCommand(string tag)
+        {
+            if (string.IsNullOrEmpty(tag))
+            {
+                return;
+            }
+            switch(tag){
+                case "Menu_Help":
+                    break;
+                case "Menu_About":
+                    {
+                        new AboutWindow(this).ShowDialog();
+                    }
+                    break;
+            }
+        }
+
+        private void WindowMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void WindowMaximize_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+            }
+            else
+            {
+                WindowState = WindowState.Maximized;
+            }
+        }
+        private void WindowClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (networkManager != null)
+                {
+                    networkManager.Dispose();
+                }
+            }
+        }
+
+        private void Border_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Close();
+        }
+
+        private void Network_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void CloseToast_Click(object sender, RoutedEventArgs e)
+        {
+            networkManager.RemoveToast(((FrameworkElement)sender).DataContext as ToastMessage);
+        }
+
+        private void Element_MouseEnter(object sender, MouseEventArgs e)
+        {
+            (((FrameworkElement)sender).DataContext as IHoverable)?.SetHover(true);
+        }
+
+        private void Element_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (((FrameworkElement)sender).DataContext as IHoverable)?.SetHover(false);
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            Properties.Settings.Default.Save();
+        }
+    }
+}
