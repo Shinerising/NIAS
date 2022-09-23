@@ -31,7 +31,6 @@
     <RuntimeIdentifiers>win10-arm64;win10-x64</RuntimeIdentifiers>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     <SignAssembly>False</SignAssembly>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>

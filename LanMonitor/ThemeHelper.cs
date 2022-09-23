@@ -11,18 +11,16 @@ using System.Windows.Media;
 
 namespace LanMonitor
 {
-    public partial class ThemeHelper
+    public class ThemeHelper
     {
-        [LibraryImport("dwmapi.dll")]
-        public static partial int DwmSetWindowAttribute(IntPtr hwnd, DwmWindowAttribute dwAttribute, ref int pvAttribute, int cbAttribute);
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmSetWindowAttribute(IntPtr hwnd, DwmWindowAttribute dwAttribute, ref int pvAttribute, int cbAttribute);
 
-        [LibraryImport("UXTheme.dll", EntryPoint = "#138", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool ShouldSystemUseDarkMode();
+        [DllImport("UXTheme.dll", SetLastError = true, EntryPoint = "#138")]
+        public static extern bool ShouldSystemUseDarkMode();
 
-        [LibraryImport("UXTheme.dll", EntryPoint = "#132", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool ShouldAppsUseDarkMode();
+        [DllImport("UXTheme.dll", SetLastError = true, EntryPoint = "#132")]
+        public static extern bool ShouldAppsUseDarkMode();
 
         [Flags]
         public enum DwmWindowAttribute : uint
@@ -89,10 +87,12 @@ namespace LanMonitor
             bool useLightTheme = true;
             try
             {
-                using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize");
-                if (key != null)
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
                 {
-                    useLightTheme = (int)key.GetValue("AppsUseLightTheme") == 1;
+                    if (key != null)
+                    {
+                        useLightTheme = (int)key.GetValue("AppsUseLightTheme") == 1;
+                    }
                 }
             }
             catch
