@@ -1,9 +1,5 @@
 ﻿using Lextm.SharpSnmpLib;
 using Lextm.SharpSnmpLib.Messaging;
-using Lextm.SharpSnmpLib.Security;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 
 namespace SNMP
@@ -45,15 +41,13 @@ namespace SNMP
 1.3.6.1.2.1.80.1.2.1.10.1.49.1.51 u 0
 1.3.6.1.2.1.80.1.2.1.16.1.49.1.51 o 1.3.6.1.2.1.80.3.1
 1.3.6.1.2.1.80.1.2.1.23.1.49.1.51 i 4";
-            private static List<Variable> entryDict;
+            private static List<Variable>? entryDict;
             public static List<Variable> GetEntryList(string targetIP)
             {
-                if (entryDict == null)
-                {
-                    entryDict = OID_pingCtlEntry.Trim().Split('\n').Select(item =>
+                entryDict ??= OID_pingCtlEntry.Trim().Split('\n').Select(item =>
                     {
                         var fragments = item.Trim().Split(' ');
-                        ISnmpData data = null;
+                        ISnmpData? data = null;
                         switch (fragments[1])
                         {
                             case "i":
@@ -71,14 +65,13 @@ namespace SNMP
                         }
                         return new Variable(new ObjectIdentifier(fragments[0]), data);
                     }).ToList();
-                }
                 var dict = entryDict.ToList();
                 dict[1] = new Variable(dict[1].Id, new OctetString(targetIP));
                 return dict;
             }
         }
 
-        public static string Username;
+        private static string? Username;
         public const int Timeout = 1000;
         public const int RetryCount = 3;
 
@@ -88,7 +81,7 @@ namespace SNMP
         }
         private static List<Variable> FetchData(IPEndPoint endpoint, string OID)
         {
-            List<Variable> result = new List<Variable>();
+            List<Variable> result = new();
             _ = Messenger.BulkWalk(VersionCode.V2,
                               endpoint,
                               new OctetString(Username),
@@ -116,33 +109,33 @@ namespace SNMP
             SetData(endpoint, DISMAN_PING.GetEntryList(targetIP));
         }
 
-        public static Dictionary<string, string> FetchStringData(IPEndPoint endpoint, string OID)
+        public static Dictionary<string, string>? FetchStringData(IPEndPoint endpoint, string OID)
         {
             List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToString());
         }
 
-        public static Dictionary<string, byte[]> FetchBytesData(IPEndPoint endpoint, string OID)
+        public static Dictionary<string, byte[]>? FetchBytesData(IPEndPoint endpoint, string OID)
         {
             List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToBytes());
         }
-        public static Dictionary<string, int> FetchIntData(IPEndPoint endpoint, string OID)
+        public static Dictionary<string, int>? FetchIntData(IPEndPoint endpoint, string OID)
         {
             List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => ((Integer32)item.Data).ToInt32());
         }
-        public static Dictionary<string, uint> FetchUIntData(IPEndPoint endpoint, string OID)
+        public static Dictionary<string, uint>? FetchUIntData(IPEndPoint endpoint, string OID)
         {
             List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => ((Gauge32)item.Data).ToUInt32());
         }
-        public static Dictionary<string, uint> FetchCounterData(IPEndPoint endpoint, string OID)
+        public static Dictionary<string, uint>? FetchCounterData(IPEndPoint endpoint, string OID)
         {
             List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => ((Counter32)item.Data).ToUInt32());
         }
-        public static Dictionary<string, TimeSpan> FetchTimeSpanData(IPEndPoint endpoint, string OID)
+        public static Dictionary<string, TimeSpan>? FetchTimeSpanData(IPEndPoint endpoint, string OID)
         {
             List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => ((TimeTicks)item.Data).ToTimeSpan());
