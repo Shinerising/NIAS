@@ -74,10 +74,7 @@ namespace LanMonitor
         public void SetHover(bool flag)
         {
             IsHover = flag;
-            if (Port != null)
-            {
-                Port.SetHover(flag);
-            }
+            Port?.SetHover(flag);
             Notify(new { IsHover });
         }
         public void Refresh(SwitchHost host)
@@ -167,7 +164,7 @@ namespace LanMonitor
             Name = name;
             AdapterList = iplist == null ? new List<LanHostAdapter>() : iplist.Split(';').Select(item =>
             {
-                if (item.Contains("|"))
+                if (item.Contains('|'))
                 {
                     var arr = item.Trim().Split('|');
                     var ip = arr[0];
@@ -274,7 +271,7 @@ namespace LanMonitor
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
         public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();
-        public int HostCount => HostList == null ? 0 : HostList.Count();
+        public int HostCount => HostList == null ? 0 : HostList.Count;
         public SwitchDeviceModelView(string name, string ip)
         {
             Name = name;
@@ -340,7 +337,7 @@ namespace LanMonitor
         }
         public static SwitchDeviceModelView GetPreviewInstance(string ip)
         {
-            SwitchDeviceModelView switchDevice = new SwitchDeviceModelView("test", ip)
+            SwitchDeviceModelView switchDevice = new("test", ip)
             {
                 Address = ip,
                 EndPoint = new IPEndPoint(IPAddress.Parse(ip), 161),

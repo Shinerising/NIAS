@@ -8,7 +8,7 @@ using System.Windows.Interop;
 
 namespace LanMonitor
 {
-    internal static class SystemMenu
+    internal static partial class SystemMenu
     {
         private const uint WM_SYSCOMMAND = 0x112;
 
@@ -28,16 +28,18 @@ namespace LanMonitor
         private const uint COMMAND_HELP = 101;
         private const uint COMMAND_ABOUT = 102;
 
-        [DllImport("user32.dll")]
-        static extern int GetMenuItemCount(IntPtr hMenu);
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+        [LibraryImport("user32.dll")]
+        private static partial int GetMenuItemCount(IntPtr hMenu);
+        [LibraryImport("user32.dll")]
+        private static partial IntPtr GetSystemMenu(IntPtr hWnd, [MarshalAs(UnmanagedType.Bool)] bool bRevert);
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        private static extern bool InsertMenu(IntPtr hmenu, int position, uint flags, uint item_id, [MarshalAs(UnmanagedType.LPTStr)] string item_text);
+        [LibraryImport("user32.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool InsertMenu(IntPtr hmenu, int position, uint flags, uint item_id, [MarshalAs(UnmanagedType.LPTStr)] string item_text);
 
-        [DllImport("user32.dll")]
-        private static extern bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
 
         public static void ApplyCustomMenuItems(IntPtr handle)
         {
@@ -52,8 +54,10 @@ namespace LanMonitor
         {
             switch ((uint)menuID)
             {
-                case COMMAND_HELP:return "Menu_Help";
+                case COMMAND_HELP: return "Menu_Help";
                 case COMMAND_ABOUT: return "Menu_About";
+                default:
+                    break;
             }
             return string.Empty;
         }
