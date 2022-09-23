@@ -25,6 +25,7 @@ using System.Media;
 using System.Xml.Linq;
 using System.Runtime.Versioning;
 using Microsoft.Management.Infrastructure;
+using SNMP;
 
 namespace LanMonitor
 {

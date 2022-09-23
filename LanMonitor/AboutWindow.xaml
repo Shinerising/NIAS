@@ -8,7 +8,9 @@
         Title="{StaticResource About_Title}"
         Width="360" ResizeMode="NoResize" SizeToContent="Height" Background="{DynamicResource Color_WindowLight}" Foreground="{DynamicResource Color_Text}" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel>
-        <Image Source="/images/icon.png" Margin="0,24,0,0" Width="96" Height="96"/>
+        <Border>
+            <Image Source="/images/app.png" Margin="0,24,0,0" Width="96"/>
+        </Border>
         <TextBlock Text="{StaticResource Name}" FontSize="16" Margin="0,8,0,16" HorizontalAlignment="Center"/>
         <ItemsControl ItemsSource="{Binding InfoList}" HorizontalAlignment="Center">
             <ItemsControl.ItemsPanel>

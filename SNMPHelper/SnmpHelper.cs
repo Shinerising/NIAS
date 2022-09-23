@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace LanMonitor
+namespace SNMP
 {
-    internal class SnmpHelper
+    public class SnmpHelper
     {
         public static class OIDString
         {
