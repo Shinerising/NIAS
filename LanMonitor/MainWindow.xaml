@@ -774,271 +774,316 @@
                             </StackPanel>
                             <Border Grid.Row="1" Margin="12,0,12,12" Padding="0" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}">
                                 <ScrollViewer Margin="2,2,0,0" HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerControlTemplate}">
-                                    <Grid Margin="8">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <ItemsControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Border Margin="4,4,4,8" Padding="4">
-                                                        <Grid Height="72">
-                                                            <Border x:Name="Border" Margin="30,44,-96,0" Background="{DynamicResource Color_Line}" Height="2" CornerRadius="2"/>
-                                                        </Grid>
-                                                    </Border>
-                                                    <DataTemplate.Triggers>
-                                                        <DataTrigger Binding="{Binding State}" Value="Online">
-                                                            <Setter TargetName="Border" Property="Background" Value="#34D345"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding State}" Value="Offline">
-                                                            <Setter TargetName="Border" Property="Background" Value="#FB3C42"/>
-                                                        </DataTrigger>
-                                                    </DataTemplate.Triggers>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                        <ItemsControl Grid.Column="0" Grid.Row="0" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Border Margin="4,4,4,8" Padding="4" Background="Transparent" ToolTip="{Binding Tip}">
-                                                        <Grid Height="72">
-                                                            <Image Width="40" Height="40" Margin="10,0,10,6" VerticalAlignment="Top" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                                            <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
-                                                                <Image.Style>
-                                                                    <Style TargetType="Image">
-                                                                        <Setter Property="Source" Value="images/idle.png"/>
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding State}" Value="Online">
-                                                                                <Setter Property="Source" Value="images/checkmark.png"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding State}" Value="Offline">
-                                                                                <Setter Property="Source" Value="images/error.png"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </Image.Style>
-                                                            </Image>
-                                                            <Border x:Name="Border" VerticalAlignment="Bottom" Padding="4" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_Line}" BorderThickness="1" CornerRadius="2">
-                                                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16" Height="16"/>
-                                                            </Border>
-                                                        </Grid>
-                                                    </Border>
-                                                    <DataTemplate.Triggers>
-                                                        <DataTrigger Binding="{Binding State}" Value="Online">
-                                                            <Setter TargetName="Border" Property="BorderBrush" Value="#34D345"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding State}" Value="Offline">
-                                                            <Setter TargetName="Border" Property="BorderBrush" Value="#FB3C42"/>
-                                                        </DataTrigger>
-                                                    </DataTemplate.Triggers>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                        <ItemsControl Grid.Column="1" Grid.Row="0" ItemsSource="{Binding ConnectionList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel Orientation="Horizontal"/>
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Border x:Name="Border" Padding="12,0" VerticalAlignment="Stretch">
-                                                        <Canvas MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
-                                                            <Line x:Name="Line" X1="0" X2="0" Y1="{Binding Top}" Y2="{Binding Bottom}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2"/>
-                                                            <Line x:Name="Dot1" Canvas.Top="{Binding Top}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                            <Line x:Name="Dot2" Canvas.Top="{Binding Bottom}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                            <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                            <Path x:Name="Path1" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
-                                                            <Line x:Name="Dot4" Visibility="Collapsed" Canvas.Top="{Binding Bottom}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                            <Path x:Name="Path2" Visibility="Collapsed" Canvas.Top="{Binding Bottom}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
-                                                        </Canvas>
-                                                    </Border>
-                                                    <DataTemplate.Triggers>
-                                                        <DataTrigger Binding="{Binding State}" Value="Online">
-                                                            <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
-                                                            <Setter TargetName="Dot1" Property="Stroke" Value="#34D345"/>
-                                                            <Setter TargetName="Dot2" Property="Stroke" Value="#34D345"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding State}" Value="Reserve">
-                                                            <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
-                                                            <Setter TargetName="Dot1" Property="Stroke" Value="#F8A33A"/>
-                                                            <Setter TargetName="Dot2" Property="Stroke" Value="#F8A33A"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding State}" Value="Offline">
-                                                            <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
-                                                            <Setter TargetName="Dot1" Property="Visibility" Value="Collapsed"/>
-                                                            <Setter TargetName="Dot2" Property="Visibility" Value="Collapsed"/>
-                                                            <Setter TargetName="Dot3" Property="Visibility" Value="Visible"/>
-                                                            <Setter TargetName="Dot4" Property="Visibility" Value="Visible"/>
-                                                            <Setter TargetName="Path1" Property="Visibility" Value="Visible"/>
-                                                            <Setter TargetName="Path2" Property="Visibility" Value="Visible"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding IsHidden}" Value="True">
-                                                            <Setter TargetName="Border" Property="Visibility" Value="Collapsed"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding IsHover}" Value="True">
-                                                            <Setter TargetName="Line" Property="StrokeThickness" Value="4"/>
-                                                        </DataTrigger>
-                                                    </DataTemplate.Triggers>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                        <ItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding LanHostList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel Orientation="Horizontal"/>
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Border Margin="8" Padding="8,4" VerticalAlignment="Top" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3">
-                                                        <Grid>
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition Height="Auto"/>
-                                                                <RowDefinition Height="Auto"/>
-                                                            </Grid.RowDefinitions>
-                                                            <Grid Grid.Row="0">
-                                                                <ItemsControl ItemsSource="{Binding AdapterList}">
-                                                                    <ItemsControl.ItemsPanel>
-                                                                        <ItemsPanelTemplate>
-                                                                            <Canvas Width="0"/>
-                                                                        </ItemsPanelTemplate>
-                                                                    </ItemsControl.ItemsPanel>
-                                                                    <ItemsControl.ItemContainerStyle>
-                                                                        <Style TargetType="ContentPresenter">
-                                                                            <Setter Property="Canvas.Left" Value="{Binding Vector.Left}"/>
-                                                                            <Setter Property="Canvas.Top" Value="{Binding Vector.Top}"/>
-                                                                        </Style>
-                                                                    </ItemsControl.ItemContainerStyle>
-                                                                    <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                            <Canvas x:Name="Canvas" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
-                                                                                <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" StrokeEndLineCap="Round"/>
-                                                                                <Line X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="Transparent" StrokeThickness="8" StrokeEndLineCap="Round"/>
-                                                                                <Line x:Name="Dot1" Canvas.Top="{Binding Vector.Length}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                                <Line x:Name="Dot2" Canvas.Top="0" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                                <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                                <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
-                                                                            </Canvas>
-                                                                            <DataTemplate.Triggers>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Unknown">
-                                                                                    <Setter TargetName="Canvas" Property="Visibility" Value="Collapsed"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
-                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
-                                                                                    <Setter TargetName="Dot1" Property="Stroke" Value="#34D345"/>
-                                                                                    <Setter TargetName="Dot2" Property="Stroke" Value="#34D345"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Reserve">
-                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
-                                                                                    <Setter TargetName="Dot1" Property="Stroke" Value="#F8A33A"/>
-                                                                                    <Setter TargetName="Dot2" Property="Stroke" Value="#F8A33A"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Offline">
-                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
-                                                                                    <Setter TargetName="Dot1" Property="Visibility" Value="Collapsed"/>
-                                                                                    <Setter TargetName="Dot2" Property="Stroke" Value="#FB3C42"/>
-                                                                                    <Setter TargetName="Dot3" Property="Visibility" Value="Visible"/>
-                                                                                    <Setter TargetName="Path" Property="Visibility" Value="Visible"/>
-                                                                                </DataTrigger>
-                                                                            </DataTemplate.Triggers>
-                                                                        </DataTemplate>
-                                                                    </ItemsControl.ItemTemplate>
-                                                                </ItemsControl>
-                                                                <ItemsControl ItemsSource="{Binding AdapterList}">
-                                                                    <ItemsControl.ItemsPanel>
-                                                                        <ItemsPanelTemplate>
-                                                                            <StackPanel/>
-                                                                        </ItemsPanelTemplate>
-                                                                    </ItemsControl.ItemsPanel>
-                                                                    <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                            <Grid Margin="2,6" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
-                                                                                <Border x:Name="Border" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_Line}" BorderThickness="1" CornerRadius="2"/>
-                                                                                <Border Padding="6" MinWidth="72">
-                                                                                    <TextBlock Text="{Binding IPAddress}" HorizontalAlignment="Center" Height="15"/>
-                                                                                </Border>
-                                                                            </Grid>
-                                                                            <DataTemplate.Triggers>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
-                                                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#34D345"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Reserve">
-                                                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#F8A33A"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Offline">
-                                                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#FB3C42"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding IsHover}" Value="True">
-                                                                                    <Setter TargetName="Border" Property="BorderThickness" Value="2"/>
-                                                                                    <Setter TargetName="Border" Property="Margin" Value="-1"/>
-                                                                                </DataTrigger>
-                                                                            </DataTemplate.Triggers>
-                                                                        </DataTemplate>
-                                                                    </ItemsControl.ItemTemplate>
-                                                                </ItemsControl>
-                                                                <ItemsControl ItemsSource="{Binding AdapterList}">
-                                                                    <ItemsControl.ItemsPanel>
-                                                                        <ItemsPanelTemplate>
-                                                                            <Canvas Width="0"/>
-                                                                        </ItemsPanelTemplate>
-                                                                    </ItemsControl.ItemsPanel>
-                                                                    <ItemsControl.ItemContainerStyle>
-                                                                        <Style TargetType="ContentPresenter">
-                                                                            <Setter Property="Canvas.Left" Value="{Binding Vector.Left}"/>
-                                                                            <Setter Property="Canvas.Top" Value="{Binding Vector.Top}"/>
-                                                                        </Style>
-                                                                    </ItemsControl.ItemContainerStyle>
-                                                                    <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                            <Canvas x:Name="Canvas" Visibility="Collapsed" IsHitTestVisible="False">
-                                                                                <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" StrokeEndLineCap="Round"/>
-                                                                                <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                                <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
-                                                                            </Canvas>
-                                                                            <DataTemplate.Triggers>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
-                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Reserve">
-                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Offline">
-                                                                                    <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
-                                                                                    <Setter TargetName="Dot3" Property="Visibility" Value="Visible"/>
-                                                                                    <Setter TargetName="Path" Property="Visibility" Value="Visible"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding IsHover}" Value="True">
-                                                                                    <Setter TargetName="Canvas" Property="Visibility" Value="Visible"/>
-                                                                                    <Setter TargetName="Line" Property="StrokeThickness" Value="4"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding State}" Value="Unknown">
-                                                                                    <Setter TargetName="Canvas" Property="Visibility" Value="Collapsed"/>
-                                                                                </DataTrigger>
-                                                                            </DataTemplate.Triggers>
-                                                                        </DataTemplate>
-                                                                    </ItemsControl.ItemTemplate>
-                                                                </ItemsControl>
+                                    <Grid>
+                                        <Grid Visibility="Collapsed" Margin="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <ItemsControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Margin="4,4,4,8" Padding="4">
+                                                            <Grid Height="72">
+                                                                <Border x:Name="Border" Margin="30,44,-96,0" Background="{DynamicResource Color_Line}" Height="2" CornerRadius="2"/>
                                                             </Grid>
-                                                            <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,4">
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="Auto"/>
-                                                                    <ColumnDefinition Width="Auto"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Image Width="20" Height="20" Margin="0,0,4,0" Source="Images/computer2.png"/>
-                                                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
+                                                        </Border>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                <Setter TargetName="Border" Property="Background" Value="#34D345"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                <Setter TargetName="Border" Property="Background" Value="#FB3C42"/>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <ItemsControl Grid.Column="0" Grid.Row="0" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Margin="4,4,4,8" Padding="4" Background="Transparent" ToolTip="{Binding Tip}">
+                                                            <Grid Height="72">
+                                                                <Image Width="40" Height="40" Margin="10,0,10,6" VerticalAlignment="Top" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                                <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                                    <Image.Style>
+                                                                        <Style TargetType="Image">
+                                                                            <Setter Property="Source" Value="images/idle.png"/>
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                    <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                                    <Setter Property="Source" Value="images/error.png"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Image.Style>
+                                                                </Image>
+                                                                <Border x:Name="Border" VerticalAlignment="Bottom" Padding="4" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_Line}" BorderThickness="1" CornerRadius="2">
+                                                                    <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="13" LineHeight="16" Height="16"/>
+                                                                </Border>
                                                             </Grid>
-                                                        </Grid>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
+                                                        </Border>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                <Setter TargetName="Border" Property="BorderBrush" Value="#34D345"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                <Setter TargetName="Border" Property="BorderBrush" Value="#FB3C42"/>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <ItemsControl Grid.Column="1" Grid.Row="0" ItemsSource="{Binding ConnectionList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Horizontal"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border x:Name="Border" Padding="12,0" VerticalAlignment="Stretch">
+                                                            <Canvas MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
+                                                                <Line x:Name="Line" X1="0" X2="0" Y1="{Binding Top}" Y2="{Binding Bottom}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2"/>
+                                                                <Line x:Name="Dot1" Canvas.Top="{Binding Top}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                <Line x:Name="Dot2" Canvas.Top="{Binding Bottom}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                <Path x:Name="Path1" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
+                                                                <Line x:Name="Dot4" Visibility="Collapsed" Canvas.Top="{Binding Bottom}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                <Path x:Name="Path2" Visibility="Collapsed" Canvas.Top="{Binding Bottom}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
+                                                            </Canvas>
+                                                        </Border>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
+                                                                <Setter TargetName="Dot1" Property="Stroke" Value="#34D345"/>
+                                                                <Setter TargetName="Dot2" Property="Stroke" Value="#34D345"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                                <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
+                                                                <Setter TargetName="Dot1" Property="Stroke" Value="#F8A33A"/>
+                                                                <Setter TargetName="Dot2" Property="Stroke" Value="#F8A33A"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
+                                                                <Setter TargetName="Dot1" Property="Visibility" Value="Collapsed"/>
+                                                                <Setter TargetName="Dot2" Property="Visibility" Value="Collapsed"/>
+                                                                <Setter TargetName="Dot3" Property="Visibility" Value="Visible"/>
+                                                                <Setter TargetName="Dot4" Property="Visibility" Value="Visible"/>
+                                                                <Setter TargetName="Path1" Property="Visibility" Value="Visible"/>
+                                                                <Setter TargetName="Path2" Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                                                <Setter TargetName="Border" Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding IsHover}" Value="True">
+                                                                <Setter TargetName="Line" Property="StrokeThickness" Value="4"/>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <ItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding LanHostList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Horizontal"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Margin="8" Padding="8,4" VerticalAlignment="Top" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3">
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                </Grid.RowDefinitions>
+                                                                <Grid Grid.Row="0">
+                                                                    <ItemsControl ItemsSource="{Binding AdapterList}">
+                                                                        <ItemsControl.ItemsPanel>
+                                                                            <ItemsPanelTemplate>
+                                                                                <Canvas Width="0"/>
+                                                                            </ItemsPanelTemplate>
+                                                                        </ItemsControl.ItemsPanel>
+                                                                        <ItemsControl.ItemContainerStyle>
+                                                                            <Style TargetType="ContentPresenter">
+                                                                                <Setter Property="Canvas.Left" Value="{Binding Vector.Left}"/>
+                                                                                <Setter Property="Canvas.Top" Value="{Binding Vector.Top}"/>
+                                                                            </Style>
+                                                                        </ItemsControl.ItemContainerStyle>
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <Canvas x:Name="Canvas" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
+                                                                                    <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" StrokeEndLineCap="Round"/>
+                                                                                    <Line X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="Transparent" StrokeThickness="8" StrokeEndLineCap="Round"/>
+                                                                                    <Line x:Name="Dot1" Canvas.Top="{Binding Vector.Length}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                    <Line x:Name="Dot2" Canvas.Top="0" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                    <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                    <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
+                                                                                </Canvas>
+                                                                                <DataTemplate.Triggers>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Unknown">
+                                                                                        <Setter TargetName="Canvas" Property="Visibility" Value="Collapsed"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                        <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
+                                                                                        <Setter TargetName="Dot1" Property="Stroke" Value="#34D345"/>
+                                                                                        <Setter TargetName="Dot2" Property="Stroke" Value="#34D345"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                                                        <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
+                                                                                        <Setter TargetName="Dot1" Property="Stroke" Value="#F8A33A"/>
+                                                                                        <Setter TargetName="Dot2" Property="Stroke" Value="#F8A33A"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                                        <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
+                                                                                        <Setter TargetName="Dot1" Property="Visibility" Value="Collapsed"/>
+                                                                                        <Setter TargetName="Dot2" Property="Stroke" Value="#FB3C42"/>
+                                                                                        <Setter TargetName="Dot3" Property="Visibility" Value="Visible"/>
+                                                                                        <Setter TargetName="Path" Property="Visibility" Value="Visible"/>
+                                                                                    </DataTrigger>
+                                                                                </DataTemplate.Triggers>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                    <ItemsControl ItemsSource="{Binding AdapterList}">
+                                                                        <ItemsControl.ItemsPanel>
+                                                                            <ItemsPanelTemplate>
+                                                                                <StackPanel/>
+                                                                            </ItemsPanelTemplate>
+                                                                        </ItemsControl.ItemsPanel>
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <Grid Margin="2,6" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
+                                                                                    <Border x:Name="Border" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_Line}" BorderThickness="1" CornerRadius="2"/>
+                                                                                    <Border Padding="6" MinWidth="72">
+                                                                                        <TextBlock Text="{Binding IPAddress}" HorizontalAlignment="Center" Height="15"/>
+                                                                                    </Border>
+                                                                                </Grid>
+                                                                                <DataTemplate.Triggers>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#34D345"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#F8A33A"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#FB3C42"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding IsHover}" Value="True">
+                                                                                        <Setter TargetName="Border" Property="BorderThickness" Value="2"/>
+                                                                                        <Setter TargetName="Border" Property="Margin" Value="-1"/>
+                                                                                    </DataTrigger>
+                                                                                </DataTemplate.Triggers>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                    <ItemsControl ItemsSource="{Binding AdapterList}">
+                                                                        <ItemsControl.ItemsPanel>
+                                                                            <ItemsPanelTemplate>
+                                                                                <Canvas Width="0"/>
+                                                                            </ItemsPanelTemplate>
+                                                                        </ItemsControl.ItemsPanel>
+                                                                        <ItemsControl.ItemContainerStyle>
+                                                                            <Style TargetType="ContentPresenter">
+                                                                                <Setter Property="Canvas.Left" Value="{Binding Vector.Left}"/>
+                                                                                <Setter Property="Canvas.Top" Value="{Binding Vector.Top}"/>
+                                                                            </Style>
+                                                                        </ItemsControl.ItemContainerStyle>
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <Canvas x:Name="Canvas" Visibility="Collapsed" IsHitTestVisible="False">
+                                                                                    <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" StrokeEndLineCap="Round"/>
+                                                                                    <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                    <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
+                                                                                </Canvas>
+                                                                                <DataTemplate.Triggers>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                        <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Reserve">
+                                                                                        <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                                        <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
+                                                                                        <Setter TargetName="Dot3" Property="Visibility" Value="Visible"/>
+                                                                                        <Setter TargetName="Path" Property="Visibility" Value="Visible"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding IsHover}" Value="True">
+                                                                                        <Setter TargetName="Canvas" Property="Visibility" Value="Visible"/>
+                                                                                        <Setter TargetName="Line" Property="StrokeThickness" Value="4"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding State}" Value="Unknown">
+                                                                                        <Setter TargetName="Canvas" Property="Visibility" Value="Collapsed"/>
+                                                                                    </DataTrigger>
+                                                                                </DataTemplate.Triggers>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                </Grid>
+                                                                <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,4">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Image Width="20" Height="20" Margin="0,0,4,0" Source="Images/computer2.png"/>
+                                                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Grid>
+                                        <Grid Width="{Binding TopologyWidth}" Height="{Binding TopologyHeight}" Margin="8">
+                                            <ItemsControl ItemsSource="{Binding TopologyLineList}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <Canvas/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Line X1="{Binding X}" Y1="{Binding Y}" X2="{Binding Z}" Y2="{Binding W}" Stroke="Black" StrokeThickness="2"/>
+                                                        <DataTemplate.Triggers>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <ItemsControl ItemsSource="{Binding TopologyDotList}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <Canvas/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemContainerStyle>
+                                                    <Style TargetType="ContentPresenter">
+                                                        <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                                                        <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                                                        <Setter Property="Width" Value="{Binding Width}"/>
+                                                        <Setter Property="Height" Value="{Binding Height}"/>
+                                                    </Style>
+                                                </ItemsControl.ItemContainerStyle>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="4">
+                                                            <StackPanel>
+                                                                <Image Width="36" Height="36" Margin="2" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="12" LineHeight="16"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                        <DataTemplate.Triggers>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Grid>
                                     </Grid>
                                 </ScrollViewer>
                             </Border>
