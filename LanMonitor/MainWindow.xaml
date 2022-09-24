@@ -1050,8 +1050,20 @@
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Line X1="{Binding X}" Y1="{Binding Y}" X2="{Binding Z}" Y2="{Binding W}" Stroke="Black" StrokeThickness="2"/>
+                                                        <Line x:Name="Line" X1="{Binding X}" Y1="{Binding Y}" X2="{Binding Z}" Y2="{Binding W}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Node.Tip}"/>
                                                         <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding Node.State}" Value="Online">
+                                                                <Setter TargetName="Line" Property="Stroke" Value="#34D345"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Node.State}" Value="Reserve">
+                                                                <Setter TargetName="Line" Property="Stroke" Value="#F8A33A"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Node.State}" Value="Offline">
+                                                                <Setter TargetName="Line" Property="Stroke" Value="#FB3C42"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Node.IsHover}" Value="True">
+                                                                <Setter TargetName="Line" Property="StrokeThickness" Value="4"/>
+                                                            </DataTrigger>
                                                         </DataTemplate.Triggers>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -1072,13 +1084,16 @@
                                                 </ItemsControl.ItemContainerStyle>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Border Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="4">
+                                                        <Border Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="4" ToolTip="{Binding Node.Tip}">
                                                             <StackPanel>
-                                                                <Image Width="36" Height="36" Margin="2" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="12" LineHeight="16"/>
+                                                                <Image x:Name="Image" Width="32" Height="32" Margin="0,4,0,2" Source="images/computer2.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                                <TextBlock Text="{Binding Name}" Margin="0,2,0,2" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="12" LineHeight="16"/>
                                                             </StackPanel>
                                                         </Border>
                                                         <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding IsSwitch}" Value="True">
+                                                                <Setter TargetName="Image" Property="Source" Value="images/hub.png"/>
+                                                            </DataTrigger>
                                                         </DataTemplate.Triggers>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>

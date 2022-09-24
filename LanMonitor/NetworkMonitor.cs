@@ -1116,13 +1116,13 @@ namespace LanMonitor
             }
         }
 
-        public class TopologyInfo
+        public class TopologyInfo : IHoverable
         {
-            public object Node;
             public List<object> Neighbours;
-            public double Width => 96;
-            public double Height => 64;
-            public double Left => X - 48;
+            public object Node { get; set; }
+            public static double Width => 90;
+            public static double Height => 64;
+            public double Left => X - 45;
             public double Top => Y - 32;
             public bool IsSwitch { get; set; }
             public double X { get; set; }
@@ -1131,6 +1131,22 @@ namespace LanMonitor
             public double W { get; set; }
             public double Angle { get; set; }
             public string Name { get; set; }
+
+            public bool IsHover => Node is not IHoverable && ((IHoverable)Node).IsHover;
+
+            public override bool Equals(object obj)
+            {
+                if (obj is not TopologyInfo) {
+                    return false;
+                }
+                var other = obj as TopologyInfo;
+                return other.X == X && other.Y == Y && other.Z == Z && other.W == W;
+            }
+
+            public void SetHover(bool flag)
+            {
+                ((IHoverable)Node)?.SetHover(flag);
+            }
         }
         public List<TopologyInfo> TopologyDotList { get; set; }
         public List<TopologyInfo> TopologyLineList { get; set; }
@@ -1138,22 +1154,14 @@ namespace LanMonitor
         public double TopologyHeight { get; set; }
         private void RefreshTopology()
         {
-            /*
-             * 
-                public List<SwitchDeviceModelView> SwitchDeviceList { get; set; }
-                public List<LanHostModelView> LanHostList { get; set; }
-                public List<SwitchConnectonModelView> ConnectionList { get; set; }
-             *
-             */
             if (SwitchDeviceList.Count == 0)
             {
                 return;
             }
 
-            int rootCount = SwitchDeviceList.Count;
             const double ratio = 2;
             const double size = 32;
-            double height = size * 10 + size * rootCount;
+            double height = size * 10 + size * SwitchDeviceList.Count + 0.1 * size * LanHostList.Count;
             double width = height * ratio;
             double ox = width / 2;
             double oy = height / 2;
@@ -1216,11 +1224,12 @@ namespace LanMonitor
             {
                 int i = 0;
                 int count = dots1.Count;
-                double d0 = count == 0 ? 0 : Math.PI - (dots0.Count % 2 == 0 ? Math.PI / dots0.Count : 0);
-                double r0 = size * 3 + size * dots0.Count * 0.75;
+                double d0 = count == 0 ? 0 : Math.PI - (dots0.Count % 2 == 0 && dots0.Count > 2 ? Math.PI / dots0.Count : 0);
+                double r0 = size * 2.5 + size * dots0.Count * 0.75 + size * dots1.Count * 0.1;
+                double sp = dots1.Count == 0 ? 0 : dots1.Count(item => item.Angle == dots1[0].Angle) * Math.PI / dots1.Count / 2;
                 foreach (var dot in dots1)
                 {
-                    double d = (i * Math.PI * 2 / count) + d0 - Math.PI / count;
+                    double d = (i * Math.PI * 2 / count) + d0 - Math.PI / count - sp;
                     dot.Angle = d;
                     dot.X = ox + r0 * Math.Cos(d) * ratio;
                     dot.Y = oy - r0 * Math.Sin(d);
@@ -1242,21 +1251,56 @@ namespace LanMonitor
             {
                 foreach (var dot in dots1)
                 {
+                    double dx = 0;
+                    double dy = 0;
+                    int i = 0;
                     foreach (var target in dot.Neighbours)
                     {
                         var dotA = dot;
                         var dotB = dots0.FirstOrDefault(item => item.Node == target);
-                        lineList.Add(new TopologyInfo() { Node = ((LanHostModelView)dot.Node).AdapterList.FirstOrDefault(item => item.SwitchDevice == target), X = dotA.X, Y = dotA.Y, Z = dotB.X, W = dotB.Y });
+                        if (dot.Neighbours.Where(item => item == target).Count() > 1)
+                        {
+                            lineList.Add(new TopologyInfo() { Node = ((LanHostModelView)dot.Node).AdapterList[i], X = dotA.X + dx, Y = dotA.Y + dy, Z = dotB.X + dx, W = dotB.Y + dy });
+                            if (dotA.Y - dotB.Y == 0)
+                            {
+                                dx += 0;
+                                dy += 8;
+                            }
+                            else
+                            {
+                                double slope = Math.Atan((dotA.X - dotB.X) / (dotA.Y - dotB.Y));
+                                dx += 8 * Math.Cos(slope);
+                                dy -= 8 * Math.Sin(slope);
+                            }
+                        }
+                        else
+                        {
+                            lineList.Add(new TopologyInfo() { Node = ((LanHostModelView)dot.Node).AdapterList[i], X = dotA.X, Y = dotA.Y, Z = dotB.X, W = dotB.Y });
+                        }
+                        i += 1;
                     }
                 }
             }
 
-            TopologyWidth = width;
-            TopologyHeight = height;
-            TopologyDotList = dots0.Concat(dots1).ToList();
-            TopologyLineList = lineList;
+            if (TopologyWidth != width || TopologyHeight != height)
+            {
+                TopologyWidth = width;
+                TopologyHeight = height;
+                Notify(new { TopologyWidth, TopologyHeight });
+            }
 
-            Notify(new { TopologyWidth, TopologyHeight, TopologyDotList, TopologyLineList });
+            var dotList = dots0.Concat(dots1).ToList();
+            if (TopologyDotList == null || !TopologyDotList.SequenceEqual(dotList))
+            {
+                TopologyDotList = dotList;
+                Notify(new { TopologyDotList});
+            }
+            if (TopologyLineList == null || !TopologyLineList.SequenceEqual(lineList))
+            {
+                TopologyLineList = lineList;
+                Notify(new { TopologyLineList });
+            }
+
         }
 
         public ObservableCollection<ToastMessage> ToastCollection { get; set; } = new ObservableCollection<ToastMessage>();
