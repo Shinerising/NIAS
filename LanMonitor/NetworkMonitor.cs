@@ -1168,6 +1168,11 @@ namespace LanMonitor
         public double TopologyHeight { get; set; }
         private void RefreshTopology()
         {
+            if (!IsTopologyView)
+            {
+                return;
+            }
+
             if (SwitchDeviceList.Count == 0)
             {
                 return;

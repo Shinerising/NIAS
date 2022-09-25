@@ -1124,7 +1124,7 @@
                                 </StackPanel>
                                 <Border.Style>
                                     <Style TargetType="Border">
-                                        <Setter Property="Opacity" Value="0.2"/>
+                                        <Setter Property="Opacity" Value="0.35"/>
                                         <Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="Opacity" Value="1"/>

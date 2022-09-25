@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
+using static LanMonitor.NetworkManager;
 
 namespace LanMonitor
 {
@@ -101,12 +103,22 @@ namespace LanMonitor
             public double Top { get; set; }
             public double Length { get; set; }
             public double Offset { get; set; }
+            public override bool Equals([NotNullWhen(true)] object obj)
+            {
+                if (obj is not LineVector)
+                {
+                    return false;
+                }
+                var other = (LineVector)obj;
+                return Left == other.Left && Top == other.Top && Length == other.Length && Offset == other.Offset;
+            }
         }
         public void RefreshVector(int adapterIndex, int adapterCount, int switchIndex, int switchCount)
         {
+            LineVector vector;
             if (adapterIndex < 0 || adapterCount < 0 || switchIndex < 0 || switchCount < 0)
             {
-                Vector = new LineVector();
+                vector = new LineVector();
             }
             else
             {
@@ -114,7 +126,7 @@ namespace LanMonitor
                 const double height0 = 92;
                 const double height1 = 38;
 
-                Vector = new LineVector()
+                vector = new LineVector()
                 {
                     Left = width / -2 + width / adapterCount * (adapterIndex + 0.5),
                     Top = 6 + height1 * adapterIndex,
@@ -123,7 +135,11 @@ namespace LanMonitor
                 };
             }
 
-            Notify(new { Vector });
+            if (!Vector.Equals(vector))
+            {
+                Vector = vector;
+                Notify(new { Vector });
+            }
         }
         public string IPAddress { get; set; }
         public string MACAddress { get; set; }
