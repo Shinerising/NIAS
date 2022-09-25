@@ -100,6 +100,7 @@ namespace LanMonitor
             public double Left { get; set; }
             public double Top { get; set; }
             public double Length { get; set; }
+            public double Offset { get; set; }
         }
         public void RefreshVector(int adapterIndex, int adapterCount, int switchIndex, int switchCount)
         {
@@ -109,15 +110,16 @@ namespace LanMonitor
             }
             else
             {
-                double width = 72;
-                double height0 = 92;
-                double height1 = 38;
+                const double width = 72;
+                const double height0 = 92;
+                const double height1 = 38;
 
                 Vector = new LineVector()
                 {
                     Left = width / -2 + width / adapterCount * (adapterIndex + 0.5),
                     Top = 6 + height1 * adapterIndex,
-                    Length = height0 * (switchIndex - switchCount) - height1 * adapterIndex + 47
+                    Length = height0 * (switchIndex - switchCount) - height1 * adapterIndex + 47,
+                    Offset = -40 - height1 * adapterIndex
                 };
             }
 

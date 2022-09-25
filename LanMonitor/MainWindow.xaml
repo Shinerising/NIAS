@@ -920,6 +920,7 @@
                                                                         <ItemsControl.ItemTemplate>
                                                                             <DataTemplate>
                                                                                 <Canvas x:Name="Canvas" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
+                                                                                    <Line X1="0" Y1="{Binding Vector.Length}" X2="0" Y2="{Binding Vector.Offset}" Stroke="{DynamicResource Color_Panel}" StrokeThickness="6"/>
                                                                                     <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" StrokeEndLineCap="Round"/>
                                                                                     <Line X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="Transparent" StrokeThickness="8" StrokeEndLineCap="Round"/>
                                                                                     <Line x:Name="Dot1" Canvas.Top="{Binding Vector.Length}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
