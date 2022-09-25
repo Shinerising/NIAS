@@ -27,6 +27,7 @@ using System.Runtime.Versioning;
 using Microsoft.Management.Infrastructure;
 using SNMP;
 using System.Security.RightsManagement;
+using System.Numerics;
 
 namespace LanMonitor
 {
@@ -1142,6 +1143,10 @@ namespace LanMonitor
                 }
                 var other = obj as TopologyInfo;
                 return other.X == X && other.Y == Y && other.Z == Z && other.W == W;
+            }
+            public override int GetHashCode()
+            {
+                return X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode() ^ W.GetHashCode();
             }
 
             public void SetHover(bool flag)
