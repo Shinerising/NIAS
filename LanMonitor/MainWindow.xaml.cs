@@ -211,5 +211,19 @@ namespace LanMonitor
         {
             Properties.Settings.Default.Save();
         }
+
+        private void Network_View_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            switch (button.Tag?.ToString())
+            {
+                case "View_List":
+                    networkManager.SetNetworkView(true, false);
+                    break;
+                case "View_Graph":
+                    networkManager.SetNetworkView(false, true);
+                    break;
+            }
+        }
     }
 }

@@ -26,6 +26,7 @@ using System.Xml.Linq;
 using System.Runtime.Versioning;
 using Microsoft.Management.Infrastructure;
 using SNMP;
+using System.Security.RightsManagement;
 
 namespace LanMonitor
 {
@@ -1148,6 +1149,14 @@ namespace LanMonitor
                 ((IHoverable)Node)?.SetHover(flag);
             }
         }
+        public bool IsSheetView { get; set; } = true;
+        public bool IsTopologyView { get; set; }
+        public void SetNetworkView(bool flag0, bool flag1)
+        {
+            IsSheetView = flag0;
+            IsTopologyView = flag1;
+            Notify(new { IsSheetView, IsTopologyView });
+        }
         public List<TopologyInfo> TopologyDotList { get; set; }
         public List<TopologyInfo> TopologyLineList { get; set; }
         public double TopologyWidth { get; set; }
@@ -1197,12 +1206,12 @@ namespace LanMonitor
                     }
                     else if (dot.Neighbours.Count == 1)
                     {
-                        d = dots0.FirstOrDefault(item => item.Node == dot.Neighbours[0]).Angle;
+                        d = dots0.FirstOrDefault(item => item.Node == dot.Neighbours[0])?.Angle ?? 0.1;
                     }
                     else if (dot.Neighbours.Count == 2)
                     {
-                        double d0 = dots0.FirstOrDefault(item => item.Node == dot.Neighbours[0]).Angle;
-                        double d1 = dots0.FirstOrDefault(item => item.Node == dot.Neighbours[1]).Angle;
+                        double d0 = dots0.FirstOrDefault(item => item.Node == dot.Neighbours[0])?.Angle ?? 0.1;
+                        double d1 = dots0.FirstOrDefault(item => item.Node == dot.Neighbours[1])?.Angle ?? 0.1;
                         if (d1 - d0 > Math.PI)
                         {
                             d = (d0 + d1) / 2 + Math.PI;
@@ -1214,7 +1223,7 @@ namespace LanMonitor
                     }
                     else
                     {
-                        d = dot.Neighbours.Sum(item => dots0.FirstOrDefault(_item => _item.Node == item).Angle) / dot.Neighbours.Count;
+                        d = dot.Neighbours.Sum(item => dots0.FirstOrDefault(_item => _item.Node == item)?.Angle ?? 0.1) / dot.Neighbours.Count;
                     }
                     dot.Angle = d;
                 }
@@ -1226,7 +1235,7 @@ namespace LanMonitor
                 int count = dots1.Count;
                 double d0 = count == 0 ? 0 : Math.PI - (dots0.Count % 2 == 0 && dots0.Count > 2 ? Math.PI / dots0.Count : 0);
                 double r0 = size * 2.5 + size * dots0.Count * 0.75 + size * dots1.Count * 0.1;
-                double sp = dots1.Count == 0 ? 0 : dots1.Count(item => item.Angle == dots1[0].Angle) * Math.PI / dots1.Count / 2;
+                double sp = dots1.Count == 0 ? 0 : dots1.Count(item => item.Angle == dots1[0].Angle) * Math.PI / dots1.Count / 2 + Math.PI / 8;
                 foreach (var dot in dots1)
                 {
                     double d = (i * Math.PI * 2 / count) + d0 - Math.PI / count - sp;
@@ -1258,6 +1267,10 @@ namespace LanMonitor
                     {
                         var dotA = dot;
                         var dotB = dots0.FirstOrDefault(item => item.Node == target);
+                        if (dotB == null)
+                        {
+                            continue;
+                        }
                         if (dot.Neighbours.Where(item => item == target).Count() > 1)
                         {
                             lineList.Add(new TopologyInfo() { Node = ((LanHostModelView)dot.Node).AdapterList[i], X = dotA.X + dx, Y = dotA.Y + dy, Z = dotB.X + dx, W = dotB.Y + dy });

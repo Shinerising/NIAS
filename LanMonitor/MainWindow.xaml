@@ -775,7 +775,7 @@
                             <Border Grid.Row="1" Margin="12,0,12,12" Padding="0" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}">
                                 <ScrollViewer Margin="2,2,0,0" HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerControlTemplate}">
                                     <Grid>
-                                        <Grid Visibility="Collapsed" Margin="8">
+                                        <Grid Visibility="{Binding IsSheetView, Converter={StaticResource BoolToVisibility}}" Margin="8">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
@@ -1041,7 +1041,7 @@
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
                                         </Grid>
-                                        <Grid Width="{Binding TopologyWidth}" Height="{Binding TopologyHeight}" Margin="8">
+                                        <Grid Visibility="{Binding IsTopologyView, Converter={StaticResource BoolToVisibility}}" Width="{Binding TopologyWidth}" Height="{Binding TopologyHeight}" Margin="8">
                                             <ItemsControl ItemsSource="{Binding TopologyLineList}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
@@ -1084,7 +1084,7 @@
                                                 </ItemsControl.ItemContainerStyle>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Border Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="4" ToolTip="{Binding Node.Tip}">
+                                                        <Border x:Name="Border" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="4" ToolTip="{Binding Node.Tip}">
                                                             <StackPanel>
                                                                 <Image x:Name="Image" Width="32" Height="32" Margin="0,4,0,2" Source="images/computer2.png" RenderOptions.BitmapScalingMode="HighQuality"/>
                                                                 <TextBlock Text="{Binding Name}" Margin="0,2,0,2" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontSize="12" LineHeight="16"/>
@@ -1094,6 +1094,12 @@
                                                             <DataTrigger Binding="{Binding IsSwitch}" Value="True">
                                                                 <Setter TargetName="Image" Property="Source" Value="images/hub.png"/>
                                                             </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Node.State}" Value="Online">
+                                                                <Setter TargetName="Border" Property="BorderBrush" Value="#34D345"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Node.State}" Value="Offline">
+                                                                <Setter TargetName="Border" Property="BorderBrush" Value="#FB3C42"/>
+                                                            </DataTrigger>
                                                         </DataTemplate.Triggers>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -1101,6 +1107,30 @@
                                         </Grid>
                                     </Grid>
                                 </ScrollViewer>
+                            </Border>
+                            <Border Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{DynamicResource Color_Card}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="4" Padding="4" Margin="24,12">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Style="{StaticResource Button_Tool}" Tag="View_List" Click="Network_View_Click">
+                                        <Path SnapsToDevicePixels="True" Stroke="{DynamicResource Color_TextLight}" Stretch="Uniform" StrokeThickness="1" Data="M1 2L1 6L6 6L6 2ZM6 4L15 4M1 10L1 14L6 14L6 10ZM6 12L15 12"/>
+                                    </Button>
+                                    <Button Style="{StaticResource Button_Tool}" Tag="View_Graph" Click="Network_View_Click">
+                                        <Path SnapsToDevicePixels="True" Stroke="{DynamicResource Color_TextLight}" Stretch="Uniform" StrokeThickness="1" Data="M1 7L6 7L6 11L1 11ZM10 3L15 3L15 7L10 7ZM9 11L14 11L14 15L9 15ZM6 8L10 6M5 11L9 12"/>
+                                    </Button>
+                                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4,0" BorderBrush="{DynamicResource Color_Border}" BorderThickness="1" Width="1" Height="24"/>
+                                    <Button Style="{StaticResource Button_Tool}">
+                                        <Path SnapsToDevicePixels="True" Stroke="{DynamicResource Color_TextLight}" Stretch="Uniform" StrokeThickness="1" Data="M1 2L1 6L15 6L15 2ZM1 10L1 14L15 14L15 10Z"/>
+                                    </Button>
+                                </StackPanel>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Opacity" Value="0.2"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Opacity" Value="1"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
                             </Border>
                         </Grid>
                     </ContentControl>

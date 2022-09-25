@@ -87,135 +87,41 @@
         </Setter>
     </Style>
 
-    <Style x:Key="NetworkIndicator" TargetType="Control">
+    <Style x:Key="Button_Tool" TargetType="Button">
+        <Setter Property="Width" Value="24"/>
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="Margin" Value="4"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="{DynamicResource Color_ButtonBack}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Color_Border}"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="Control">
-                    <ControlTemplate.Resources>
-                        <CubicEase x:Key="EaseIn" EasingMode="EaseIn"/>
-                        <CubicEase x:Key="EaseOut" EasingMode="EaseOut"/>
-                        <Storyboard x:Key="Animation1" RepeatBehavior="Forever" Storyboard.TargetName="Ellipse1">
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Ellipse.RenderTransform).(TranslateTransform.X)">
-                                <EasingDoubleKeyFrame Value="-62" KeyTime="0:0:0"/>
-                                <EasingDoubleKeyFrame Value="-62" KeyTime="0:0:1.4"/>
-                                <EasingDoubleKeyFrame Value="-16" KeyTime="0:0:2.4" EasingFunction="{StaticResource EaseOut}"/>
-                                <EasingDoubleKeyFrame Value="-16" KeyTime="0:0:4.4"/>
-                                <EasingDoubleKeyFrame Value="30" KeyTime="0:0:5.4" EasingFunction="{StaticResource EaseIn}"/>
-                                <EasingDoubleKeyFrame Value="30" KeyTime="0:0:8"/>
-                                <EasingDoubleKeyFrame Value="-16" KeyTime="0:0:9" EasingFunction="{StaticResource EaseOut}"/>
-                                <EasingDoubleKeyFrame Value="-16" KeyTime="0:0:11"/>
-                                <EasingDoubleKeyFrame Value="-62" KeyTime="0:0:12" EasingFunction="{StaticResource EaseIn}"/>
-                                <EasingDoubleKeyFrame Value="-62" KeyTime="0:0:14"/>
-                            </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Ellipse.Opacity)">
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:1.8"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:2.4"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:4.4"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:5.4"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:8"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:9"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:11"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:11.6"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:14"/>
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                        <Storyboard x:Key="Animation2" SpeedRatio="1" RepeatBehavior="Forever" Storyboard.TargetName="Ellipse2">
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Ellipse.RenderTransform).(TranslateTransform.X)">
-                                <EasingDoubleKeyFrame Value="-46" KeyTime="0:0:0"/>
-                                <EasingDoubleKeyFrame Value="-46" KeyTime="0:0:1.2"/>
-                                <EasingDoubleKeyFrame Value="0" KeyTime="0:0:2.2" EasingFunction="{StaticResource EaseOut}"/>
-                                <EasingDoubleKeyFrame Value="0" KeyTime="0:0:4.2"/>
-                                <EasingDoubleKeyFrame Value="46" KeyTime="0:0:5.2" EasingFunction="{StaticResource EaseIn}"/>
-                                <EasingDoubleKeyFrame Value="46" KeyTime="0:0:8.2"/>
-                                <EasingDoubleKeyFrame Value="0" KeyTime="0:0:9.2" EasingFunction="{StaticResource EaseOut}"/>
-                                <EasingDoubleKeyFrame Value="0" KeyTime="0:0:11.2"/>
-                                <EasingDoubleKeyFrame Value="-46" KeyTime="0:0:12.2" EasingFunction="{StaticResource EaseIn}"/>
-                                <EasingDoubleKeyFrame Value="-46" KeyTime="0:0:14"/>
-                            </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Ellipse.Opacity)" RepeatBehavior="1x">
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:1.4"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:2.2"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:4.2"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:5"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:8.4"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:9.2"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:11.2"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:12"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:14"/>
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                        <Storyboard x:Key="Animation3" SpeedRatio="1" RepeatBehavior="Forever" Storyboard.TargetName="Ellipse3">
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Ellipse.RenderTransform).(TranslateTransform.X)">
-                                <EasingDoubleKeyFrame Value="-30" KeyTime="0:0:0"/>
-                                <EasingDoubleKeyFrame Value="-30" KeyTime="0:0:1"/>
-                                <EasingDoubleKeyFrame Value="16" KeyTime="0:0:2" EasingFunction="{StaticResource EaseOut}"/>
-                                <EasingDoubleKeyFrame Value="16" KeyTime="0:0:4"/>
-                                <EasingDoubleKeyFrame Value="62" KeyTime="0:0:5" EasingFunction="{StaticResource EaseIn}"/>
-                                <EasingDoubleKeyFrame Value="62" KeyTime="0:0:8.4"/>
-                                <EasingDoubleKeyFrame Value="16" KeyTime="0:0:9.4" EasingFunction="{StaticResource EaseOut}"/>
-                                <EasingDoubleKeyFrame Value="16" KeyTime="0:0:11.4"/>
-                                <EasingDoubleKeyFrame Value="-30" KeyTime="0:0:12.4" EasingFunction="{StaticResource EaseIn}"/>
-                                <EasingDoubleKeyFrame Value="-30" KeyTime="0:0:14"/>
-                            </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Ellipse.Opacity)">
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:1"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:2"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:4"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:4.6"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:8.8"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:9.4"/>
-                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:11.4"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:12.4"/>
-                                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:14"/>
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </ControlTemplate.Resources>
-
+                <ControlTemplate TargetType="Button">
+                    <Border Name="Border"
+                           CornerRadius="2"
+                           BorderThickness="{TemplateBinding BorderThickness}"
+                           Padding="{TemplateBinding Padding}"
+                           BorderBrush="{TemplateBinding BorderBrush}"
+                           Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="content"/>
+                    </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsVisible" Value="True">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource Animation1}" x:Name="Storyboard1"/>
-                                <BeginStoryboard Storyboard="{StaticResource Animation2}" x:Name="Storyboard2"/>
-                                <BeginStoryboard Storyboard="{StaticResource Animation3}" x:Name="Storyboard3"/>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <StopStoryboard BeginStoryboardName="Storyboard1"/>
-                                <StopStoryboard BeginStoryboardName="Storyboard2"/>
-                                <StopStoryboard BeginStoryboardName="Storyboard3"/>
-                            </Trigger.ExitActions>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource Color_BorderLight}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource Color_ButtonHighlight}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource Color_ButtonBorder}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource Color_ButtonPressed}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".6"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
-
-                    <Border>
-                        <Canvas Height="60" Width="60">
-                            <Canvas.Resources>
-                                <Style TargetType="Ellipse">
-                                    <Setter Property="Canvas.Left" Value="26"/>
-                                    <Setter Property="Canvas.Top" Value="22"/>
-                                    <Setter Property="Width" Value="8"/>
-                                    <Setter Property="Height" Value="8" />
-                                    <Setter Property="Fill" Value="#FAFAFA" />
-                                    <Setter Property="Opacity" Value="1" />
-                                    <Setter Property="RenderTransformOrigin" Value="0, 0" />
-                                    <Setter Property="RenderTransform">
-                                        <Setter.Value>
-                                            <TranslateTransform/>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Canvas.Resources>
-
-                            <Ellipse x:Name="Ellipse1"/>
-                            <Ellipse x:Name="Ellipse2"/>
-                            <Ellipse x:Name="Ellipse3"/>
-                        </Canvas>
-                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    
+
 </ResourceDictionary>

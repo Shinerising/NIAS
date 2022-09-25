@@ -160,6 +160,7 @@ namespace LanMonitor
     {
         public string Name { get; set; }
         public string Tip { get; set; }
+        public DeviceState State { get; set; }
         public List<LanHostAdapter> AdapterList { get; set; }
         public string ActiveCount => string.Format("{0}/{1}", AdapterList.Where(item => item.State == DeviceState.Online).Count(), AdapterList.Count);
         public LanHostModelView(string name, string iplist)
