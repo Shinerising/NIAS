@@ -279,6 +279,7 @@ namespace LanMonitor
             Task.Factory.StartNew(NetworkStatusMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             Task.Factory.StartNew(SwitchMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             Task.Factory.StartNew(SwitchRefreshMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(NMAPMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
             if (IsSwitchPingEnabled)
             {
@@ -1324,6 +1325,19 @@ namespace LanMonitor
                 Notify(new { TopologyLineList });
             }
 
+        }
+
+        private void NMAPMonitoring()
+        {
+            while (true)
+            {
+                Thread.Sleep(1000);
+            }
+        }
+
+        public class NMAPHelper
+        {
+            public const string ScanParams = "-sS -oX test.xml -O 192.168.2.144 127.0.0.1";
         }
 
         public ObservableCollection<ToastMessage> ToastCollection { get; set; } = new ObservableCollection<ToastMessage>();
