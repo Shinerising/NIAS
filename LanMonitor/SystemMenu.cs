@@ -34,7 +34,7 @@ namespace LanMonitor
         private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        private static extern bool InsertMenu(IntPtr hmenu, int position, uint flags, uint item_id, [MarshalAs(UnmanagedType.LPTStr)] string item_text);
+        private static extern bool InsertMenu(IntPtr hmenu, int position, uint flags, uint item_id, [MarshalAs(UnmanagedType.LPWStr)] string item_text);
 
         [DllImport("user32.dll")]
         private static extern bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
@@ -44,18 +44,19 @@ namespace LanMonitor
             IntPtr systemMenu = GetSystemMenu(handle, false);
             int count = GetMenuItemCount(systemMenu);
             InsertMenu(systemMenu, count - 1, MF_BYPOSITION | MF_SEPARATOR, 0, string.Empty);
-            InsertMenu(systemMenu, count - 1, MF_BYPOSITION | MF_STRING, COMMAND_HELP, AppResource.GetString("Menu_Help"));
-            InsertMenu(systemMenu, count, MF_BYPOSITION | MF_STRING, COMMAND_ABOUT, AppResource.GetString("Menu_About"));
+            InsertMenu(systemMenu, count - 1, MF_BYPOSITION | MF_STRING | MF_DISABLED, COMMAND_ABOUT, AppResource.GetString("Menu_Option"));
+            InsertMenu(systemMenu, count - 0, MF_BYPOSITION | MF_STRING, COMMAND_HELP, AppResource.GetString("Menu_Help"));
+            InsertMenu(systemMenu, count + 1, MF_BYPOSITION | MF_STRING, COMMAND_ABOUT, AppResource.GetString("Menu_About"));
         }
 
         public static string HandleMenuCommand(int menuID)
         {
-            switch ((uint)menuID)
+            return (uint)menuID switch
             {
-                case COMMAND_HELP:return "Menu_Help";
-                case COMMAND_ABOUT: return "Menu_About";
-            }
-            return string.Empty;
+                COMMAND_HELP => "Menu_Help",
+                COMMAND_ABOUT => "Menu_About",
+                _ => string.Empty,
+            };
         }
     }
 }

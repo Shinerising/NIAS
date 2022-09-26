@@ -28,6 +28,7 @@ using Microsoft.Management.Infrastructure;
 using SNMP;
 using System.Security.RightsManagement;
 using System.Numerics;
+using System.Xml.Serialization;
 
 namespace LanMonitor
 {
@@ -1331,6 +1332,7 @@ namespace LanMonitor
         {
             while (true)
             {
+                NMAPHelper.GetData();
                 Thread.Sleep(1000);
             }
         }
@@ -1338,6 +1340,13 @@ namespace LanMonitor
         public class NMAPHelper
         {
             public const string ScanParams = "-sS -oX test.xml -O 192.168.2.144 127.0.0.1";
+            public static void GetData()
+            {
+                using (var reader = new StreamReader("test.xml"))
+                {
+                    nmaprun data = (nmaprun)new XmlSerializer(typeof(nmaprun)).Deserialize(reader);
+                }
+            }
         }
 
         public ObservableCollection<ToastMessage> ToastCollection { get; set; } = new ObservableCollection<ToastMessage>();
