@@ -52,7 +52,7 @@ namespace LanMonitor
                 ID = ushort.Parse(port.portid);
                 Type = port.protocol.ToString();
                 State = port.state.state1;
-                Name = port.service.name;
+                Name = port.service?.name ?? "unknown";
                 if (WarningPort.ContainsKey(ID))
                 {
                     IsWarning = true;
@@ -130,7 +130,7 @@ namespace LanMonitor
             public static WorkingState State { get; private set; }
             public static string ErrorMessage { get; private set; }
             public static string Target = "127.0.0.1 192.168.2.212 192.168.2.111";
-            private const string ScanParams = "-sS -oX {0} -O {1}";
+            private const string ScanParams = "-sS -p- -T5 -oX {0} -O {1}";
             private static string TempFile = Path.GetTempFileName();
             public static NMAPReport GetExampleData()
             {

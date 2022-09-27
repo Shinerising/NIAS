@@ -1207,9 +1207,9 @@
                                                 </Grid>
                                                 <Grid Grid.Column="1" Background="Transparent" VerticalAlignment="Center" ToolTip="{Binding Tip}">
                                                     <TextBlock TextTrimming="CharacterEllipsis" TextAlignment="Left" FontSize="13" LineHeight="16">
-                                                        <Run Text="{Binding Address}"/>
-                                                        <Run Text="•" Foreground="{DynamicResource Color_TextLight}"/>
                                                         <Run Text="{Binding Name}"/>
+                                                        <Run Text="•" Foreground="{DynamicResource Color_TextLight}"/>
+                                                        <Run Text="{Binding Address}"/>
                                                         <Run Text="•" Foreground="{DynamicResource Color_TextLight}"/>
                                                         <Run Text="{Binding OSName}" Foreground="{DynamicResource Color_TextLight}"/>
                                                     </TextBlock>
