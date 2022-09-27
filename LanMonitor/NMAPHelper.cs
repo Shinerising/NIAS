@@ -64,6 +64,10 @@ namespace LanMonitor
         {
             public string Name { get; set; }
             public string Address { get; set; }
+            public string IPV4Address { get; set; }
+            public string IPV6Address { get; set; }
+            public string MACAddress { get; set; }
+            public string MACVendor { get; set; }
             public string State { get; set; }
             public DateTime RefreshTime { get; set; }
             public TimeSpan UpTime { get; set; }
@@ -83,10 +87,14 @@ namespace LanMonitor
             public List<NMAPPort> PortList { get; set; }
             public NMAPHost(host host)
             {
-                Name = string.Join('|', host.Items.OfType<hostnames>().FirstOrDefault()?.hostname.Select(item => item.name));
-                Address = host.address.addr;
+                Name = string.Join(',', host.Items.OfType<hostnames>().FirstOrDefault()?.hostname.Select(item => item.name));
+                Address = host.address?.addr;
+                IPV4Address = host.Items.OfType<address>().Where(item => item.addrtype == addressAddrtype.ipv4).FirstOrDefault()?.addr;
+                IPV6Address = host.Items.OfType<address>().Where(item => item.addrtype == addressAddrtype.ipv6).FirstOrDefault()?.addr;
+                MACAddress = host.Items.OfType<address>().Where(item => item.addrtype == addressAddrtype.mac).FirstOrDefault()?.addr;
+                MACVendor = host.Items.OfType<address>().Where(item => item.addrtype == addressAddrtype.mac).FirstOrDefault()?.vendor;
                 State = host.status.state.ToString();
-                RefreshTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(host.endtime ?? "0")).UtcDateTime;
+                RefreshTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(host.endtime ?? "0")).LocalDateTime;
                 UpTime = TimeSpan.FromSeconds(int.Parse(host.Items.OfType<uptime>().FirstOrDefault()?.seconds ?? "0"));
                 Latency = int.Parse(host.times.srtt) / 100000;
                 Distance = int.Parse(host.Items.OfType<distance>().FirstOrDefault()?.value);
@@ -111,8 +119,8 @@ namespace LanMonitor
             public string Version { get; set; }
             public List<NMAPHost> HostList { get; set; }
             public NMAPReport(nmaprun data) {
-                StartTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(data.start)).UtcDateTime;
-                EndTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(data.runstats.finished.time)).UtcDateTime;
+                StartTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(data.start)).LocalDateTime;
+                EndTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(data.runstats.finished.time)).LocalDateTime;
                 ElapsedTime = TimeSpan.FromSeconds(double.Parse(data.runstats.finished.elapsed));
                 HostList = data.Items.OfType<host>().Select(item => new NMAPHost(item)).ToList();
             }
@@ -129,7 +137,7 @@ namespace LanMonitor
             }
             public static WorkingState State { get; private set; }
             public static string ErrorMessage { get; private set; }
-            public static string Target = "127.0.0.1";
+            public static string Target = "127.0.0.1 10.211.55.1";
             private const string PingParams = "-sn --unprivileged -oX {0} {1}";
             private const string ScanParams = "-sS -p- -T5 -O -oX {0} {1}";
             private static string TempFile = Path.GetTempFileName();

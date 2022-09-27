@@ -1207,11 +1207,13 @@
                                                 </Grid>
                                                 <Grid Grid.Column="1" Background="Transparent" VerticalAlignment="Center" ToolTip="{Binding Tip}">
                                                     <TextBlock TextTrimming="CharacterEllipsis" TextAlignment="Left" FontSize="13" LineHeight="16">
-                                                        <Run Text="{Binding Name}"/>
+                                                        <Run Text="{Binding Name, Mode=OneWay}"/>
                                                         <Run Text="•" Foreground="{DynamicResource Color_TextLight}"/>
-                                                        <Run Text="{Binding Address}"/>
+                                                        <Run Text="{Binding Address, Mode=OneWay}"/>
                                                         <Run Text="•" Foreground="{DynamicResource Color_TextLight}"/>
-                                                        <Run Text="{Binding OSName}" Foreground="{DynamicResource Color_TextLight}"/>
+                                                        <Run Text="{Binding OSName, Mode=OneWay}" Foreground="{DynamicResource Color_TextLight}"/>
+                                                        <Run Text="•" Foreground="{DynamicResource Color_TextLight}"/>
+                                                        <Run Text="{Binding RefreshTime, Mode=OneWay, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Foreground="{DynamicResource Color_TextLight}"/>
                                                     </TextBlock>
                                                 </Grid>
                                                 <Border Grid.Row="1" Grid.ColumnSpan="2" Margin="8,8,8,0" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" Padding="4">
