@@ -50,6 +50,9 @@
     <None Update="app.config.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Update="manuf.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

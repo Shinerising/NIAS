@@ -113,7 +113,6 @@ namespace LanMonitor
 
         public NMAPReport NMAPReportData => NMAPHelper.GetExampleData();
     }
-
     public partial class NetworkManager : CustomINotifyPropertyChanged, IDisposable
     {
         public List<NetworkModelView> NetworkCollection { get; set; }
