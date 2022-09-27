@@ -28,6 +28,7 @@ using Microsoft.Management.Infrastructure;
 using SNMP;
 using System.Security.RightsManagement;
 using System.Numerics;
+using static LanMonitor.NetworkManager;
 
 namespace LanMonitor
 {
@@ -59,7 +60,7 @@ namespace LanMonitor
     public class NetworkManager_Test
     {
         public static NetworkManager_Test Instance = new NetworkManager_Test();
-        public ObservableCollection<NetworkModelView> NetworkCollection => new ObservableCollection<NetworkModelView> {
+        public List<NetworkModelView> NetworkCollection => new List<NetworkModelView> {
             new NetworkModelView()
             {
                 Name = "测试名称",
@@ -70,7 +71,7 @@ namespace LanMonitor
             }
         };
 
-        public ObservableCollection<LANComputerModelView> ComputerCollection => new ObservableCollection<LANComputerModelView>
+        public List<LANComputerModelView> ComputerCollection => new List<LANComputerModelView>
         {
             new LANComputerModelView()
             {
@@ -80,7 +81,7 @@ namespace LanMonitor
                 Latency = "365ms"
             }
         };
-        public ObservableCollection<PortModelView> PortCollection => new ObservableCollection<PortModelView>
+        public List<PortModelView> PortCollection => new List<PortModelView>
         {
             new PortModelView()
             {
@@ -91,7 +92,7 @@ namespace LanMonitor
             }
         };
 
-        public ObservableCollection<ToastMessage> ToastCollection => new ObservableCollection<ToastMessage>
+        public List<ToastMessage> ToastCollection => new List<ToastMessage>
         {
             new ToastMessage()
             {
@@ -109,6 +110,8 @@ namespace LanMonitor
             new LanHostModelView("Host03", "172.16.24.92,172.16.34.92"),
             new LanHostModelView("Host04", "172.16.24.93,172.16.34.93")
         };
+
+        public NMAPReport NMAPReportData => NMAPHelper.GetExampleData();
     }
 
     public partial class NetworkManager : CustomINotifyPropertyChanged, IDisposable
@@ -1327,11 +1330,23 @@ namespace LanMonitor
 
         }
 
+        public NMAPReport NMAPReportData { get; set; }
+        public string NMAPHostCount => NMAPReportData == null ? "0" : NMAPReportData.HostList.Count.ToString();
+        public string NMAPErrorMessage { get; set; }
         private void NMAPMonitoring()
         {
             while (true)
             {
-                var report = NMAPHelper.GetData();
+                NMAPReportData = NMAPHelper.GetData();
+                if (NMAPHelper.State == NMAPHelper.WorkingState.Fail)
+                {
+                    NMAPErrorMessage = NMAPHelper.ErrorMessage;
+                }
+                else
+                {
+                    NMAPErrorMessage = null;
+                }
+                Notify(new { NMAPReportData, NMAPHostCount, NMAPErrorMessage });
 
                 Thread.Sleep(60000);
             }

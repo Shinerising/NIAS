@@ -36,6 +36,17 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="images\os_apple.png" />
+    <None Remove="images\os_default.png" />
+    <None Remove="images\os_linux.png" />
+    <None Remove="images\os_moxa.png" />
+    <None Remove="images\os_win10.png" />
+    <None Remove="images\os_win11.png" />
+    <None Remove="images\os_win2000.png" />
+    <None Remove="images\os_win7.png" />
+    <None Remove="images\os_winxp.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="app.config.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -46,6 +57,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="app.ico" />
+    <Resource Include="images\os_apple.png" />
+    <Resource Include="images\os_default.png" />
+    <Resource Include="images\os_linux.png" />
+    <Resource Include="images\os_moxa.png" />
+    <Resource Include="images\os_win10.png" />
+    <Resource Include="images\os_win11.png" />
+    <Resource Include="images\os_win2000.png" />
+    <Resource Include="images\os_win7.png" />
+    <Resource Include="images\os_winxp.png" />
     <SplashScreen Include="splashscreen.png" />
   </ItemGroup>
   <ItemGroup>

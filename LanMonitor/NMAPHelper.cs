@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Documents;
+using System.Windows.Markup;
 using System.Xml.Serialization;
 
 namespace LanMonitor
@@ -64,6 +65,7 @@ namespace LanMonitor
             public string Name { get; set; }
             public string Address { get; set; }
             public string State { get; set; }
+            public DateTime RefreshTime { get; set; }
             public TimeSpan UpTime { get; set; }
             public double Latency { get; set; }
             public int Distance { get; set; }
@@ -72,12 +74,19 @@ namespace LanMonitor
             public string OSVendor { get; set; }
             public string OSFamily { get; set; }
             public string OSGen { get; set; }
+            public string OSBrief {
+                get
+                {
+                    return OSFamily == "Windows" ? OSFamily + " " + OSGen : OSFamily;
+                }
+            }
             public List<NMAPPort> PortList { get; set; }
             public NMAPHost(host host)
             {
                 Name = string.Join('|', host.Items.OfType<hostnames>().FirstOrDefault()?.hostname.Select(item => item.name));
                 Address = host.address.addr;
                 State = host.status.state.ToString();
+                RefreshTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(host.endtime)).UtcDateTime;
                 UpTime = TimeSpan.FromSeconds(int.Parse(host.Items.OfType<uptime>().FirstOrDefault()?.seconds ?? "0"));
                 Latency = int.Parse(host.times.srtt) / 100000;
                 Distance = int.Parse(host.Items.OfType<distance>().FirstOrDefault()?.value);
@@ -120,9 +129,17 @@ namespace LanMonitor
             }
             public static WorkingState State { get; private set; }
             public static string ErrorMessage { get; private set; }
-            public static string Target = "127.0.0.1 192.168.2.212";
+            public static string Target = "127.0.0.1 192.168.2.212 192.168.2.111";
             private const string ScanParams = "-sS -oX {0} -O {1}";
             private static string TempFile = Path.GetTempFileName();
+            public static NMAPReport GetExampleData()
+            {
+                using (var reader = new StreamReader("test.xml"))
+                {
+                    nmaprun data = (nmaprun)new XmlSerializer(typeof(nmaprun)).Deserialize(reader);
+                    return new NMAPReport(data);
+                }
+            }
             public static NMAPReport GetData()
             {
                 string command = "nmap";
@@ -149,6 +166,7 @@ namespace LanMonitor
                     {
                         NMAPReport report = new NMAPReport(data);
                         State = WorkingState.Succeed;
+                        return report;
                     }
                     else
                     {

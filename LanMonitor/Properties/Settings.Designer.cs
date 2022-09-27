@@ -178,5 +178,53 @@ namespace LanMonitor.Properties {
                 this["Height_Grid06"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3*")]
+        public global::System.Windows.GridLength Width_Column03 {
+            get {
+                return ((global::System.Windows.GridLength)(this["Width_Column03"]));
+            }
+            set {
+                this["Width_Column03"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*")]
+        public global::System.Windows.GridLength Height_Grid07 {
+            get {
+                return ((global::System.Windows.GridLength)(this["Height_Grid07"]));
+            }
+            set {
+                this["Height_Grid07"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*")]
+        public global::System.Windows.GridLength Height_Grid08 {
+            get {
+                return ((global::System.Windows.GridLength)(this["Height_Grid08"]));
+            }
+            set {
+                this["Height_Grid08"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*")]
+        public global::System.Windows.GridLength Height_Grid09 {
+            get {
+                return ((global::System.Windows.GridLength)(this["Height_Grid09"]));
+            }
+            set {
+                this["Height_Grid09"] = value;
+            }
+        }
     }
 }
