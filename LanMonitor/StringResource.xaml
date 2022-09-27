@@ -72,6 +72,4 @@
     <system:String x:Key="About_Copyright">All rights reserved</system:String>
     <system:String x:Key="About_ThirdParty">Third Party Resources</system:String>
 
-    <system:String x:Key="Dict_Port">20,21,22,23,25,53,69,80,135,137,138,139,443,445,593,1025,2475,3127,3389,6129,8080,8443</system:String>
-
 </ResourceDictionary>

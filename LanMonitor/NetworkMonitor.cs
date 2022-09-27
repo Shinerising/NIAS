@@ -28,7 +28,6 @@ using Microsoft.Management.Infrastructure;
 using SNMP;
 using System.Security.RightsManagement;
 using System.Numerics;
-using System.Xml.Serialization;
 
 namespace LanMonitor
 {
@@ -112,7 +111,7 @@ namespace LanMonitor
         };
     }
 
-    public class NetworkManager : CustomINotifyPropertyChanged, IDisposable
+    public partial class NetworkManager : CustomINotifyPropertyChanged, IDisposable
     {
         public List<NetworkModelView> NetworkCollection { get; set; }
         public List<PortModelView> PortCollection { get; set; }
@@ -1332,20 +1331,9 @@ namespace LanMonitor
         {
             while (true)
             {
-                NMAPHelper.GetData();
-                Thread.Sleep(1000);
-            }
-        }
+                var report = NMAPHelper.GetData();
 
-        public class NMAPHelper
-        {
-            public const string ScanParams = "-sS -oX test.xml -O 192.168.2.144 127.0.0.1";
-            public static void GetData()
-            {
-                using (var reader = new StreamReader("test.xml"))
-                {
-                    nmaprun data = (nmaprun)new XmlSerializer(typeof(nmaprun)).Deserialize(reader);
-                }
+                Thread.Sleep(60000);
             }
         }
 
