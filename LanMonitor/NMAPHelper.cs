@@ -86,14 +86,14 @@ namespace LanMonitor
                 Name = string.Join('|', host.Items.OfType<hostnames>().FirstOrDefault()?.hostname.Select(item => item.name));
                 Address = host.address.addr;
                 State = host.status.state.ToString();
-                RefreshTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(host.endtime)).UtcDateTime;
+                RefreshTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(host.endtime ?? "0")).UtcDateTime;
                 UpTime = TimeSpan.FromSeconds(int.Parse(host.Items.OfType<uptime>().FirstOrDefault()?.seconds ?? "0"));
                 Latency = int.Parse(host.times.srtt) / 100000;
                 Distance = int.Parse(host.Items.OfType<distance>().FirstOrDefault()?.value);
 
                 var os = host.Items.OfType<os>().FirstOrDefault();
-                var osmatch = os?.osmatch.FirstOrDefault();
-                var osclass = osmatch?.osclass.FirstOrDefault(); ;
+                var osmatch = os?.osmatch?.FirstOrDefault();
+                var osclass = osmatch?.osclass?.FirstOrDefault(); ;
                 OSName = osmatch?.name;
                 OSType = osclass?.type;
                 OSVendor = osclass?.vendor;
@@ -129,8 +129,9 @@ namespace LanMonitor
             }
             public static WorkingState State { get; private set; }
             public static string ErrorMessage { get; private set; }
-            public static string Target = "127.0.0.1 192.168.2.212 192.168.2.111";
-            private const string ScanParams = "-sS -p- -T5 -oX {0} -O {1}";
+            public static string Target = "127.0.0.1";
+            private const string PingParams = "-sn --unprivileged -oX {0} {1}";
+            private const string ScanParams = "-sS -p- -T5 -O -oX {0} {1}";
             private static string TempFile = Path.GetTempFileName();
             public static NMAPReport GetExampleData()
             {
@@ -140,39 +141,38 @@ namespace LanMonitor
                     return new NMAPReport(data);
                 }
             }
-            public static NMAPReport GetData()
+
+            private static nmaprun GetNMAPData(string p, string target)
             {
                 string command = "nmap";
-                string parameters = string.Format(ScanParams, TempFile, Target);
+                string parameters = string.Format(p, TempFile, target);
+                int result = ExecuteCommand(command, parameters, out string output, out string error);
+                if (result != 0)
+                {
+                    throw new Exception(error);
+                }
 
+                using (var reader = new StreamReader(TempFile))
+                {
+                    return (nmaprun)new XmlSerializer(typeof(nmaprun)).Deserialize(reader);
+                }
+            }
+            public static NMAPReport GetData()
+            {
                 try
                 {
+                    ErrorMessage = string.Empty;
                     State = WorkingState.Executing;
-                    int result = ExecuteCommand(command, parameters, out string output, out string error);
-                    if (result != 0)
-                    {
-                        State = WorkingState.Fail;
-                        ErrorMessage = error;
-                        return null;
-                    }
+                    //var pingResult = GetNMAPData(PingParams, Target);
+
+                    //string target = pingResult.Items == null ? "" : string.Join(' ', pingResult.Items.OfType<host>().Select(item => item.address.addr).Where(item => item != null));
 
                     State = WorkingState.Parsing;
-                    nmaprun data;
-                    using (var reader = new StreamReader(TempFile))
-                    {
-                        data = (nmaprun)new XmlSerializer(typeof(nmaprun)).Deserialize(reader);
-                    }
-                    if (data != null)
-                    {
-                        NMAPReport report = new NMAPReport(data);
-                        State = WorkingState.Succeed;
-                        return report;
-                    }
-                    else
-                    {
-                        State = WorkingState.Fail;
-                        ErrorMessage = string.Empty;
-                    }
+                    var scanResult = GetNMAPData(ScanParams, Target);
+                    var report = new NMAPReport(scanResult);
+                    State = WorkingState.Succeed;
+                    return report;
+
                 }
                 catch (Exception e)
                 {
@@ -195,6 +195,10 @@ namespace LanMonitor
 
                 using (Process process = Process.Start(processInfo))
                 {
+                    process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
+                    {
+                        Console.WriteLine(e.Data);
+                    };
                     process.WaitForExit();
 
                     output = process.StandardOutput.ReadToEnd();
