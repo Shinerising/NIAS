@@ -47,6 +47,7 @@ namespace LanMonitor
             public string Name { get; set; }
             public bool IsWarning { get; set; }
             public string WarningInfo { get; set; }
+            public string Tip { get; set; }
             public NMAPPort(port port)
             {
                 ID = ushort.Parse(port.portid);
@@ -81,13 +82,14 @@ namespace LanMonitor
             public string OSBrief {
                 get
                 {
-                    return OSFamily == "Windows" ? OSFamily + " " + OSGen : OSFamily;
+                    return OSName?.StartsWith("Huawei") == true ? "Huawei" : OSFamily == "Windows" ? OSFamily + " " + OSGen : OSFamily;
                 }
             }
+            public string Tip { get; set; }
             public List<NMAPPort> PortList { get; set; }
             public NMAPHost(host host)
             {
-                Name = string.Join(',', host.Items.OfType<hostnames>().FirstOrDefault()?.hostname.Select(item => item.name));
+                Name = string.Join(',', host.Items.OfType<hostnames>().FirstOrDefault()?.hostname?.Select(item => item.name) ?? new string[] { "unknown" } );
                 Address = host.address?.addr;
                 IPV4Address = host.Items.OfType<address>().Where(item => item.addrtype == addressAddrtype.ipv4).FirstOrDefault()?.addr;
                 IPV6Address = host.Items.OfType<address>().Where(item => item.addrtype == addressAddrtype.ipv6).FirstOrDefault()?.addr;
@@ -96,7 +98,7 @@ namespace LanMonitor
                 State = host.status.state.ToString();
                 RefreshTime = DateTimeOffset.FromUnixTimeSeconds(int.Parse(host.endtime ?? "0")).LocalDateTime;
                 UpTime = TimeSpan.FromSeconds(int.Parse(host.Items.OfType<uptime>().FirstOrDefault()?.seconds ?? "0"));
-                Latency = int.Parse(host.times.srtt) / 100000;
+                Latency = double.Parse(host.times.srtt) / 100;
                 Distance = int.Parse(host.Items.OfType<distance>().FirstOrDefault()?.value);
 
                 var os = host.Items.OfType<os>().FirstOrDefault();
@@ -137,9 +139,9 @@ namespace LanMonitor
             }
             public static WorkingState State { get; private set; }
             public static string ErrorMessage { get; private set; }
-            public static string Target = "127.0.0.1 10.211.55.1";
-            private const string PingParams = "-sn --unprivileged -oX {0} {1}";
-            private const string ScanParams = "-sS -p- -T5 -O -oX {0} {1}";
+            public static string Target = "172.16.24.*";
+            private const string PingParams = "-sn -oX {0} {1}";
+            private const string ScanParams = "-sS -O -oX {0} {1}";
             private static string TempFile = Path.GetTempFileName();
             public static NMAPReport GetExampleData()
             {
@@ -152,7 +154,7 @@ namespace LanMonitor
 
             private static nmaprun GetNMAPData(string p, string target)
             {
-                string command = "nmap";
+                string command = "C:\\Program Files (x86)\\Nmap\\nmap.exe";
                 string parameters = string.Format(p, TempFile, target);
                 int result = ExecuteCommand(command, parameters, out string output, out string error);
                 if (result != 0)
@@ -171,12 +173,12 @@ namespace LanMonitor
                 {
                     ErrorMessage = string.Empty;
                     State = WorkingState.Executing;
-                    //var pingResult = GetNMAPData(PingParams, Target);
+                    var pingResult = GetNMAPData(PingParams, Target);
 
-                    //string target = pingResult.Items == null ? "" : string.Join(' ', pingResult.Items.OfType<host>().Select(item => item.address.addr).Where(item => item != null));
+                    string target = pingResult.Items == null ? "" : string.Join(' ', pingResult.Items.OfType<host>().Select(item => item.address.addr).Where(item => item != null));
 
                     State = WorkingState.Parsing;
-                    var scanResult = GetNMAPData(ScanParams, Target);
+                    var scanResult = GetNMAPData(ScanParams, target);
                     var report = new NMAPReport(scanResult);
                     State = WorkingState.Succeed;
                     return report;
@@ -196,21 +198,15 @@ namespace LanMonitor
                 ProcessStartInfo processInfo = new ProcessStartInfo(command, parameters)
                 {
                     CreateNoWindow = true,
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true
+                    UseShellExecute = false
                 };
 
                 using (Process process = Process.Start(processInfo))
                 {
-                    process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
-                    {
-                        Console.WriteLine(e.Data);
-                    };
                     process.WaitForExit();
 
-                    output = process.StandardOutput.ReadToEnd();
-                    error = process.StandardError.ReadToEnd();
+                    output = "";
+                    error = "";
                     exitCode = process.ExitCode;
                 }
 

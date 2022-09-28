@@ -1185,10 +1185,22 @@
                                                                     <DataTrigger Binding="{Binding OSBrief}" Value="Moxa">
                                                                         <Setter Property="Source" Value="images/os_moxa.png"/>
                                                                     </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding OSBrief}" Value="Huawei">
+                                                                        <Setter Property="Source" Value="images/os_huawei.png"/>
+                                                                    </DataTrigger>
                                                                     <DataTrigger Binding="{Binding OSBrief}" Value="Windows 7">
                                                                         <Setter Property="Source" Value="images/os_win7.png"/>
                                                                     </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding OSBrief}" Value="Windows 2008">
+                                                                        <Setter Property="Source" Value="images/os_win7.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding OSBrief}" Value="Windows 8">
+                                                                        <Setter Property="Source" Value="images/os_win10.png"/>
+                                                                    </DataTrigger>
                                                                     <DataTrigger Binding="{Binding OSBrief}" Value="Windows 10">
+                                                                        <Setter Property="Source" Value="images/os_win10.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding OSBrief}" Value="Windows 2012">
                                                                         <Setter Property="Source" Value="images/os_win10.png"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Binding="{Binding OSBrief}" Value="Windows 11">
