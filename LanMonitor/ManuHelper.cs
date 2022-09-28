@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.IO.Compression;
 
 namespace LanMonitor
 {
@@ -18,6 +19,7 @@ namespace LanMonitor
     /// </remarks>
     public class ManuHelper
     {
+        public static ManuHelper Instance { get; private set; } = new ManuHelper();
         public class MacVendorInfo
         {
             Lazy<string> _identiferString;
@@ -63,10 +65,21 @@ namespace LanMonitor
 
         public async Task Init(string path)
         {
-            IsInitialized = false;
-            _entries.Clear();
-            await Task.Run(() => ParseManufData(null));
-            IsInitialized = true;
+            byte[] input = File.ReadAllBytes(path);
+            using (var result = new MemoryStream())
+            {
+                var lengthBytes = BitConverter.GetBytes(input.Length);
+                result.Write(lengthBytes, 0, 4);
+
+                using (var compressionStream = new GZipStream(result,
+                    CompressionMode.Compress))
+                {
+                    compressionStream.Write(input, 0, input.Length);
+                    compressionStream.Flush();
+
+                }
+                File.WriteAllBytes("test.gz", result.ToArray());
+            }
         }
 
         static IEnumerable<string> LineGenerator(StreamReader sr)

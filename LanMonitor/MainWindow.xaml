@@ -1182,7 +1182,7 @@
                                                                     <DataTrigger Binding="{Binding OSBrief}" Value="Linux">
                                                                         <Setter Property="Source" Value="images/os_linux.png"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding OSBrief}" Value="Moxa">
+                                                                    <DataTrigger Binding="{Binding OSBrief}" Value="MOXA">
                                                                         <Setter Property="Source" Value="images/os_moxa.png"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Binding="{Binding OSBrief}" Value="Huawei">
@@ -1252,6 +1252,15 @@
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding PortList}" Value="{x:Null}">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
                                                 </Border>
                                             </Grid>
                                         </Border>

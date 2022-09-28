@@ -82,7 +82,7 @@ namespace LanMonitor
             public string OSBrief {
                 get
                 {
-                    return OSName?.StartsWith("Huawei") == true ? "Huawei" : OSFamily == "Windows" ? OSFamily + " " + OSGen : OSFamily;
+                    return OSVendor == "Huawei" || OSVendor == "MOXA" ? OSVendor : OSFamily == "Windows" ? OSFamily + " " + OSGen : OSFamily;
                 }
             }
             public string Tip { get; set; }
@@ -103,14 +103,14 @@ namespace LanMonitor
 
                 var os = host.Items.OfType<os>().FirstOrDefault();
                 var osmatch = os?.osmatch?.FirstOrDefault();
-                var osclass = osmatch?.osclass?.FirstOrDefault(); ;
+                var osclass = osmatch?.osclass?.FirstOrDefault();
                 OSName = osmatch?.name;
                 OSType = osclass?.type;
                 OSVendor = osclass?.vendor;
                 OSFamily = osclass?.osfamily;
                 OSGen = osclass?.osgen;
 
-                PortList = host.Items.OfType<ports>().FirstOrDefault()?.port.Select(item => new NMAPPort(item)).ToList();
+                PortList = host.Items?.OfType<ports>().FirstOrDefault()?.port?.Select(item => new NMAPPort(item)).ToList();
             }
         }
         public class NMAPReport

@@ -273,6 +273,8 @@ namespace LanMonitor
 
         public void Start()
         {
+            StartManuHelper();
+
             Task.Factory.StartNew(NetworkMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             Task.Factory.StartNew(NetworkAdapterMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             Task.Factory.StartNew(LocalNetworkMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -287,6 +289,11 @@ namespace LanMonitor
             {
                 StartSwitchPingMonitoring();
             }
+        }
+
+        private void StartManuHelper()
+        {
+            ManuHelper.Instance.Init("manuf.dat");
         }
 
         public void Dispose()
@@ -1364,7 +1371,7 @@ namespace LanMonitor
                 return;
             }
             host.Tip = string.Format("主机名称：{1}{0}网络地址：{2}{0}MAC地址：{3}{0}设备厂商：{4}{0}设备类型：{5}{0}运行系统：{6}{0}系统厂商：{7}{0}主机状态：{8}{0}网络延时：{9}ms{0}网络距离：{10}{0}获取时间：{11}", Environment.NewLine, host.Name, host.Address, host.MACAddress, host.MACVendor, host.OSType, host.OSName, host.OSVendor, host.State == "up" ? "在线" : "离线", host.Latency, host.Distance, host.RefreshTime.ToString("yyyy-MM-dd HH:mm:ss"));
-            host.PortList.ForEach(port => port.Tip = port.IsWarning ? string.Format("端口号：{1}{0}服务名称：{2}{0}存在风险：{3}", Environment.NewLine, port.ID, port.Name, port.WarningInfo) : string.Format("端口号：{1}{0}服务名称：{2}", Environment.NewLine, port.ID, port.Name));
+            host.PortList?.ForEach(port => port.Tip = port.IsWarning ? string.Format("端口号：{1}{0}服务名称：{2}{0}存在风险：{3}", Environment.NewLine, port.ID, port.Name, port.WarningInfo) : string.Format("端口号：{1}{0}服务名称：{2}", Environment.NewLine, port.ID, port.Name));
         }
 
         public ObservableCollection<ToastMessage> ToastCollection { get; set; } = new ObservableCollection<ToastMessage>();
