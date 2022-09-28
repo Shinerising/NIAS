@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Mail;
+using System.Net.NetworkInformation;
 using System.Windows;
 
 namespace LanMonitor

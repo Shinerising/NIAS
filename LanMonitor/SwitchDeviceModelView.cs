@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using static LanMonitor.NetworkManager;
 
 namespace LanMonitor
@@ -67,11 +68,12 @@ namespace LanMonitor
         public string HostName { get; set; }
         public string IPAddress { get; set; }
         public string MACAddress { get; set; }
+        public string MACVendor => ManuHelper.Instance.FindInfo(MACAddress)?.Organization ?? AppResource.GetString(AppResource.StringKey.Unknown);
         public int PortIndex { get; set; }
         public SwitchPort Port { get; set; }
         public bool IsCascade { get; set; }
         public HostState State { get; set; }
-        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchHost), IPAddress, MACAddress, Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Port.Name, State == HostState.Dynamic ? AppResource.GetString(AppResource.StringKey.Dynamic) : (State == HostState.Static ? AppResource.GetString(AppResource.StringKey.Static) : (State == HostState.Invalid ? AppResource.GetString(AppResource.StringKey.Invalid) : AppResource.GetString(AppResource.StringKey.Other))), Environment.NewLine);
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchHost), Environment.NewLine, IPAddress, MACAddress, MACVendor, Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Port.Name, State == HostState.Dynamic ? AppResource.GetString(AppResource.StringKey.Dynamic) : (State == HostState.Static ? AppResource.GetString(AppResource.StringKey.Static) : (State == HostState.Invalid ? AppResource.GetString(AppResource.StringKey.Invalid) : AppResource.GetString(AppResource.StringKey.Other))));
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
         {
@@ -143,10 +145,11 @@ namespace LanMonitor
         }
         public string IPAddress { get; set; }
         public string MACAddress { get; set; }
+        public string MACVendor => ManuHelper.Instance.FindInfo(MACAddress)?.Organization ?? AppResource.GetString(AppResource.StringKey.Unknown);
         public string SwitchIPAddress { get; set; }
         public LineVector Vector { get; set; }
         public DeviceState State { get; set; }
-        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Adapter), IPAddress, MACAddress ?? (Host == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.MACAddress), SwitchDevice == null ? AppResource.GetString(AppResource.StringKey.Unknown) : SwitchDevice.Name, Host == null || Host.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.Port.Name, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Disconnected) : (State == DeviceState.Reserve ? AppResource.GetString(AppResource.StringKey.Reserve) : AppResource.GetString(AppResource.StringKey.Unknown))), Environment.NewLine);
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Adapter), Environment.NewLine, IPAddress, MACAddress ?? (Host == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.MACAddress), MACVendor, SwitchDevice == null ? AppResource.GetString(AppResource.StringKey.Unknown) : SwitchDevice.Name, Host == null || Host.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.Port.Name, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Disconnected) : (State == DeviceState.Reserve ? AppResource.GetString(AppResource.StringKey.Reserve) : AppResource.GetString(AppResource.StringKey.Unknown))));
         public SwitchHost Host { get; set; }
         public SwitchDeviceModelView SwitchDevice { get; set; }
 
@@ -286,10 +289,11 @@ namespace LanMonitor
         public string Address { get; set; }
         public IPEndPoint EndPoint { get; set; }
         public string MACAddress { get; set; }
+        public string MACVendor => ManuHelper.Instance.FindInfo(MACAddress)?.Organization ?? AppResource.GetString(AppResource.StringKey.Unknown);
         public string Information { get; set; }
         public DeviceState State { get; set; } = DeviceState.Unknown;
         public string UpTime { get; set; }
-        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchDevice), Environment.NewLine, Name, Address, MACAddress, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Online) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Offline) : AppResource.GetString(AppResource.StringKey.Unknown)), UpTime ?? AppResource.GetString(AppResource.StringKey.Unknown));
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchDevice), Environment.NewLine, Name, Address, MACAddress, MACVendor, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Online) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Offline) : AppResource.GetString(AppResource.StringKey.Unknown)), UpTime ?? AppResource.GetString(AppResource.StringKey.Unknown));
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
         public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();

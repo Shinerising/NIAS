@@ -293,7 +293,7 @@ namespace LanMonitor
 
         private void StartManuHelper()
         {
-            ManuHelper.Instance.Init("manuf.dat");
+            _ = ManuHelper.Instance.Init("manuf.dat");
         }
 
         public void Dispose()

@@ -8,6 +8,7 @@ using System.Text;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO.Compression;
+using System.Net.NetworkInformation;
 
 namespace LanMonitor
 {
@@ -22,8 +23,6 @@ namespace LanMonitor
         public static ManuHelper Instance { get; private set; } = new ManuHelper();
         public class MacVendorInfo
         {
-            Lazy<string> _identiferString;
-            public string IdentiferString => _identiferString.Value;
             public long Identifier { get; private set; }
             public byte MaskLength { get; private set; }
             public string Organization { get; private set; }
@@ -33,56 +32,92 @@ namespace LanMonitor
                 Identifier = identifier;
                 MaskLength = maskLength;
                 Organization = organization;
-                _identiferString = new Lazy<string>(() => GetIdentiferString(Identifier, MaskLength));
-            }
-            static string GetIdentiferString(long identifer, byte maskLength)
-            {
-                var bytes = BitConverter.GetBytes(IPAddress.NetworkToHostOrder(identifer)).Take((int)Math.Ceiling(maskLength / 8d)).ToArray();
-                var str = BitConverter.ToString(bytes).Replace('-', ':');
-                if (maskLength % 8 != 0)
-                {
-                    str += $"/{maskLength}";
-                }
-                return str;
-            }
-
-            public override string ToString()
-            {
-                return $"[MacVendorInfo: IdentiferString={IdentiferString}, Organization={Organization}]";
             }
         }
         public bool IsInitialized { get; private set; }
 
-        List<MacVendorInfo> _entries = new List<MacVendorInfo>();
+        Dictionary<byte, Dictionary<long, MacVendorInfo>> _dicts = new Dictionary<byte, Dictionary<long, MacVendorInfo>>();
 
+        void BuildEntryDictionaries(List<MacVendorInfo> entries)
+        {
+            foreach (var entry in entries)
+            {
+                if (!_dicts.TryGetValue(entry.MaskLength, out Dictionary<long, MacVendorInfo> entryDict))
+                {
+                    entryDict = new Dictionary<long, MacVendorInfo>();
+                    _dicts.Add(entry.MaskLength, entryDict);
+                }
+
+                entryDict[entry.Identifier] = entry;
+            }
+        }
+        const long MAX_LONG = unchecked((long)ulong.MaxValue);
+        public MacVendorInfo FindInfo(string macAddress)
+        {
+            if (macAddress == null)
+            {
+                return null;
+            }
+            try
+            {
+                return FindInfo(PhysicalAddress.Parse(macAddress.Trim().Replace(':', '-')));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public MacVendorInfo FindInfo(PhysicalAddress macAddress)
+        {
+            if (!IsInitialized)
+            {
+                return null;
+            }
+            var longBytes = new byte[8];
+            var macAddrBytes = macAddress.GetAddressBytes();
+            macAddrBytes.CopyTo(longBytes, 0);
+            var identifier = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(longBytes, 0));
+
+            foreach (var dict in _dicts)
+            {
+                int mask = dict.Key;
+
+                var maskedIdent = identifier & (MAX_LONG << (64 - mask));
+
+                MacVendorInfo entry;
+                if (dict.Value.TryGetValue(maskedIdent, out entry))
+                {
+                    return entry;
+                }
+            }
+
+            return null;
+        }
         public async Task Init(Stream manufData)
         {
             IsInitialized = false;
-            _entries.Clear();
-            await Task.Run(() => ParseManufData(manufData));
+            var entries = await Task.Run(() => ParseManufData(manufData));
+            await Task.Run(() => BuildEntryDictionaries(entries));
             IsInitialized = true;
         }
 
         public async Task Init(string path)
         {
-            byte[] input = File.ReadAllBytes(path);
-            using (var result = new MemoryStream())
+            using (FileStream fs = new FileStream(path, FileMode.Open))
             {
-                var lengthBytes = BitConverter.GetBytes(input.Length);
-                result.Write(lengthBytes, 0, 4);
-
-                using (var compressionStream = new GZipStream(result,
-                    CompressionMode.Compress))
+                using (var decompressionStream = new GZipStream(fs, CompressionMode.Decompress))
                 {
-                    compressionStream.Write(input, 0, input.Length);
-                    compressionStream.Flush();
-
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        decompressionStream.CopyTo(ms);
+                        ms.Position = 0;
+                        await Init(ms);
+                    }
                 }
-                File.WriteAllBytes("test.gz", result.ToArray());
             }
         }
 
-        static IEnumerable<string> LineGenerator(StreamReader sr)
+        private static IEnumerable<string> LineGenerator(StreamReader sr)
         {
             string line;
             while ((line = sr.ReadLine()) != null)
@@ -91,7 +126,7 @@ namespace LanMonitor
             }
         }
 
-        void ParseManufData(Stream manufData)
+        private List<MacVendorInfo> ParseManufData(Stream manufData)
         {
             var streamReader = new StreamReader(manufData, Encoding.UTF8);
             var bag = new ConcurrentBag<MacVendorInfo>();
@@ -109,7 +144,7 @@ namespace LanMonitor
 
                 var parts = line.Split(new char[0], 2, StringSplitOptions.RemoveEmptyEntries);
                 var macStr = parts[0];
-                var descParts = parts[1].Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
+                var descParts = parts[1].Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
                 var shortName = descParts[0].Trim();
 
                 string longName = null;
@@ -146,16 +181,7 @@ namespace LanMonitor
 
             });
 
-            _entries = bag.ToList();
-        }
-
-        public IEnumerable<MacVendorInfo> GetEntries()
-        {
-            if (!IsInitialized)
-            {
-                throw new Exception("Must be first be initialized");
-            }
-            return _entries;
+            return bag.ToList();
         }
     }
 }

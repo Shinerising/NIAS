@@ -48,9 +48,9 @@
     <system:String x:Key="Tip_ActivePort">通讯协议: {1}{0}本地地址: {2}{0}远端地址: {3}</system:String>
     <system:String x:Key="Tip_NetworkDevice">网卡名称: {1}{0}IP地址: {2}{0}MAC地址: {3}{0}网络带宽: {4}</system:String>
     <system:String x:Key="Tip_SwitchPort">网口号: {1}{0}接口名称: {2}{0}当前状态: {3}{0}传入速度: {4}{0}传出速度: {5}</system:String>
-    <system:String x:Key="Tip_SwitchHost">IP地址: {0}{4}MAC地址: {1}{4}网口号: {2}{4}地址类型: {3}</system:String>
-    <system:String x:Key="Tip_SwitchDevice">设备名称: {1}{0}通信IP地址: {2}{0}MAC地址: {3}{0}当前状态: {4}{0}运行时间: {5}</system:String>
-    <system:String x:Key="Tip_Adapter">IP地址: {0}{5}MAC地址: {1}{5}接入交换机: {2}{5}网口号: {3}{5}连接状态: {4}</system:String>
+    <system:String x:Key="Tip_SwitchHost">IP地址: {1}{0}MAC地址: {2}{0}设备厂商: {3}{0}网口号: {4}{0}地址类型: {5}</system:String>
+    <system:String x:Key="Tip_SwitchDevice">设备名称: {1}{0}通信IP地址: {2}{0}MAC地址: {3}{0}设备厂商: {4}{0}当前状态: {5}{0}运行时间: {6}</system:String>
+    <system:String x:Key="Tip_Adapter">IP地址: {1}{0}MAC地址: {2}{0}设备厂商: {3}{0}接入交换机: {4}{0}网口号: {5}{0}连接状态: {6}</system:String>
     <system:String x:Key="Tip_SwitchConnection">连接方式: {1}{0}交换机连接: {2}{0}交换机对应网口: {3}{0}连接状态: {4}</system:String>
     <system:String x:Key="Status_Offline">网络不在线</system:String>
     <system:String x:Key="Status_LAN">局域网在线</system:String>
