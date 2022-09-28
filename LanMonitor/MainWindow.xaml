@@ -374,6 +374,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
+                            <Canvas x:Name="FC_Area" Height="16" VerticalAlignment="Top" Margin="0,-16,0,0">
+                            </Canvas>
                             <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
                                 <TextBlock Text="{StaticResource Row_Adapter}"/>
                                 <TextBlock Text="{Binding NetworkCollection.Count, StringFormat=({0})}" Margin="4,0,0,0"/>
