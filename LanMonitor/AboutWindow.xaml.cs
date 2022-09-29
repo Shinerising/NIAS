@@ -57,5 +57,10 @@ namespace LanMonitor
 
             }
         }
+
+        private void Run_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DialogResult = true;
+        }
     }
 }

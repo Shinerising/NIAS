@@ -33,20 +33,23 @@
         </ItemsControl>
         <TextBlock Text="{Binding Copyright}" MaxWidth="280" TextWrapping="Wrap" TextAlignment="Center" Margin="0,2,0,24" HorizontalAlignment="Center"/>
         <Border Background="{DynamicResource Color_Window}" Padding="0,6,0,12">
-            <StackPanel>
-                <TextBlock Text="{StaticResource About_ThirdParty}" Foreground="{DynamicResource Color_TextLight}" Margin="0,4" HorizontalAlignment="Center"/>
-                <TextBlock HorizontalAlignment="Center">            
-                    <Hyperlink NavigateUri="https://github.com/lextudio/sharpsnmplib" RequestNavigate="Hyperlink_RequestNavigate">
-                        SharpSnmpLib
-                    </Hyperlink>
-                    <Hyperlink NavigateUri="https://icons8.com" RequestNavigate="Hyperlink_RequestNavigate">
-                        Icons8
-                    </Hyperlink>
-                    <Hyperlink NavigateUri="https://flaticon.com/" RequestNavigate="Hyperlink_RequestNavigate">
-                        Flaticon
-                    </Hyperlink>
-                </TextBlock>
-            </StackPanel>
+            <Grid>
+                <StackPanel>
+                    <TextBlock Text="{StaticResource About_ThirdParty}" Foreground="{DynamicResource Color_TextLight}" Margin="0,4" HorizontalAlignment="Center"/>
+                    <TextBlock HorizontalAlignment="Center">            
+                        <Hyperlink NavigateUri="https://github.com/lextudio/sharpsnmplib" RequestNavigate="Hyperlink_RequestNavigate">
+                            SharpSnmpLib
+                        </Hyperlink>
+                        <Hyperlink NavigateUri="https://icons8.com" RequestNavigate="Hyperlink_RequestNavigate">
+                            Icons8
+                        </Hyperlink>
+                        <Hyperlink NavigateUri="https://flaticon.com/" RequestNavigate="Hyperlink_RequestNavigate">
+                            Flaticon
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-12" MouseDown="Run_MouseDown" Foreground="{DynamicResource Color_TextLight}" Opacity=".2">🐱</TextBlock>
+            </Grid>
         </Border>
     </StackPanel>
 </Window>
