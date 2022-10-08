@@ -8,6 +8,7 @@
     <SolidColorBrush x:Key="Color_ButtonDisabled">#3D3D3B</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Window">#19191B</SolidColorBrush>
     <SolidColorBrush x:Key="Color_WindowLight">#121214</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_WindowOverlay">#00FFFFFF</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Card">#2A2A2D</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Panel">#36363A</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Label">#313133</SolidColorBrush>

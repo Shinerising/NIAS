@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="Color_ButtonBack">#455A64</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_ButtonBorder">#546E7A</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_ButtonHighlight">#607D8B</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_ButtonPressed">#37474F</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_ButtonDisabled">#263238</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Window">#0D47A1</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_WindowLight">#1565C0</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_WindowOverlay">#0D47A1</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Card">#1976D2</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Panel">#1E88E5</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Label">#42A5F5</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Line">#546E7A</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Path">#546E7A</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Border">#37474F</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_BorderLight">#546E7A</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Text">#B0BEC5</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_TextLight">#CFD8DC</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_TextBrown">#EF6C00</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_TextRed">#D32F2F</SolidColorBrush>
+    
+</ResourceDictionary>
