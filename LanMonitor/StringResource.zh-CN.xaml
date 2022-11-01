@@ -67,8 +67,9 @@
     <system:String x:Key="Menu_Help">查看帮助</system:String>
     <system:String x:Key="Menu_About">关于本系统(A)</system:String>
     <system:String x:Key="About_Title">关于 NIAS 网络智能分析系统</system:String>
-    <system:String x:Key="About_Author">程序作者: </system:String>
-    <system:String x:Key="About_Version">版本号: </system:String>
+    <system:String x:Key="About_Author">程序作者：</system:String>
+    <system:String x:Key="About_Version">版本号：</system:String>
+    <system:String x:Key="About_Cert">著作权信息：</system:String>
     <system:String x:Key="About_Copyright">保留所有权利</system:String>
     <system:String x:Key="About_ThirdParty">第三方资源</system:String>
     

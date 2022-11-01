@@ -46,7 +46,8 @@ namespace LanMonitor
             InfoList = new Dictionary<string, string>()
             {
                 { AppResource.GetString("About_Version"), "V" + version },
-                { AppResource.GetString("About_Author"), author }
+                { AppResource.GetString("About_Author"), author },
+                { AppResource.GetString("About_Cert"), "软著登字第10336518号" }
             };
         }
 

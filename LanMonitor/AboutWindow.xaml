@@ -12,7 +12,7 @@
             <Image Source="/images/app.png" Margin="0,24,0,0" Width="96"/>
         </Border>
         <TextBlock Text="{StaticResource Name}" FontSize="16" Margin="0,8,0,16" HorizontalAlignment="Center"/>
-        <ItemsControl ItemsSource="{Binding InfoList}" HorizontalAlignment="Center">
+        <ItemsControl Grid.IsSharedSizeScope="True" ItemsSource="{Binding InfoList}" HorizontalAlignment="Center">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel/>
@@ -22,16 +22,16 @@
                 <DataTemplate>
                     <Grid Margin="0,2">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition SharedSizeGroup="Header"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Label"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Value"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Key}" Margin="0,0,4,0"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Value}" HorizontalAlignment="Right"/>
+                        <TextBlock Grid.Column="0" Text="{Binding Key}" Margin="0,0,4,0" HorizontalAlignment="Right"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Value}" HorizontalAlignment="Left"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <TextBlock Text="{Binding Copyright}" MaxWidth="280" TextWrapping="Wrap" TextAlignment="Center" Margin="0,2,0,24" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding Copyright}" MaxWidth="280" TextWrapping="Wrap" TextAlignment="Center" Margin="0,6,0,24" HorizontalAlignment="Center"/>
         <Border Background="{DynamicResource Color_Window}" Padding="0,6,0,12">
             <Grid>
                 <StackPanel>

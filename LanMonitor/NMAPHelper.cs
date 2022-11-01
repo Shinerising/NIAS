@@ -139,7 +139,7 @@ namespace LanMonitor
             }
             public static WorkingState State { get; private set; }
             public static string ErrorMessage { get; private set; }
-            public static string Target = "172.16.24.*";
+            public static string Target = "172.20.10.*";
             private const string PingParams = "-sn -oX {0} {1}";
             private const string ScanParams = "-sS -O --system-dns -oX {0} {1}";
             private static string TempFile = Path.GetTempFileName();
