@@ -1,47 +1,19 @@
 <script setup lang="ts">
-import WelcomeItem from "./WelcomeItem.vue";
-import DocumentationIcon from "./icons/IconDocumentation.vue";
-import ToolingIcon from "./icons/IconTooling.vue";
+import type { NetworkData } from "./interface/NetworkData.interface";
+import ReportSection from "./ReportSection.vue";
 import EcosystemIcon from "./icons/IconEcosystem.vue";
 import CommunityIcon from "./icons/IconCommunity.vue";
 import SupportIcon from "./icons/IconSupport.vue";
+
+defineProps<{
+  data: NetworkData;
+}>();
 </script>
 
 <template>
-  <WelcomeItem>
-    <template #icon>
-      <DocumentationIcon />
-    </template>
-    <template #heading>Documentation</template>
+  <h2>数据图表</h2>
 
-    Vue’s
-    <a target="_blank" href="https://vuejs.org/">official documentation</a>
-    provides you with all information you need to get started.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <ToolingIcon />
-    </template>
-    <template #heading>Tooling</template>
-
-    This project is served and bundled with
-    <a href="https://vitejs.dev/guide/features.html" target="_blank">Vite</a>.
-    The recommended IDE setup is
-    <a href="https://code.visualstudio.com/" target="_blank">VSCode</a> +
-    <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>.
-    If you need to test your components and web pages, check out
-    <a href="https://www.cypress.io/" target="_blank">Cypress</a> and
-    <a href="https://on.cypress.io/component" target="_blank"
-      >Cypress Component Testing</a
-    >.
-
-    <br />
-
-    More instructions are available in <code>README.md</code>.
-  </WelcomeItem>
-
-  <WelcomeItem>
+  <ReportSection>
     <template #icon>
       <EcosystemIcon />
     </template>
@@ -58,9 +30,9 @@ import SupportIcon from "./icons/IconSupport.vue";
       >Awesome Vue</a
     >
     a visit.
-  </WelcomeItem>
+  </ReportSection>
 
-  <WelcomeItem>
+  <ReportSection>
     <template #icon>
       <CommunityIcon />
     </template>
@@ -76,9 +48,9 @@ import SupportIcon from "./icons/IconSupport.vue";
     follow the official
     <a target="_blank" href="https://twitter.com/vuejs">@vuejs</a>
     twitter account for latest news in the Vue world.
-  </WelcomeItem>
+  </ReportSection>
 
-  <WelcomeItem>
+  <ReportSection>
     <template #icon>
       <SupportIcon />
     </template>
@@ -87,5 +59,5 @@ import SupportIcon from "./icons/IconSupport.vue";
     As an independent project, Vue relies on community backing for its
     sustainability. You can help us by
     <a target="_blank" href="https://vuejs.org/sponsor/">becoming a sponsor</a>.
-  </WelcomeItem>
+  </ReportSection>
 </template>

@@ -1,54 +1,33 @@
-<script lang="ts">
-declare interface NetworkData {
-  foo: string;
-}
-</script>
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
-import TheWelcome from "./components/TheWelcome.vue";
+import type { NetworkData } from "./components/interface/NetworkData.interface";
+import ReportHeader from "./components/ReportHeader.vue";
+import ReportGraph from "./components/ReportGraph.vue";
+import ReportLog from "./components/ReportLog.vue";
 
 const rawData = document.getElementById("rawData")?.textContent;
 const networkData: NetworkData = rawData ? JSON.parse(rawData) : null;
-const data = networkData.foo;
+const data = networkData;
 </script>
 
 <template>
   <header>
     <div class="wrapper">
-      <HelloWorld :msg="data" />
+      <ReportHeader :data="data" />
     </div>
   </header>
 
   <main>
-    <TheWelcome />
+    <ReportLog :data="data" />
+    <ReportGraph :data="data" />
   </main>
+
+  <footer>
+    <div></div>
+  </footer>
 </template>
 
 <style scoped>
 header {
   line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
 }
 </style>

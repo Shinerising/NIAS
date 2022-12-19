@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { NetworkData } from "./interface/NetworkData.interface";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { PieChart } from "echarts/charts";
@@ -11,8 +12,14 @@ import VChart, { THEME_KEY } from "vue-echarts";
 import { ref, provide } from "vue";
 
 defineProps<{
-  msg: string;
+  data: NetworkData;
 }>();
+
+/**
+ * Switch Status: Line Chart
+ * Switch Port: Heatmap Chart
+ * Device Connection: Relationship Chart
+ */
 
 use([
   CanvasRenderer,
@@ -22,7 +29,7 @@ use([
   LegendComponent,
 ]);
 
-provide(THEME_KEY, "dark");
+provide(THEME_KEY, "light");
 
 const option = ref({
   title: {
@@ -65,7 +72,7 @@ const option = ref({
 
 <template>
   <div class="greetings">
-    <h1 class="green">{{ msg }}</h1>
+    <h1 class="green">NIAS 网络数据报表</h1>
     <h3>
       You’ve successfully created a project with
       <a target="_blank" href="https://vitejs.dev/">Vite</a> +
