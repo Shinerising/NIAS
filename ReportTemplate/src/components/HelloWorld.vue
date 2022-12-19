@@ -1,7 +1,26 @@
 <script setup lang="ts">
 defineProps<{
-  msg: string
-}>()
+  msg: string;
+}>();
+</script>
+<script lang="ts">
+declare interface NetworkData {
+  foo: string;
+}
+export default {
+  data() {
+    const rawData = document.getElementById("rawData")?.textContent;
+    const networkData: NetworkData = rawData ? JSON.parse(rawData) : null;
+    console.log(networkData);
+    return {
+      message: "Hello World!",
+      isRed: true,
+      color: "green",
+      data: networkData.foo,
+    };
+  },
+  methods: {},
+};
 </script>
 
 <template>
@@ -10,8 +29,9 @@ defineProps<{
     <h3>
       You’ve successfully created a project with
       <a target="_blank" href="https://vitejs.dev/">Vite</a> +
-      <a target="_blank" href="https://vuejs.org/">Vue 3</a>.
+      <a target="_blank" href="https://vuejs.org/">Vue</a>.
     </h3>
+    <p>{{ data }}</p>
   </div>
 </template>
 
