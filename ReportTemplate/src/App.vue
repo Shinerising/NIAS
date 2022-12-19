@@ -1,14 +1,21 @@
+<script lang="ts">
+declare interface NetworkData {
+  foo: string;
+}
+</script>
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import HelloWorld from "./components/HelloWorld.vue";
+import TheWelcome from "./components/TheWelcome.vue";
+
+const rawData = document.getElementById("rawData")?.textContent;
+const networkData: NetworkData = rawData ? JSON.parse(rawData) : null;
+const data = networkData.foo;
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <HelloWorld :msg="data" />
     </div>
   </header>
 
