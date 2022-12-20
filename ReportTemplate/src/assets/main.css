@@ -2,7 +2,7 @@
 
 #app {
   max-width: 1280px;
-  min-width: 800px;
+  min-width: 960px;
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
@@ -42,5 +42,9 @@ svg {
   }
 }
 
-@media (min-width: 1024px) {
+@media print {
+  .no-break {
+    break-inside: avoid;
+  }
 }
+

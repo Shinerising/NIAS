@@ -31,7 +31,7 @@ header {
 }
 header > i {
   margin: 0.4rem 0.8rem 0 0;
-  color: var(--color-text-highlight);
+  color: var(--color-text-strong);
 }
 header > h3 {
   flex: 1;
@@ -39,5 +39,9 @@ header > h3 {
 header > div {
   margin-left: 0.5rem;
   color: var(--color-text-second);
+}
+
+.details {
+  margin-top:1rem;
 }
 </style>

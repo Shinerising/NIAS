@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { use } from "echarts/core";
-import { CanvasRenderer } from "echarts/renderers";
-import { PieChart } from "echarts/charts";
+import { SVGRenderer } from "echarts/renderers";
+import { PieChart, LineChart, GraphChart, HeatmapChart } from "echarts/charts";
 import {
   TitleComponent,
   TooltipComponent,
@@ -28,15 +28,26 @@ defineProps<{
  * Device Connection: Relationship Chart
  */
 
-use([
-  CanvasRenderer,
-  PieChart,
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-]);
+use([SVGRenderer, PieChart, TitleComponent, TooltipComponent, LegendComponent]);
 
 provide(THEME_KEY, "light");
+
+window.addEventListener("beforeprint", () => {
+  [].forEach.call(
+    document.querySelectorAll(".chart-wrapper"),
+    (element: HTMLElement) => {
+      element.style.width = "896px";
+    }
+  );
+});
+window.addEventListener("afterprint", () => {
+  [].forEach.call(
+    document.querySelectorAll(".chart-wrapper"),
+    (element: HTMLElement) => {
+      element.style.width = "";
+    }
+  );
+});
 
 const option = ref({
   title: {
@@ -87,7 +98,9 @@ const option = ref({
     <template #heading>局域网络拓扑图</template>
     <div>
       <p>123</p>
-      <v-chart class="chart" :option="option" autoresize />
+      <div class="chart-wrapper no-break">
+        <v-chart class="chart" :option="option" autoresize />
+      </div>
     </div>
   </ReportSection>
 
@@ -152,7 +165,8 @@ const option = ref({
 </template>
 
 <style scoped>
-.chart {
+.chart-wrapper {
+  margin: 0 auto;
   height: 20rem;
 }
 </style>
