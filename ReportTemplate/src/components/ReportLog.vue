@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { NetworkData } from "./interface/NetworkData.interface";
 import ReportSection from "./ReportSection.vue";
-import DocumentationIcon from "./icons/IconDocumentation.vue";
-import ToolingIcon from "./icons/IconTooling.vue";
+import IconReport from "./icons/IconReport.vue";
+import IconAlarm from "./icons/IconAlarm.vue";
 
 defineProps<{
   data: NetworkData;
@@ -13,9 +13,10 @@ defineProps<{
   <h2>日志记录</h2>
   <ReportSection>
     <template #icon>
-      <DocumentationIcon />
+      <IconReport />
     </template>
-    <template #heading>Documentation</template>
+    <template #heading>网络故障与异常报警</template>
+    <template #brief>XX条数据</template>
 
     Vue’s
     <a target="_blank" href="https://vuejs.org/">official documentation</a>
@@ -24,9 +25,9 @@ defineProps<{
 
   <ReportSection>
     <template #icon>
-      <ToolingIcon />
+      <IconAlarm />
     </template>
-    <template #heading>Tooling</template>
+    <template #heading>网络环境风险预警</template>
 
     This project is served and bundled with
     <a href="https://vitejs.dev/guide/features.html" target="_blank">Vite</a>.
@@ -47,6 +48,6 @@ defineProps<{
 
 <style scoped>
 h2 {
-  line-height: 1.5;
+  margin: 1rem 0;
 }
 </style>

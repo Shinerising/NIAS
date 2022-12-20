@@ -16,18 +16,34 @@ const data = networkData;
     </div>
   </header>
 
+  <hr />
+
   <main>
     <ReportLog :data="data" />
+    <hr />
     <ReportGraph :data="data" />
   </main>
 
+  <hr />
+
   <footer>
-    <div></div>
+    <div class="page-detail">
+      <p>NIAS 网络智能分析系统 网络数据分析报表</p>
+    </div>
+    <div class="copy-right">
+      <p>&copy; Apollo Wayne {{ new Date().getFullYear() }}. 保留所有权利</p>
+    </div>
   </footer>
 </template>
 
 <style scoped>
 header {
   line-height: 1.5;
+}
+footer {
+  margin-top: 2.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-text-second);
 }
 </style>

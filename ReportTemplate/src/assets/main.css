@@ -2,22 +2,43 @@
 
 #app {
   max-width: 1280px;
+  min-width: 800px;
   margin: 0 auto;
   padding: 2rem;
-
   font-weight: normal;
 }
 
-a,
-.green {
+a {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
+  color: var(--color-text-highlight);
+  transition: color 0.25s;
+}
+
+h1, h2 {
+  color: var(--color-heading);
+}
+
+h3 {
+  color: var(--color-text-strong);
+}
+
+p {
+  margin: .5rem 0;
+}
+
+hr {
+  margin: 1rem 0;
+  border: none;
+  border-bottom: 1px solid var(--color-border-hover);
+}
+
+svg {
+  fill: currentColor;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    color: var(--color-text-hover);
   }
 }
 
