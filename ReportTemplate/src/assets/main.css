@@ -1,0 +1,63 @@
+@import "./base.css";
+
+#app {
+  max-width: 1280px;
+  min-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-text-highlight);
+  transition: color 0.25s;
+}
+
+h1, h2 {
+  color: var(--color-heading);
+}
+
+h2::before{content: counter(h2counter) '.';
+  margin-right: 1rem;
+}
+
+h2{
+  counter-increment: h2counter;
+}
+
+h3 {
+  color: var(--color-text-strong);
+}
+
+p {
+  margin: .5rem 0;
+  text-align: justify;
+}
+
+p.text {
+  text-indent: 2em;
+}
+
+hr {
+  margin: 1rem 0;
+  border: none;
+  border-bottom: 1px solid var(--color-border-hover);
+}
+
+svg {
+  fill: currentColor;
+}
+
+@media (hover: hover) {
+  a:hover {
+    color: var(--color-text-hover);
+  }
+}
+
+@media print {
+  .no-break, h1, h2, h3, tr {
+    break-inside: avoid;
+  }
+}
+
