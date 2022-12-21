@@ -18,10 +18,12 @@ h1, h2 {
   color: var(--color-heading);
 }
 
-h2::before{
-  content: "❯";
-  margin-left: .5rem;
-  margin-right: .9rem;
+h2::before{content: counter(h2counter) '.';
+  margin-right: 1rem;
+}
+
+h2{
+  counter-increment: h2counter;
 }
 
 h3 {
@@ -30,6 +32,11 @@ h3 {
 
 p {
   margin: .5rem 0;
+  text-align: justify;
+}
+
+p.text {
+  text-indent: 2em;
 }
 
 hr {

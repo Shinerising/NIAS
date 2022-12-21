@@ -1,143 +1,113 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import type { NetworkData } from "./interface/NetworkData.interface";
-import ArcCounter from "./controls/ArcCounter.vue";
-import ImageComputer from "./images/ImageComputer.vue";
-import ImageRouter from "./images/ImageRouter.vue";
-import ImageSwitch from "./images/ImageSwitch.vue";
+import IconRefresh from "./icons/IconRefresh.vue";
+import IconPrint from "./icons/IconPrint.vue";
+import IconFullsize from "./icons/IconFullsize.vue";
+import IconNormalsize from "./icons/IconNormalsize.vue";
 
 defineProps<{
   data: NetworkData;
 }>();
+
+const refreshPage = () => {
+  document.location.reload();
+};
+
+const ifFullWidth = ref(false);
+
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+const togglePageWidth = () => {
+  const element = document.getElementById("app");
+  if (!element) {
+    return;
+  }
+  if (element.style.maxWidth === "100vw") {
+    element.style.maxWidth = "";
+    ifFullWidth.value = false;
+  } else {
+    element.style.maxWidth = "100vw";
+    ifFullWidth.value = true;
+  }
+};
+
+const printPage = async () => {
+  [].forEach.call(
+    document.querySelectorAll(".chart-wrapper"),
+    (element: HTMLElement) => {
+      element.style.width = "896px";
+    }
+  );
+  await delay(100);
+  window.print();
+};
 </script>
 
 <template>
-  <div>
-    <h1>NIAS 网络数据报表</h1>
+  <div class="page-title">
+    <h1 class="title">NIAS 网络数据报表</h1>
+    <div class="page-action">
+      <button title="刷新页面" @click="refreshPage">
+        <IconRefresh />
+      </button>
+      <button title="切换页面宽度" @click="togglePageWidth">
+        <IconFullsize v-if="!ifFullWidth" />
+        <IconNormalsize v-if="ifFullWidth" />
+      </button>
+      <button title="打印报表" @click="printPage">
+        <IconPrint />
+      </button>
+    </div>
     <p class="subtitle">
       <span>XXXX站场</span>
       <time>XXXX-XX-XX XX:XX:XX</time>
       <span>XXXX</span>
     </p>
-    <p class="description">XXXXXX</p>
-    <hr />
-    <h2>局域网络整体统计数据</h2>
-    <p>交换机设备</p>
-    <ul class="device-list">
-      <li>
-        <ImageSwitch />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-      <li>
-        <ImageSwitch />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-      <li>
-        <ImageSwitch />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-    </ul>
-    <p>计算机设备</p>
-    <ul class="device-list">
-      <li>
-        <ImageComputer />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-      <li>
-        <ImageComputer />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-      <li>
-        <ImageComputer />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-      <li>
-        <ImageComputer />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-    </ul>
-    <p>网络通信设备</p>
-    <ul class="device-list">
-      <li>
-        <ImageRouter />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-      <li>
-        <ImageRouter />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-      <li>
-        <ImageRouter />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-      <li>
-        <ImageRouter />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-      <li>
-        <ImageRouter />
-        <span>XXXX</span>
-        <span>XXXX</span>
-        <span>XXXX</span>
-      </li>
-    </ul>
-    <hr />
-    <h2>网络环境健康指数</h2>
-    <div class="counter-wrapper">
-      <ArcCounter :percent="0.15">
-        <div class="counter-text">
-          <div>网络安全</div>
-          <div class="number">15</div>
-        </div>
-      </ArcCounter>
-      <div class="sepline-vertical" />
-      <ArcCounter :percent="0.35">
-        <div class="counter-text">
-          <div>通信质量</div>
-          <div class="number">35</div>
-        </div>
-      </ArcCounter>
-      <div class="sepline-vertical" />
-      <ArcCounter :percent="0.65">
-        <div class="counter-text">
-          <div>设备状态</div>
-          <div class="number">65</div>
-        </div>
-      </ArcCounter>
-      <div class="sepline-vertical" />
-      <ArcCounter :percent="0.85">
-        <div class="counter-text">
-          <div>预期风险</div>
-          <div class="number">85</div>
-        </div>
-      </ArcCounter>
-    </div>
-    <p>XXXXXX</p>
+    <p class="text description">并难由照解果二满政之资亲社题较非，与队治形住青备蠢阶以子-做名。 除求太少号并到争关，指增及议七争织将常，以E虚金好杏养。 电斗三品放取族来商面，是至作题此三劳思酸，规连辰针每呜承总。 给音器类完但劳，维状府向号观题，结H声下知。</p>
   </div>
 </template>
 
 <style scoped>
+.page-title {
+  position: relative;
+}
+.page-action {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 0.5rem 0;
+}
+.page-action > button {
+  background: transparent;
+  background-color: var(--color-background-soft);
+  border: 0.075rem solid var(--color-border);
+  color: var(--color-text-second);
+  border-radius: 0.5rem;
+  padding: 0;
+  font: inherit;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  outline: inherit;
+  margin-left: 0.5rem;
+  padding: 0.18rem;
+  transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+.page-action > button:hover {
+  background-color: var(--color-background);
+  border-color: var(--color-text-highlight);
+  color: var(--color-text-highlight);
+}
+.page-action > button:active {
+  background-color: var(--color-background-mute);
+  border-color: var(--color-border-hover);
+  color: var(--color-text);
+}
+.page-action > button > svg {
+  width: 100%;
+  height: 100%;
+}
 .subtitle {
   color: var(--color-text-second);
 }
@@ -151,69 +121,13 @@ defineProps<{
   content: none;
 }
 
-h2 {
-  margin: 1rem 0;
-}
-
-.counter-wrapper {
-  margin: 2rem 0;
-  display: flex;
-  justify-content: center;
-}
-.counter-wrapper > * {
-  margin: 1rem;
-}
-.sepline-vertical {
-  border-right: 1px solid var(--color-border);
-}
-.counter-text > div {
-  font-weight: bold;
-  font-size: 1rem;
-}
-.counter-text > .number {
-  display: block;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: bold;
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-ul.device-list {
-  margin: 1rem 0;
-  padding: 0;
-}
-
-ul.device-list > li {
-  list-style: none;
-  margin: 0.5rem 0;
-  display: flex;
-  align-items: center;
-  border-radius: 0.5rem;
-  border: 1px solid var(--color-border);
-  font-size: 0.9rem;
-}
-ul.device-list > li:nth-child(even) {
-  background-color: var(--color-background-soft);
-}
-ul.device-list > li > * {
-  display: block;
-  flex: 1;
-  padding: 0.5rem;
-  border-right: 1px solid var(--color-border);
-}
-ul.device-list > li > *:last-child {
-  border-right: none;
-}
-
-ul.device-list > li > svg {
-  flex: none;
-  width: 2.4rem;
-  height: 2.4rem;
-  margin: 0;
-}
-
-p svg {
-  width: 2rem;
-  height: 2rem;
+@media print {
+  .title,
+  .subtitle {
+    text-align: center;
+  }
+  .page-action {
+    display: none;
+  }
 }
 </style>

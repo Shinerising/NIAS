@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { NetworkData } from "./components/interface/NetworkData.interface";
 import ReportHeader from "./components/ReportHeader.vue";
+import ReportStats from "./components/ReportStats.vue";
 import ReportGraph from "./components/ReportGraph.vue";
 import ReportLog from "./components/ReportLog.vue";
 
@@ -11,14 +12,14 @@ const data = networkData;
 
 <template>
   <header>
-    <div class="wrapper">
-      <ReportHeader :data="data" />
-    </div>
+    <ReportHeader :data="data" />
   </header>
 
   <hr />
 
   <main>
+    <ReportStats :data="data" />
+    <hr />
     <ReportLog :data="data" />
     <hr />
     <ReportGraph :data="data" />
@@ -42,6 +43,8 @@ header {
 }
 footer {
   margin-top: 2.5rem;
+}
+footer p {
   text-align: center;
   font-size: 0.8rem;
   color: var(--color-text-second);
