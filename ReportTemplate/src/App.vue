@@ -1,47 +1,52 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import type { NetworkData } from "./components/interface/NetworkData.interface";
+import ReportHeader from "./components/ReportHeader.vue";
+import ReportStats from "./components/ReportStats.vue";
+import ReportGraph from "./components/ReportGraph.vue";
+import ReportLog from "./components/ReportLog.vue";
+
+const rawData = document.getElementById("rawData")?.textContent;
+const networkData: NetworkData = rawData ? JSON.parse(rawData) : null;
+const data = networkData;
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
+    <ReportHeader :data="data" />
   </header>
 
+  <hr />
+
   <main>
-    <TheWelcome />
+    <ReportStats :data="data" />
+    <hr />
+    <ReportLog :data="data" />
+    <hr />
+    <ReportGraph :data="data" />
   </main>
+
+  <hr />
+
+  <footer>
+    <div class="page-detail">
+      <p>NIAS 网络智能分析系统 网络数据分析报表</p>
+    </div>
+    <div class="copy-right">
+      <p>&copy; Apollo Wayne {{ new Date().getFullYear() }}. 保留所有权利</p>
+    </div>
+  </footer>
 </template>
 
 <style scoped>
 header {
   line-height: 1.5;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+footer {
+  margin-top: 2.5rem;
 }
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+footer p {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-text-second);
 }
 </style>
