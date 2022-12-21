@@ -21,15 +21,89 @@ defineProps<{
     <p class="description">XXXXXX</p>
     <hr />
     <h2>局域网络整体统计数据</h2>
-    <p>XXXXXX</p>
-    <p>
-      <ImageComputer />
-      <ImageRouter />
-      <ImageSwitch />
-    </p>
+    <p>交换机设备</p>
+    <ul class="device-list">
+      <li>
+        <ImageSwitch />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+      <li>
+        <ImageSwitch />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+      <li>
+        <ImageSwitch />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+    </ul>
+    <p>计算机设备</p>
+    <ul class="device-list">
+      <li>
+        <ImageComputer />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+      <li>
+        <ImageComputer />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+      <li>
+        <ImageComputer />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+      <li>
+        <ImageComputer />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+    </ul>
+    <p>网络通信设备</p>
+    <ul class="device-list">
+      <li>
+        <ImageRouter />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+      <li>
+        <ImageRouter />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+      <li>
+        <ImageRouter />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+      <li>
+        <ImageRouter />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+      <li>
+        <ImageRouter />
+        <span>XXXX</span>
+        <span>XXXX</span>
+        <span>XXXX</span>
+      </li>
+    </ul>
     <hr />
     <h2>网络环境健康指数</h2>
-    <p></p>
     <div class="counter-wrapper">
       <ArcCounter :percent="0.15">
         <div class="counter-text">
@@ -59,6 +133,7 @@ defineProps<{
         </div>
       </ArcCounter>
     </div>
+    <p>XXXXXX</p>
   </div>
 </template>
 
@@ -93,14 +168,48 @@ h2 {
 }
 .counter-text > div {
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 .counter-text > .number {
   display: block;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   text-align: center;
+}
+
+ul.device-list {
+  margin: 1rem 0;
+  padding: 0;
+}
+
+ul.device-list > li {
+  list-style: none;
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+ul.device-list > li:nth-child(even) {
+  background-color: var(--color-background-soft);
+}
+ul.device-list > li > * {
+  display: block;
+  flex: 1;
+  padding: 0.5rem;
+  border-right: 1px solid var(--color-border);
+}
+ul.device-list > li > *:last-child {
+  border-right: none;
+}
+
+ul.device-list > li > svg {
+  flex: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  margin: 0;
 }
 
 p svg {

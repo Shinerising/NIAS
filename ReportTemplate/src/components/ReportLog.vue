@@ -59,7 +59,9 @@ const sales = [
     <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>.
     If you need to test your components and web pages, check out
     <a href="https://www.cypress.io/" target="_blank">Cypress</a> and
-    <a href="https://on.cypress.io/component" target="_blank">Cypress Component Testing</a>.
+    <a href="https://on.cypress.io/component" target="_blank"
+      >Cypress Component Testing</a
+    >.
 
     <br />
 
@@ -77,7 +79,7 @@ table {
   width: 100%;
 }
 
-th{
+th {
   background-color: var(--color-background-soft);
 }
 
@@ -87,5 +89,22 @@ td {
   padding: 0.5rem 1rem;
   border: 1px solid var(--color-border);
   border-collapse: collapse;
+}
+table {
+  border-radius: 0.5rem;
+  border-style: hidden;
+  box-shadow: 0 0 0 1px var(--color-border);
+}
+th:first-of-type {
+  border-top-left-radius: 0.5rem;
+}
+th:last-of-type {
+  border-top-right-radius: 0.5rem;
+}
+tr:last-of-type td:first-of-type {
+  border-bottom-left-radius: 0.5rem;
+}
+tr:last-of-type td:last-of-type {
+  border-bottom-right-radius: 0.5rem;
 }
 </style>

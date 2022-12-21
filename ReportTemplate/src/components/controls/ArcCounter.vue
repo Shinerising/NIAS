@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import { ref } from "vue";
+
 const props = defineProps<{
   percent: number;
 }>();
 
 const origin = [80, 80];
 const radius = 61.25;
-const angle = Math.PI * 0.5 - props.percent * Math.PI * 2;
-const target = [
-  Math.cos(angle) * radius + origin[0],
-  Math.sin(angle) * radius * -1 + origin[1],
-];
-const path = `M ${origin[0]} ${origin[1] - radius} A ${radius} ${radius} 0 ${
-  props.percent > 0.5 ? 1 : 0
-} 1 ${target[0]} ${target[1]}`;
+const perimeter = radius * Math.PI * 2;
+const rotate = `rotate(-90 ${origin[0]} ${origin[1]})`;
+const dasharray = ref(`0 ${perimeter}`);
+setTimeout(() => {
+  dasharray.value = `${perimeter * props.percent} ${
+    perimeter * (1 - props.percent)
+  }`;
+}, 300);
 
 let color = "#4CAF50";
 if (props.percent < 0.25) {
@@ -34,12 +36,17 @@ if (props.percent < 0.25) {
         :fill="color"
         opacity=".15"
       />
-      <path
-        :d="path"
+      <circle
+        :cx="origin[0]"
+        :cy="origin[1]"
+        :r="radius"
         fill="none"
         :stroke="color"
         stroke-width="12"
+        :transform="rotate"
         stroke-linecap="round"
+        :stroke-dasharray="dasharray"
+        style="transition: stroke-dasharray 0.5s"
       />
     </svg>
     <div class="details">
