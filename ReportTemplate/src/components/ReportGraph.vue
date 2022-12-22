@@ -54,23 +54,6 @@ use([
 
 provide(THEME_KEY, "light");
 
-window.addEventListener("beforeprint", () => {
-  [].forEach.call(
-    document.querySelectorAll(".chart-wrapper"),
-    (element: HTMLElement) => {
-      element.style.width = "896px";
-    }
-  );
-});
-window.addEventListener("afterprint", () => {
-  [].forEach.call(
-    document.querySelectorAll(".chart-wrapper"),
-    (element: HTMLElement) => {
-      element.style.width = "";
-    }
-  );
-});
-
 const option01 = (() => {
   return ref({
     title: {
@@ -411,9 +394,9 @@ const option04 = (() => {
 })();
 
 const option05 = (() => {
-  const xAxisData = [];
-  const data1 = [];
-  const data2 = [];
+  const xAxisData: string[] = [];
+  const data1: number[] = [];
+  const data2: number[] = [];
   for (let i = 0; i < 100; i++) {
     xAxisData.push("A" + i);
     data1.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5);

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { NetworkData } from "./interface/NetworkData.interface";
+import { PrintStore } from "../stores/PrintStore";
 import IconRefresh from "./icons/IconRefresh.vue";
 import IconPrint from "./icons/IconPrint.vue";
 import IconFullsize from "./icons/IconFullsize.vue";
@@ -33,12 +34,7 @@ const togglePageWidth = () => {
 };
 
 const printPage = async () => {
-  [].forEach.call(
-    document.querySelectorAll(".chart-wrapper"),
-    (element: HTMLElement) => {
-      element.style.width = "896px";
-    }
-  );
+  PrintStore().beforePrint();
   await delay(100);
   window.print();
 };
@@ -64,7 +60,12 @@ const printPage = async () => {
       <time>XXXX-XX-XX XX:XX:XX</time>
       <span>XXXX</span>
     </p>
-    <p class="text description">并难由照解果二满政之资亲社题较非，与队治形住青备蠢阶以子-做名。 除求太少号并到争关，指增及议七争织将常，以E虚金好杏养。 电斗三品放取族来商面，是至作题此三劳思酸，规连辰针每呜承总。 给音器类完但劳，维状府向号观题，结H声下知。</p>
+    <p class="text description">
+      并难由照解果二满政之资亲社题较非，与队治形住青备蠢阶以子-做名。
+      除求太少号并到争关，指增及议七争织将常，以E虚金好杏养。
+      电斗三品放取族来商面，是至作题此三劳思酸，规连辰针每呜承总。
+      给音器类完但劳，维状府向号观题，结H声下知。
+    </p>
   </div>
 </template>
 
@@ -119,6 +120,11 @@ const printPage = async () => {
 }
 .subtitle > *:last-child::after {
   content: none;
+}
+
+p.description {
+  margin: 1rem 4rem;
+  font-size: 0.9rem;
 }
 
 @media print {
