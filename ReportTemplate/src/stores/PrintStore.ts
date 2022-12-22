@@ -23,9 +23,10 @@ export const PrintStore = defineStore("print", () => {
 
     isPrinting.value = false;
   };
+  const initialize = () => {
+    window.addEventListener("beforeprint", beforePrint);
+    window.addEventListener("afterprint", afterPrint);
+  };
 
-  window.addEventListener("beforeprint", beforePrint);
-  window.addEventListener("afterprint", afterPrint);
-
-  return { isPrinting, beforePrint, afterPrint };
+  return { isPrinting, beforePrint, afterPrint, initialize };
 });

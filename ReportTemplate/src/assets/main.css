@@ -56,7 +56,7 @@ svg {
 }
 
 @media print {
-  .no-break, h1, h2, h3, tr {
+  .no-break, h1, h2, h3, tr, li {
     break-inside: avoid;
   }
 }
