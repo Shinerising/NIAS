@@ -34,6 +34,21 @@ const data = networkData;
     <div class="page-detail">
       <p>NIAS 网络智能分析系统 网络数据分析报表</p>
     </div>
+    <div class="powered">
+      <p>
+        Powered by
+        <a href="https://vuejs.org" target="_blank" rel="noreferrer noopener"
+          >Vue</a
+        >
+        &
+        <a
+          href="https://echarts.apache.org"
+          target="_blank"
+          rel="noreferrer noopener"
+          >ECharts</a
+        >
+      </p>
+    </div>
     <div class="copy-right">
       <p>&copy; Apollo Wayne {{ new Date().getFullYear() }}. 保留所有权利</p>
     </div>

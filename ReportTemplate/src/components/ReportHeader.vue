@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
+import type { Ref } from "vue";
 import type { NetworkData } from "./interface/NetworkData.interface";
 import { PrintStore } from "../stores/PrintStore";
-import IconRefresh from "./icons/IconRefresh.vue";
 import IconPrint from "./icons/IconPrint.vue";
+import IconList from "./icons/IconList.vue";
+import IconText from "./icons/IconText.vue";
+import IconRefresh from "./icons/IconRefresh.vue";
 import IconFullsize from "./icons/IconFullsize.vue";
 import IconNormalsize from "./icons/IconNormalsize.vue";
 
@@ -15,7 +18,13 @@ const refreshPage = () => {
   document.location.reload();
 };
 
+const listPanel: Ref<HTMLElement | null> = ref(null);
+const ifListPanel = ref(false);
 const ifFullWidth = ref(false);
+const ifLargeText = ref(false);
+
+const headerList: Ref<{ text: string; tag: string; node: Element | null }[]> =
+  ref([{ text: "index", tag: "h1", node: null }]);
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -33,10 +42,51 @@ const togglePageWidth = () => {
   }
 };
 
+const toggleFontSize = () => {
+  if (ifLargeText.value) {
+    document.documentElement.style.fontSize = "";
+    ifLargeText.value = false;
+  } else {
+    document.documentElement.style.fontSize = "20px";
+    ifLargeText.value = true;
+  }
+};
+
+const toggleListPanel = async () => {
+  if (ifListPanel.value) {
+    ifListPanel.value = false;
+  } else {
+    headerList.value = Array.from(document.querySelectorAll("h2, h3")).map(
+      (node) => ({
+        text: node.textContent || "",
+        tag: node.tagName,
+        node: node,
+      })
+    );
+    ifListPanel.value = true;
+    await nextTick();
+    listPanel.value?.focus();
+  }
+};
+
 const printPage = async () => {
   PrintStore().beforePrint();
-  await delay(100);
+  await delay(200);
   window.print();
+};
+
+const scrollToNode = (node: Element | null) => {
+  if (!node) {
+    return;
+  }
+  node.scrollIntoView({
+    behavior: "smooth",
+  });
+};
+
+const focusOutListPanel = async () => {
+  await delay(200);
+  ifListPanel.value = false;
 };
 </script>
 
@@ -47,6 +97,12 @@ const printPage = async () => {
       <button title="刷新页面" @click="refreshPage">
         <IconRefresh />
       </button>
+      <button title="显示大纲列表" @click="toggleListPanel">
+        <IconList />
+      </button>
+      <button title="切换字号大小" @click="toggleFontSize">
+        <IconText />
+      </button>
       <button title="切换页面宽度" @click="togglePageWidth">
         <IconFullsize v-if="!ifFullWidth" />
         <IconNormalsize v-if="ifFullWidth" />
@@ -55,6 +111,23 @@ const printPage = async () => {
         <IconPrint />
       </button>
     </div>
+    <Transition>
+      <div
+        class="page-listpanel"
+        tabindex="0"
+        v-show="ifListPanel"
+        ref="listPanel"
+        v-on:focusout="focusOutListPanel"
+      >
+        <ul>
+          <li v-for="(header, i) in headerList" :key="i" :class="header.tag">
+            <a :href="'#' + header.text" @click="scrollToNode(header.node)"
+              ><span>{{ header.text }}</span></a
+            >
+          </li>
+        </ul>
+      </div>
+    </Transition>
     <p class="subtitle">
       <span>XXXX站场</span>
       <time>XXXX-XX-XX XX:XX:XX</time>
@@ -73,16 +146,18 @@ const printPage = async () => {
 .page-title {
   position: relative;
 }
+
 .page-action {
   position: absolute;
   right: 0;
   top: 0;
   margin: 0.5rem 0;
 }
+
 .page-action > button {
   background: transparent;
-  background-color: var(--color-background-soft);
-  border: 0.075rem solid var(--color-border);
+  background-color: transparent;
+  border: 0.075rem solid transparent;
   color: var(--color-text-second);
   border-radius: 0.5rem;
   padding: 0;
@@ -95,20 +170,65 @@ const printPage = async () => {
   padding: 0.18rem;
   transition: border-color 0.2s, color 0.2s, background-color 0.2s;
 }
+
 .page-action > button:hover {
   background-color: var(--color-background);
-  border-color: var(--color-text-highlight);
+  border-color: var(--color-border);
   color: var(--color-text-highlight);
 }
+
 .page-action > button:active {
   background-color: var(--color-background-mute);
   border-color: var(--color-border-hover);
   color: var(--color-text);
 }
+
 .page-action > button > svg {
   width: 100%;
   height: 100%;
 }
+
+.page-listpanel {
+  position: absolute;
+  right: 0;
+  top: 2rem;
+  margin-top: 1rem;
+  padding: 0.4rem 1rem;
+  z-index: 10;
+  font-size: 0.9rem;
+  background: transparent;
+  background-color: var(--color-background);
+  border: 0.075rem solid var(--color-border-hover);
+  border-radius: 0.5rem;
+}
+
+.page-listpanel > ul {
+  margin: 0;
+  padding: 0;
+}
+
+.page-listpanel > ul > li {
+  margin: 0.4rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.page-listpanel > ul > li.H3 {
+  margin-left: 1rem;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transform-origin: top center;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.v-enter-from,
+.v-leave-to {
+  transform: scale(0.8) translateY(-1rem);
+  opacity: 0;
+}
+
 .subtitle {
   color: var(--color-text-second);
 }
@@ -118,6 +238,7 @@ const printPage = async () => {
   font-weight: bold;
   margin: 0 0.5rem;
 }
+
 .subtitle > *:last-child::after {
   content: none;
 }
@@ -132,7 +253,9 @@ p.description {
   .subtitle {
     text-align: center;
   }
-  .page-action {
+
+  .page-action,
+  .page-listpanel {
     display: none;
   }
 }

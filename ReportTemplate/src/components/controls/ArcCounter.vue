@@ -16,19 +16,19 @@ setTimeout(() => {
   }`;
 }, 300);
 
-let color = "#4CAF50";
+let color = "#66BB6A";
 if (props.percent < 0.25) {
   color = "#BF360C";
 } else if (props.percent < 0.5) {
   color = "#F57C00";
 } else if (props.percent < 0.75) {
-  color = "#FDD835";
+  color = "#FBC02D";
 }
 </script>
 
 <template>
   <div class="counter">
-    <svg xmlns="http://www.w3.org/2000/svg">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
       <circle
         :cx="origin[0]"
         :cy="origin[1]"

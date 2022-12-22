@@ -140,7 +140,7 @@ h2 {
 }
 
 .counter-wrapper {
-  margin: 2rem 0;
+  margin: 2rem auto;
   display: flex;
   justify-content: center;
 }
@@ -194,5 +194,11 @@ ul.device-list > li > svg {
   width: 2.4rem;
   height: 2.4rem;
   margin: 0;
+}
+
+@media print {
+  .sepline-vertical {
+    margin: 1rem 0;
+  }
 }
 </style>

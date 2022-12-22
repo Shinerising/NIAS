@@ -83,6 +83,7 @@ html{
   -moz-osx-font-smoothing: grayscale;
   color: var(--color-text);
   background: var(--color-background);
+  transition: font-size .3s;
 }
 
 body {
