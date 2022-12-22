@@ -42,6 +42,6 @@ header > div {
 }
 
 .details {
-  margin-top:1rem;
+  margin-top: 1rem;
 }
 </style>
