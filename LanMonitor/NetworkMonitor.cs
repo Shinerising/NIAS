@@ -29,6 +29,7 @@ using SNMP;
 using System.Security.RightsManagement;
 using System.Numerics;
 using static LanMonitor.NetworkManager;
+using System.Runtime.InteropServices;
 
 namespace LanMonitor
 {
@@ -204,7 +205,7 @@ namespace LanMonitor
         private readonly Queue<long> downloadSpeedQueue;
 
         private long speedGraphLimit = 1024;
-        public string ComputerName => Dns.GetHostEntry("").HostName;
+        public static string ComputerName => Dns.GetHostEntry("").HostName;
 
         [SupportedOSPlatform("windows")]
         public static string ManagementQuery(string query, string property)
@@ -212,46 +213,19 @@ namespace LanMonitor
             using CimSession session = CimSession.Create(null);
             return session.QueryInstances(@"root\cimv2", "WQL", query).FirstOrDefault()?.CimInstanceProperties[property].Value.ToString();
         }
-        public string SystemName
-        {
-            get
-            {
-                return ManagementQuery("SELECT Caption FROM Win32_OperatingSystem", "Caption") ?? "Unknown";
-            }
-        }
-        public string MachineType
-        {
-            get
-            {
-                return (ManagementQuery("SELECT Caption FROM Win32_Battery", "Caption") != null || ManagementQuery("SELECT Caption FROM Win32_PortableBattery", "Caption") != null) ? "Laptop" : "Desktop";
-            }
-        }
+        [SupportedOSPlatform("windows")]
+        public static string SystemName => ManagementQuery("SELECT Caption FROM Win32_OperatingSystem", "Caption") ?? "Unknown";
+        [SupportedOSPlatform("windows")]
+        public static string MachineType => (ManagementQuery("SELECT Caption FROM Win32_Battery", "Caption") != null || ManagementQuery("SELECT Caption FROM Win32_PortableBattery", "Caption") != null) ? "Laptop" : "Desktop";
+        [SupportedOSPlatform("windows")]
+        public static string WorkGroup => ManagementQuery("SELECT Workgroup FROM Win32_ComputerSystem", "Workgroup") ?? "Unknown";
+        [SupportedOSPlatform("windows")]
+        public static string Manufacturer => ManagementQuery("SELECT Manufacturer FROM Win32_ComputerSystem", "Manufacturer") ?? "Unknown";
+        [SupportedOSPlatform("windows")]
+        public static string Model => ManagementQuery("SELECT Model FROM Win32_ComputerSystem", "Model") ?? "Unknown";
 
-        public string WorkGroup
-        {
-            get
-            {
-                return ManagementQuery("SELECT Workgroup FROM Win32_ComputerSystem", "Workgroup") ?? "Unknown";
-            }
-        }
-        public string Manufacturer
-        {
-            get
-            {
-                return ManagementQuery("SELECT Manufacturer FROM Win32_ComputerSystem", "Manufacturer") ?? "Unknown";
-            }
-        }
-
-        public string Model
-        {
-            get
-            {
-                return ManagementQuery("SELECT Model FROM Win32_ComputerSystem", "Model") ?? "Unknown";
-            }
-        }
-
-        public string DomainName => Environment.UserDomainName;
-        public string UserName => Environment.UserName;
+        public static string DomainName => Environment.UserDomainName;
+        public static string UserName => Environment.UserName;
 
         public NetworkManager()
         {
@@ -1394,13 +1368,16 @@ namespace LanMonitor
                     Type = toastType
                 };
                 ToastCollection.Add(toast);
-                if (toastType == ToastMessage.ToastType.Alert)
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    SystemSounds.Exclamation.Play();
-                }
-                else
-                {
-                    SystemSounds.Beep.Play();
+                    if (toastType == ToastMessage.ToastType.Alert)
+                    {
+                        SystemSounds.Exclamation.Play();
+                    }
+                    else
+                    {
+                        SystemSounds.Beep.Play();
+                    }
                 }
             });
         }
@@ -1529,6 +1506,11 @@ namespace LanMonitor
 
         public void ListLANComputers()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
             DirectoryEntry root = new DirectoryEntry("WinNT:");
 
             foreach (DirectoryEntry computers in root.Children)
@@ -1736,6 +1718,11 @@ namespace LanMonitor
 
         public void EnumerateNetworkAdapters()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
             PerformanceCounterCategory category = new PerformanceCounterCategory("Network Interface");
             string[] interfaceArray = category.GetInstanceNames();
 
