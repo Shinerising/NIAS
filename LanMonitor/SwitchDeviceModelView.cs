@@ -114,6 +114,10 @@ namespace LanMonitor
                 var other = (LineVector)obj;
                 return Left == other.Left && Top == other.Top && Length == other.Length && Offset == other.Offset;
             }
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
         }
         public void RefreshVector(int adapterIndex, int adapterCount, int switchIndex, int switchCount)
         {
@@ -189,7 +193,7 @@ namespace LanMonitor
             Name = name;
             AdapterList = iplist == null ? new List<LanHostAdapter>() : iplist.Split(';').Select(item =>
             {
-                if (item.Contains("|"))
+                if (item.Contains('|'))
                 {
                     var arr = item.Trim().Split('|');
                     var ip = arr[0];

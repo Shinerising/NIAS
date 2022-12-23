@@ -13,7 +13,7 @@ using System.Xml.Serialization;
 // 
 // 此源代码由 xsd 自动生成, Version=4.8.3928.0。
 // 
-
+#pragma warning disable CS8981
 
 /// <remarks/>
 [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.8.3928.0")]
@@ -2936,3 +2936,5 @@ public enum nmaprunScanner {
     /// <remarks/>
     nmap,
 }
+
+#pragma warning restore CS8981

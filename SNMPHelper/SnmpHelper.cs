@@ -116,7 +116,7 @@ namespace SNMP
             SetData(endpoint, DISMAN_PING.GetEntryList(targetIP));
         }
 
-        public static Dictionary<string, string> FetchStringData(IPEndPoint endpoint, string OID)
+        public static Dictionary<string, string>? FetchStringData(IPEndPoint endpoint, string OID)
         {
             List<Variable> result = FetchData(endpoint, OID);
             return result?.ToDictionary(item => item.Id.ToString(), item => item.Data.ToString());
