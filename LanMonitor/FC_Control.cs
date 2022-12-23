@@ -15,12 +15,11 @@ namespace LanMonitor
     {
         public class FC_Control
         {
-            public static bool IsInitialized;
-            private const int sheetWidth = 128;
-            private const int sheetHeight = 672;
-            private const int sheetColumn = 4;
-            private const int sheetRow = 21;
             private const int sheetGrid = 32;
+            private const double speed = 1;
+            private const double limit = 200;
+
+            private static bool IsInitialized;
             private static Image image;
             private static BitmapSource source;
             private static bool isRight = true;
@@ -35,8 +34,6 @@ namespace LanMonitor
             private static ActionState state = ActionState.None;
             private static int index;
             private static double offset = 10;
-            private static double speed = 1;
-            private static double limit = 200;
             private static bool mousein;
             private static bool click;
 
@@ -58,12 +55,12 @@ namespace LanMonitor
                 {
                     return;
                 }
-                image = new Image()
+                image = new()
                 {
                     Width = 16,
-                    Height = 16
+                    Height = 16,
+                    RenderTransformOrigin = new Point(0.5, 0.5)
                 };
-                image.RenderTransformOrigin = new Point(0.5, 0.5);
                 image.MouseEnter += (object sender, MouseEventArgs e) =>
                 {
                     mousein = true;
@@ -174,7 +171,7 @@ namespace LanMonitor
 
             private static void ChangeState()
             {
-                Random random = new Random();
+                Random random = new();
                 int next = random.Next(100);
                 switch (state)
                 {
@@ -254,12 +251,12 @@ namespace LanMonitor
             {
                 Application.Current.Dispatcher?.Invoke(() =>
                 {
-                    CroppedBitmap bitmap = new CroppedBitmap(source, new Int32Rect(x * sheetGrid, y * sheetGrid, 32, 32));
+                    CroppedBitmap bitmap = new(source, new Int32Rect(x * sheetGrid, y * sheetGrid, 32, 32));
                     bitmap.Freeze();
                     image.Source = bitmap;
                     Transform translate = new TranslateTransform(isRight ? offset * -1 : offset, 0);
                     Transform scale = new ScaleTransform(isRight ? -1 : 1, 1);
-                    TransformGroup myTransformGroup = new TransformGroup();
+                    TransformGroup myTransformGroup = new();
                     myTransformGroup.Children.Add(translate);
                     myTransformGroup.Children.Add(scale);
                     myTransformGroup.Freeze();
