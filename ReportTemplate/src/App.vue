@@ -5,6 +5,9 @@ import ReportHeader from "./components/ReportHeader.vue";
 import ReportStats from "./components/ReportStats.vue";
 import ReportGraph from "./components/ReportGraph.vue";
 import ReportLog from "./components/ReportLog.vue";
+import loadI18n from "./locales/load";
+
+const __ = loadI18n();
 
 PrintStore().initialize();
 
@@ -32,13 +35,17 @@ const data = networkData;
 
   <footer>
     <div class="page-detail">
-      <p>NIAS 网络智能分析系统 网络数据分析报表</p>
+      <p>{{ __("page_footer_about") }}</p>
     </div>
     <div class="powered">
       <p>
-        Powered by
+        {{ __("page_footer_powerby") }}
         <a href="https://vuejs.org" target="_blank" rel="noreferrer noopener"
           >Vue</a
+        >
+        &
+        <a href="https://vitejs.dev" target="_blank" rel="noreferrer noopener"
+          >Vite</a
         >
         &
         <a
@@ -50,7 +57,14 @@ const data = networkData;
       </p>
     </div>
     <div class="copy-right">
-      <p>&copy; Apollo Wayne {{ new Date().getFullYear() }}. 保留所有权利</p>
+      <p>
+        {{
+          __("page_footer_copyright", [
+            "Apollo Wayne",
+            new Date().getFullYear(),
+          ])
+        }}
+      </p>
     </div>
   </footer>
 </template>

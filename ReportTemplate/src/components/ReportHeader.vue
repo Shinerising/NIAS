@@ -9,10 +9,13 @@ import IconText from "./icons/IconText.vue";
 import IconRefresh from "./icons/IconRefresh.vue";
 import IconFullsize from "./icons/IconFullsize.vue";
 import IconNormalsize from "./icons/IconNormalsize.vue";
+import loadI18n from "../locales/load";
 
 defineProps<{
   data: NetworkData;
 }>();
+
+const __ = loadI18n();
 
 const refreshPage = () => {
   document.location.reload();
@@ -82,9 +85,13 @@ const scrollToNode = (node: Element | null) => {
   node.scrollIntoView({
     behavior: "smooth",
   });
+  ifListPanel.value = false;
 };
 
 const focusOutListPanel = async () => {
+  if (!ifListPanel.value) {
+    return;
+  }
   await delay(200);
   ifListPanel.value = false;
 };
@@ -92,7 +99,7 @@ const focusOutListPanel = async () => {
 
 <template>
   <div class="page-title">
-    <h1 class="title">NIAS 网络数据报表</h1>
+    <h1 class="title">{{ __("page_title") }}</h1>
     <div class="page-action">
       <button title="刷新页面" @click="refreshPage">
         <IconRefresh />
@@ -200,6 +207,7 @@ const focusOutListPanel = async () => {
   background-color: var(--color-background);
   border: 0.075rem solid var(--color-border-hover);
   border-radius: 0.5rem;
+  outline: none;
 }
 
 .page-listpanel > ul {
