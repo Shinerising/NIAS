@@ -29,6 +29,7 @@ using SNMP;
 using System.Security.RightsManagement;
 using System.Numerics;
 using static LanMonitor.NetworkManager;
+using System.Runtime.InteropServices;
 
 namespace LanMonitor
 {
@@ -59,8 +60,9 @@ namespace LanMonitor
 
     public class NetworkManager_Test
     {
-        public static NetworkManager_Test Instance = new NetworkManager_Test();
-        public List<NetworkModelView> NetworkCollection => new List<NetworkModelView> {
+        public static NetworkManager_Test Instance => new();
+        public static List<NetworkModelView> NetworkCollection => new()
+        {
             new NetworkModelView()
             {
                 Name = "测试名称",
@@ -71,7 +73,7 @@ namespace LanMonitor
             }
         };
 
-        public List<LANComputerModelView> ComputerCollection => new List<LANComputerModelView>
+        public static List<LANComputerModelView> ComputerCollection => new()
         {
             new LANComputerModelView()
             {
@@ -81,7 +83,7 @@ namespace LanMonitor
                 Latency = "365ms"
             }
         };
-        public List<PortModelView> PortCollection => new List<PortModelView>
+        public static List<PortModelView> PortCollection => new()
         {
             new PortModelView()
             {
@@ -92,7 +94,7 @@ namespace LanMonitor
             }
         };
 
-        public List<ToastMessage> ToastCollection => new List<ToastMessage>
+        public static List<ToastMessage> ToastCollection => new()
         {
             new ToastMessage()
             {
@@ -102,16 +104,16 @@ namespace LanMonitor
             }
         };
 
-        public List<SwitchDeviceModelView> SwitchDeviceList => new List<string>() { "172.16.24.1", "172.16.24.188" }.Select(item => SwitchDeviceModelView.GetPreviewInstance(item)).ToList();
-        public List<SwitchConnectonModelView> ConnectionList => new List<SwitchConnectonModelView>() { new SwitchConnectonModelView("", SwitchDeviceModelView.GetPreviewInstance("172.16.24.1"), SwitchDeviceModelView.GetPreviewInstance("172.16.24.2"), 0, 1, null, null) };
-        public List<LanHostModelView> LanHostList => new List<LanHostModelView>() {
+        public static List<SwitchDeviceModelView> SwitchDeviceList => new List<string>() { "172.16.24.1", "172.16.24.188" }.Select(item => SwitchDeviceModelView.GetPreviewInstance(item)).ToList();
+        public static List<SwitchConnectonModelView> ConnectionList => new() { new SwitchConnectonModelView("", SwitchDeviceModelView.GetPreviewInstance("172.16.24.1"), SwitchDeviceModelView.GetPreviewInstance("172.16.24.2"), 0, 1, null, null) };
+        public static List<LanHostModelView> LanHostList => new() {
             new LanHostModelView("Host01", "172.16.24.90,172.16.34.90"),
             new LanHostModelView("Host02", "172.16.24.91,172.16.34.91"),
             new LanHostModelView("Host03", "172.16.24.92,172.16.34.92"),
             new LanHostModelView("Host04", "172.16.24.93,172.16.34.93")
         };
 
-        public NMAPReport NMAPReportData => NMAPHelper.GetExampleData();
+        public static NMAPReport NMAPReportData => NMAPHelper.GetExampleData();
     }
     public partial class NetworkManager : CustomINotifyPropertyChanged, IDisposable
     {
@@ -128,14 +130,13 @@ namespace LanMonitor
 
         private readonly NetworkMonitor networkMoniter;
         private readonly LocalNetworkManager lanMonitor;
-        private readonly PortMonitor portMonitor;
 
         private readonly CancellationTokenSource cancellation;
 
         public bool IsSwitchEnabled { get; set; } = true;
         public bool IsSwitchPingEnabled { get; set; } = true;
         private long LastSwitchRefreshTimeStamp;
-        private readonly Stopwatch RefreshStopwatch = new Stopwatch();
+        private readonly Stopwatch RefreshStopwatch = new();
 
         public string GlobalUploadSpeed { get; set; }
         public string GlobalDownloadSpeed { get; set; }
@@ -154,13 +155,13 @@ namespace LanMonitor
 
             Notify(new { UploadGeometry, DownloadGeometry, SpeedLimit });
         }
-        public StreamGeometry GetChart(IEnumerable<long> valueList, double maxValue)
+        public static StreamGeometry GetChart(IEnumerable<long> valueList, double maxValue)
         {
             double max = maxValue;
             double min = 0;
             double range = maxValue;
 
-            StreamGeometry geometry = new StreamGeometry();
+            var geometry = new StreamGeometry();
             using (StreamGeometryContext context = geometry.Open())
             {
                 context.BeginFigure(new Point(0, range), true, true);
@@ -204,7 +205,7 @@ namespace LanMonitor
         private readonly Queue<long> downloadSpeedQueue;
 
         private long speedGraphLimit = 1024;
-        public string ComputerName => Dns.GetHostEntry("").HostName;
+        public static string ComputerName => Dns.GetHostEntry("").HostName;
 
         [SupportedOSPlatform("windows")]
         public static string ManagementQuery(string query, string property)
@@ -212,46 +213,19 @@ namespace LanMonitor
             using CimSession session = CimSession.Create(null);
             return session.QueryInstances(@"root\cimv2", "WQL", query).FirstOrDefault()?.CimInstanceProperties[property].Value.ToString();
         }
-        public string SystemName
-        {
-            get
-            {
-                return ManagementQuery("SELECT Caption FROM Win32_OperatingSystem", "Caption") ?? "Unknown";
-            }
-        }
-        public string MachineType
-        {
-            get
-            {
-                return (ManagementQuery("SELECT Caption FROM Win32_Battery", "Caption") != null || ManagementQuery("SELECT Caption FROM Win32_PortableBattery", "Caption") != null) ? "Laptop" : "Desktop";
-            }
-        }
+        [SupportedOSPlatform("windows")]
+        public static string SystemName => ManagementQuery("SELECT Caption FROM Win32_OperatingSystem", "Caption") ?? "Unknown";
+        [SupportedOSPlatform("windows")]
+        public static string MachineType => (ManagementQuery("SELECT Caption FROM Win32_Battery", "Caption") != null || ManagementQuery("SELECT Caption FROM Win32_PortableBattery", "Caption") != null) ? "Laptop" : "Desktop";
+        [SupportedOSPlatform("windows")]
+        public static string WorkGroup => ManagementQuery("SELECT Workgroup FROM Win32_ComputerSystem", "Workgroup") ?? "Unknown";
+        [SupportedOSPlatform("windows")]
+        public static string Manufacturer => ManagementQuery("SELECT Manufacturer FROM Win32_ComputerSystem", "Manufacturer") ?? "Unknown";
+        [SupportedOSPlatform("windows")]
+        public static string Model => ManagementQuery("SELECT Model FROM Win32_ComputerSystem", "Model") ?? "Unknown";
 
-        public string WorkGroup
-        {
-            get
-            {
-                return ManagementQuery("SELECT Workgroup FROM Win32_ComputerSystem", "Workgroup") ?? "Unknown";
-            }
-        }
-        public string Manufacturer
-        {
-            get
-            {
-                return ManagementQuery("SELECT Manufacturer FROM Win32_ComputerSystem", "Manufacturer") ?? "Unknown";
-            }
-        }
-
-        public string Model
-        {
-            get
-            {
-                return ManagementQuery("SELECT Model FROM Win32_ComputerSystem", "Model") ?? "Unknown";
-            }
-        }
-
-        public string DomainName => Environment.UserDomainName;
-        public string UserName => Environment.UserName;
+        public static string DomainName => Environment.UserDomainName;
+        public static string UserName => Environment.UserName;
 
         public NetworkManager()
         {
@@ -266,7 +240,6 @@ namespace LanMonitor
 
             networkMoniter = new NetworkMonitor();
             lanMonitor = new LocalNetworkManager();
-            portMonitor = new PortMonitor();
 
             InitializeSwitchData();
         }
@@ -291,7 +264,7 @@ namespace LanMonitor
             }
         }
 
-        private void StartManuHelper()
+        private static void StartManuHelper()
         {
             _ = ManuHelper.Instance.Init("manuf.dat");
         }
@@ -306,12 +279,8 @@ namespace LanMonitor
         {
             if (disposing)
             {
-                cancellation.Cancel();
-
-                if (lanMonitor != null)
-                {
-                    lanMonitor.Dispose();
-                }
+                cancellation?.Cancel();
+                lanMonitor?.Dispose();
             }
         }
 
@@ -345,7 +314,7 @@ namespace LanMonitor
                     values = new string[] { null, null };
                 }
                 string nameA = null, portA = null, nameB = null, portB = null;
-                if (values != null && values[0].Contains("|"))
+                if (values != null && values[0].Contains('|'))
                 {
                     nameA = values[0].Split('|')[0].Trim();
                     portA = values[0].Split('|')[1].Trim();
@@ -354,7 +323,7 @@ namespace LanMonitor
                 {
                     nameA = values[0].Trim();
                 }
-                if (values != null && values[1].Contains("|"))
+                if (values != null && values[1].Contains('|'))
                 {
                     nameB = values[1].Split('|')[0].Trim();
                     portB = values[1].Split('|')[1].Trim();
@@ -384,23 +353,21 @@ namespace LanMonitor
                     return;
                 }
 
-                using (StreamReader sr = new StreamReader(filename, Encoding.UTF8))
+                using StreamReader sr = new(filename, Encoding.UTF8);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    string text = sr.ReadLine();
+                    string[] options = text.Split(';');
+                    if (options.Length >= 5)
                     {
-                        string text = sr.ReadLine();
-                        string[] options = text.Split(';');
-                        if (options.Length >= 5)
+                        OverrideConnectionList.Add(new OverrideConnection()
                         {
-                            OverrideConnectionList.Add(new OverrideConnection()
-                            {
-                                Switch = options[0],
-                                HostIP = options[1],
-                                HostMacAddress = options[2],
-                                State = options[3],
-                                IsForced = options[4].ToUpper() == "TRUE",
-                            });
-                        }
+                            Switch = options[0],
+                            HostIP = options[1],
+                            HostMacAddress = options[2],
+                            State = options[3],
+                            IsForced = options[4].ToUpper() == "TRUE",
+                        });
                     }
                 }
             }
@@ -419,13 +386,11 @@ namespace LanMonitor
                     status = 0;
                     try
                     {
-                        using (Ping ping = new Ping())
+                        using Ping ping = new();
+                        IPStatus iPStatus = ping.Send("8.8.8.8").Status;
+                        if (iPStatus == IPStatus.Success)
                         {
-                            IPStatus iPStatus = ping.Send("8.8.8.8").Status;
-                            if (iPStatus == IPStatus.Success)
-                            {
-                                status = 1;
-                            }
+                            status = 1;
                         }
                     }
                     catch
@@ -463,7 +428,7 @@ namespace LanMonitor
         {
             while (true)
             {
-                List<ActivePort> portList = portMonitor.ListActivePort().Take(256).ToList();
+                List<ActivePort> portList = PortMonitor.ListActivePort().Take(256).ToList();
 
                 if (PortCollection != null && portList.Count == PortCollection.Count)
                 {
@@ -588,7 +553,7 @@ namespace LanMonitor
 
         private void StartSwitchPingMonitoring()
         {
-            List<string> ipList = new List<string>();
+            List<string> ipList = new();
 
             ipList.AddRange(SwitchDeviceList.Select(item => item.Address));
             LanHostList.ForEach(item => ipList.AddRange(item.AdapterList.Select(adapter => adapter.IPAddress)));
@@ -686,7 +651,7 @@ namespace LanMonitor
                                 var dict3 = SnmpHelper.FetchIntData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOperStatus);
                                 var dict4 = SnmpHelper.FetchCounterData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifInOctets);
                                 var dict5 = SnmpHelper.FetchCounterData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ifOutOctets);
-                                List<SwitchPort> list = new List<SwitchPort>();
+                                List<SwitchPort> list = new();
 
                                 var duration = RefreshStopwatch.ElapsedMilliseconds - LastSwitchRefreshTimeStamp;
 
@@ -708,7 +673,7 @@ namespace LanMonitor
                                                     outCount = dict5.ElementAt(i).Value;
                                                 }
 
-                                                SwitchPort port = new SwitchPort
+                                                SwitchPort port = new()
                                                 {
                                                     Index = dict0.ElementAt(i).Value,
                                                     Name = text.Split('/').Last(),
@@ -732,9 +697,7 @@ namespace LanMonitor
                                         }
                                         else if (i % 2 == 0)
                                         {
-                                            var tmp = list[i];
-                                            list[i] = list[i + 1];
-                                            list[i + 1] = tmp;
+                                            (list[i + 1], list[i]) = (list[i], list[i + 1]);
                                         }
                                     }
                                     #endregion
@@ -781,7 +744,7 @@ namespace LanMonitor
                                 var dict1 = SnmpHelper.FetchStringData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaNetAddress);
                                 var dict2 = SnmpHelper.FetchIntData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_ipNetToMediaType);
 
-                                List<SwitchHost> list = new List<SwitchHost>();
+                                List<SwitchHost> list = new();
 
                                 if (dict0 != null && dict1 != null && dict2 != null)
                                 {
@@ -790,8 +753,8 @@ namespace LanMonitor
                                         if (dict1.Count > i && dict2.Count > i)
                                         {
                                             string mac = BitConverter.ToString(dict0.ElementAt(i).Value, 2);
-                                            int portIndex = dict5.ContainsKey(mac) ? int.Parse(dict5[mac]) : 0;
-                                            SwitchHost host = new SwitchHost
+                                            int portIndex = dict5.TryGetValue(mac, out string value) ? int.Parse(value) : 0;
+                                            SwitchHost host = new()
                                             {
                                                 MACAddress = mac.Replace('-', ':'),
                                                 IPAddress = dict1.ElementAt(i).Value,
@@ -810,10 +773,7 @@ namespace LanMonitor
                                                 }
                                             }
 
-                                            if (dict8.ContainsKey(mac))
-                                            {
-                                                dict8.Remove(mac);
-                                            }
+                                            dict8.Remove(mac);
 
                                             list.Add(host);
                                         }
@@ -826,7 +786,7 @@ namespace LanMonitor
                                     var port = switchDevice.PortList.FirstOrDefault(item => item.Name == dict8.ElementAt(i).Value);
                                     var index = port == null ? 0 : port.Index;
 
-                                    SwitchHost host = new SwitchHost
+                                    SwitchHost host = new()
                                     {
                                         MACAddress = mac.Replace('-', ':'),
                                         IPAddress = AppResource.GetString(AppResource.StringKey.UnknownIPAddress),
@@ -1364,7 +1324,7 @@ namespace LanMonitor
             }
         }
 
-        private void AddNMAPTip(NMAPHost host)
+        private static void AddNMAPTip(NMAPHost host)
         {
             if (host == null)
             {
@@ -1379,10 +1339,7 @@ namespace LanMonitor
         public void AddToast(string title, string message, ToastMessage.ToastType toastType = ToastMessage.ToastType.Alert)
         {
             Dispatcher dispatcher = Dispatcher.FromThread(Thread.CurrentThread);
-            if (dispatcher == null)
-            {
-                dispatcher = Application.Current.Dispatcher;
-            }
+            dispatcher ??= Application.Current.Dispatcher;
             dispatcher?.Invoke(() =>
             {
                 while (ToastCollection.Count > 4)
@@ -1394,13 +1351,16 @@ namespace LanMonitor
                     Type = toastType
                 };
                 ToastCollection.Add(toast);
-                if (toastType == ToastMessage.ToastType.Alert)
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    SystemSounds.Exclamation.Play();
-                }
-                else
-                {
-                    SystemSounds.Beep.Play();
+                    if (toastType == ToastMessage.ToastType.Alert)
+                    {
+                        SystemSounds.Exclamation.Play();
+                    }
+                    else
+                    {
+                        SystemSounds.Beep.Play();
+                    }
                 }
             });
         }
@@ -1485,10 +1445,7 @@ namespace LanMonitor
         {
             if (disposing)
             {
-                if (pinger != null)
-                {
-                    pinger.Dispose();
-                }
+                pinger?.Dispose();
             }
             computerList.Clear();
         }
@@ -1529,7 +1486,12 @@ namespace LanMonitor
 
         public void ListLANComputers()
         {
-            DirectoryEntry root = new DirectoryEntry("WinNT:");
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
+            DirectoryEntry root = new("WinNT:");
 
             foreach (DirectoryEntry computers in root.Children)
             {
@@ -1621,75 +1583,9 @@ namespace LanMonitor
     
     public class PortMonitor
     {
-        private string GetProcessName(int pid)
+        public static List<ActivePort> ListActivePort()
         {
-            string name;
-            try
-            {
-                name = Process.GetProcessById(pid).ProcessName;
-            }
-            catch (Exception)
-            {
-                name = "-";
-            }
-            return name;
-        }
-
-        private int GetPIDByEndPoint(string endPoint)
-        {
-            Dictionary<string, int> dictionary = new Dictionary<string, int>();
-            int pid = -1;
-            try
-            {
-                using (Process process = new Process())
-                {
-                    ProcessStartInfo processInfo = new ProcessStartInfo
-                    {
-                        Arguments = "-aon",
-                        FileName = "netstat.exe",
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        RedirectStandardInput = true,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true
-                    };
-                    process.StartInfo = processInfo;
-                    process.Start();
-
-                    StreamReader stdOutput = process.StandardOutput;
-                    StreamReader stdError = process.StandardError;
-
-                    string content = stdOutput.ReadToEnd() + stdError.ReadToEnd();
-                    string exitStatus = process.ExitCode.ToString();
-
-                    if (exitStatus == "0")
-                    {
-                        string[] rows = Regex.Split(content, "\r\n");
-                        foreach (string row in rows)
-                        {
-                            string[] tokens = Regex.Split(row, "\\s+");
-                            if (tokens.Length > 4 && (tokens[1].Equals("UDP") || tokens[1].Equals("TCP")))
-                            {
-                                dictionary.Add(tokens[2], tokens[1] == "UDP" ? Convert.ToInt32(tokens[4]) : Convert.ToInt32(tokens[5]));
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-            }
-            if (dictionary.ContainsKey(endPoint))
-            {
-                pid = dictionary[endPoint];
-            }
-            return pid;
-        }
-
-        public List<ActivePort> ListActivePort()
-        {
-            List<ActivePort> portList = new List<ActivePort>();
+            List<ActivePort> portList = new();
             IPGlobalProperties iPGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
             foreach (TcpConnectionInformation connection in iPGlobalProperties.GetActiveTcpConnections())
             {
@@ -1736,7 +1632,12 @@ namespace LanMonitor
 
         public void EnumerateNetworkAdapters()
         {
-            PerformanceCounterCategory category = new PerformanceCounterCategory("Network Interface");
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
+            PerformanceCounterCategory category = new("Network Interface");
             string[] interfaceArray = category.GetInstanceNames();
 
             IEnumerable networkCollection = NetworkInterface
@@ -1767,7 +1668,7 @@ namespace LanMonitor
                 }
                 if (flag != string.Empty)
                 {
-                    NetworkAdapter adapter = new NetworkAdapter(network)
+                    NetworkAdapter adapter = new(network)
                     {
                         downloadCount = new PerformanceCounter("Network Interface", "Bytes Received/sec", flag),
                         uploadCounter = new PerformanceCounter("Network Interface", "Bytes Sent/sec", flag),
