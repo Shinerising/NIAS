@@ -38,6 +38,7 @@ header > h3 {
 }
 header > div {
   margin-left: 0.5rem;
+  font-size: 0.9rem;
   color: var(--color-text-second);
 }
 

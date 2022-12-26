@@ -10,6 +10,8 @@ const radius = 61.25;
 const perimeter = radius * Math.PI * 2;
 const rotate = `rotate(-90 ${origin[0]} ${origin[1]})`;
 const dasharray = ref(`0 ${perimeter}`);
+const viewBox = `0 0 ${origin[0] * 2} ${origin[1] * 2}`;
+
 setTimeout(() => {
   dasharray.value = `${perimeter * props.percent} ${
     perimeter * (1 - props.percent)
@@ -28,7 +30,7 @@ if (props.percent < 0.25) {
 
 <template>
   <div class="counter">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+    <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox">
       <circle
         :cx="origin[0]"
         :cy="origin[1]"

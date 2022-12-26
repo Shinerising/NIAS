@@ -1,22 +1,43 @@
 <script setup lang="ts">
+import moment from "moment";
 import type { NetworkData } from "./interface/NetworkData.interface";
 import ReportSection from "./ReportSection.vue";
 import IconReport from "./icons/IconReport.vue";
 import IconAlarm from "./icons/IconAlarm.vue";
+import IconInfo from "./icons/IconInfo.vue";
+import IconWarning from "./icons/IconWarning.vue";
+import IconError from "./icons/IconError.vue";
 
 defineProps<{
   data: NetworkData;
 }>();
 
-const sales = [
-  [
-    { Year: 2018, Month: 1, Sale: 512 },
-    { Year: 2018, Month: 2, Sale: 1025 },
-  ],
-  [
-    { Year: 2017, Month: 1, Sale: 155 },
-    { Year: 2017, Month: 2, Sale: 12 },
-  ],
+type Log = {
+  time: Date;
+  text: string;
+  type: string;
+  level: 0 | 1 | 2;
+};
+
+const logs: Log[] = [
+  {
+    time: new Date(),
+    text: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    type: "XXXXXXXX",
+    level: 0,
+  },
+  {
+    time: new Date(),
+    text: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    type: "XXXXXXXX",
+    level: 1,
+  },
+  {
+    time: new Date(),
+    text: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    type: "XXXXXXXX",
+    level: 2,
+  },
 ];
 </script>
 
@@ -27,20 +48,38 @@ const sales = [
       <IconReport />
     </template>
     <template #heading>网络故障与异常报警</template>
-    <template #brief>XX条数据</template>
+    <template #brief>共包含{{ logs.length }}条数据</template>
     <table class="table">
       <thead>
         <tr>
-          <th>#</th>
-          <th>2018</th>
-          <th>2017</th>
+          <th width="5%">序号</th>
+          <th width="15%">时间</th>
+          <th>报警文本</th>
+          <th width="10%">报警类型</th>
+          <th width="8%">风险等级</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(sale, i) in sales[0]" :key="i">
-          <td>{{ sale.Month }}</td>
-          <td>{{ sale.Sale }}</td>
-          <td>{{ sales[1][i].Sale }}</td>
+        <tr v-for="(log, i) in logs" :key="i">
+          <td align="center">{{ i }}</td>
+          <td align="center">
+            <time>
+              {{ moment(log.time).format("yyyy-MM-DD HH:mm:ss") }}
+            </time>
+          </td>
+          <td>{{ log.text }}</td>
+          <td align="center">{{ log.type }}</td>
+          <td align="center" class="log-icon">
+            <span class="level-info" title="提示信息" v-if="log.level == 0">
+              <IconInfo />
+            </span>
+            <span class="level-warning" title="警告信息" v-if="log.level == 1">
+              <IconWarning />
+            </span>
+            <span class="level-error" title="故障信息" v-if="log.level == 2">
+              <IconError />
+            </span>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -101,11 +140,12 @@ th {
 table,
 th,
 td {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   border: 1px solid var(--color-border);
   border-collapse: collapse;
 }
 table {
+  font-size: 0.9rem;
   border-radius: 0.5rem;
   border-style: hidden;
   box-shadow: 0 0 0 1px var(--color-border);
@@ -121,5 +161,20 @@ tr:last-of-type td:first-of-type {
 }
 tr:last-of-type td:last-of-type {
   border-bottom-right-radius: 0.5rem;
+}
+.log-icon {
+  padding: 0 0.5rem;
+}
+.log-icon svg {
+  vertical-align: top;
+}
+.log-icon .level-info {
+  color: #03a9f4;
+}
+.log-icon .level-warning {
+  color: #ffb300;
+}
+.log-icon .level-error {
+  color: #c62828;
 }
 </style>
