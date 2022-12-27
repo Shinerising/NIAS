@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import moment from "moment";
-import type { NetworkData } from "./interface/NetworkData.interface";
+import type { ReportData } from "./interface/ReportData.interface";
 import ReportSection from "./ReportSection.vue";
 import IconReport from "./icons/IconReport.vue";
 import IconAlarm from "./icons/IconAlarm.vue";
@@ -9,7 +9,7 @@ import IconWarning from "./icons/IconWarning.vue";
 import IconError from "./icons/IconError.vue";
 
 defineProps<{
-  data: NetworkData;
+  data: ReportData;
 }>();
 
 type Log = {

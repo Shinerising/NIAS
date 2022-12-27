@@ -19,7 +19,7 @@ import {
 } from "echarts/components";
 import VChart, { THEME_KEY } from "vue-echarts";
 
-import type { NetworkData } from "./interface/NetworkData.interface";
+import type { ReportData } from "./interface/ReportData.interface";
 import ReportSection from "./ReportSection.vue";
 import IconComputer from "./icons/IconComputer.vue";
 import IconEthernet from "./icons/IconEthernet.vue";
@@ -28,7 +28,7 @@ import IconRouter from "./icons/IconRouter.vue";
 import IconHub from "./icons/IconHub.vue";
 
 defineProps<{
-  data: NetworkData;
+  data: ReportData;
 }>();
 
 /**

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, nextTick } from "vue";
 import type { Ref } from "vue";
-import type { NetworkData } from "./interface/NetworkData.interface";
+import moment from "moment";
+import type { ReportData } from "./interface/ReportData.interface";
 import { PrintStore } from "../stores/PrintStore";
 import IconPrint from "./icons/IconPrint.vue";
 import IconList from "./icons/IconList.vue";
@@ -12,7 +13,7 @@ import IconNormalsize from "./icons/IconNormalsize.vue";
 import loadI18n from "../locales/load";
 
 defineProps<{
-  data: NetworkData;
+  data: ReportData;
 }>();
 
 const __ = loadI18n();
@@ -136,9 +137,14 @@ const focusOutListPanel = async () => {
       </div>
     </Transition>
     <p class="subtitle">
-      <span class="subtitle-location">XXXXXXXX</span>
-      <time class="subtitle-time">XXXX-XX-XX XX:XX:XX</time>
-      <span class="subtitle-brief">XXXXXX</span>
+      <span class="subtitle-text" title="文档说明">{{ data.Title }}</span>
+      <span class="subtitle-location" title="报告地址">{{
+        data.Location
+      }}</span>
+      <span class="subtitle-text" title="报告作者">{{ data.User }}</span>
+      <time class="subtitle-time" title="报告生成时间">{{
+        moment(data.CreateTime).format("yyyy-MM-DD HH:mm:ss")
+      }}</time>
     </p>
     <p class="text description">
       并难由照解果二满政之资亲社题较非，与队治形住青备蠢阶以子-做名。

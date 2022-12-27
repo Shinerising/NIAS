@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { NetworkData } from "./components/interface/NetworkData.interface";
+import type { ReportData } from "./components/interface/ReportData.interface";
 import { PrintStore } from "./stores/PrintStore";
 import ReportHeader from "./components/ReportHeader.vue";
 import ReportStats from "./components/ReportStats.vue";
@@ -13,12 +13,12 @@ PrintStore().initialize();
 
 const demoData = document.getElementById("demoData")?.textContent;
 const rawData = document.getElementById("rawData")?.textContent;
-const networkData: NetworkData = rawData
+const reportData: ReportData = rawData
   ? JSON.parse(rawData)
   : demoData
   ? JSON.parse(demoData)
   : null;
-const data = networkData;
+const data = reportData;
 </script>
 
 <template>

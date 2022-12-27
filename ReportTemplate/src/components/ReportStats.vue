@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { NetworkData } from "./interface/NetworkData.interface";
+import type { ReportData } from "./interface/ReportData.interface";
 import ArcCounter from "./controls/ArcCounter.vue";
 import ImageComputer from "./images/ImageComputer.vue";
 import ImageRouter from "./images/ImageRouter.vue";
 import ImageSwitch from "./images/ImageSwitch.vue";
 
 defineProps<{
-  data: NetworkData;
+  data: ReportData;
 }>();
 </script>
 
