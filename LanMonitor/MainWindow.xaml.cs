@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NIASReport;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Numerics;
@@ -88,6 +89,8 @@ namespace LanMonitor
 
         private readonly NetworkManager networkManager;
 
+        private readonly ReportManager reportManager;
+
         public static bool IsMicaEnabled => Environment.OSVersion.Version.Build >= 22000;
 
         public MainWindow()
@@ -103,6 +106,10 @@ namespace LanMonitor
             ThemeHelper.ApplyTheme(this);
 
             networkManager.Start();
+
+            reportManager = new ReportManager("C:\\sync", "C:\\sync\\index.html", "测试实验室", 1000);
+
+            reportManager.GenerateNewReport();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
