@@ -9,4 +9,18 @@
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
     }
+
+    public class ReportScore
+    {
+        
+    }
+
+    public class ReportStats
+    {
+
+    }
+
+    public class ReportLog{
+
+    }
 }

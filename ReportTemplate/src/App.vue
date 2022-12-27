@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ReportData } from "./components/interface/ReportData.interface";
+import { DemoData } from "./components/interface/ReportData.interface";
 import { PrintStore } from "./stores/PrintStore";
 import ReportHeader from "./components/ReportHeader.vue";
 import ReportStats from "./components/ReportStats.vue";
@@ -11,13 +12,8 @@ const __ = loadI18n();
 
 PrintStore().initialize();
 
-const demoData = document.getElementById("demoData")?.textContent;
 const rawData = document.getElementById("rawData")?.textContent;
-const reportData: ReportData = rawData
-  ? JSON.parse(rawData)
-  : demoData
-  ? JSON.parse(demoData)
-  : null;
+const reportData: ReportData = rawData ? JSON.parse(rawData) : DemoData;
 const data = reportData;
 </script>
 
