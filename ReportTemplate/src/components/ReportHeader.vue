@@ -136,9 +136,9 @@ const focusOutListPanel = async () => {
       </div>
     </Transition>
     <p class="subtitle">
-      <span>XXXX站场</span>
-      <time>XXXX-XX-XX XX:XX:XX</time>
-      <span>XXXX</span>
+      <span class="subtitle-location">XXXXXXXX</span>
+      <time class="subtitle-time">XXXX-XX-XX XX:XX:XX</time>
+      <span class="subtitle-brief">XXXXXX</span>
     </p>
     <p class="text description">
       并难由照解果二满政之资亲社题较非，与队治形住青备蠢阶以子-做名。

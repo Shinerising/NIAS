@@ -11,8 +11,13 @@ const __ = loadI18n();
 
 PrintStore().initialize();
 
+const demoData = document.getElementById("demoData")?.textContent;
 const rawData = document.getElementById("rawData")?.textContent;
-const networkData: NetworkData = rawData ? JSON.parse(rawData) : null;
+const networkData: NetworkData = rawData
+  ? JSON.parse(rawData)
+  : demoData
+  ? JSON.parse(demoData)
+  : null;
 const data = networkData;
 </script>
 
