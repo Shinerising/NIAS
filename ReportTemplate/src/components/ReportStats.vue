@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { ReportData } from "./interface/ReportData.interface";
 import ArcCounter from "./controls/ArcCounter.vue";
-import ImageComputer from "./images/ImageComputer.vue";
-import ImageRouter from "./images/ImageRouter.vue";
-import ImageSwitch from "./images/ImageSwitch.vue";
+import {
+  ImageComputer,
+  ImageRouter,
+  ImageSwitch,
+} from "./images/ImageResource";
 
 defineProps<{
   data: ReportData;
@@ -54,19 +56,19 @@ defineProps<{
   <p>交换机设备</p>
   <ul class="device-list">
     <li>
-      <ImageSwitch />
+      <img :src="ImageSwitch" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
     </li>
     <li>
-      <ImageSwitch />
+      <img :src="ImageSwitch" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
     </li>
     <li>
-      <ImageSwitch />
+      <img :src="ImageSwitch" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
@@ -75,25 +77,25 @@ defineProps<{
   <p>计算机设备</p>
   <ul class="device-list">
     <li>
-      <ImageComputer />
+      <img :src="ImageComputer" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
     </li>
     <li>
-      <ImageComputer />
+      <img :src="ImageComputer" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
     </li>
     <li>
-      <ImageComputer />
+      <img :src="ImageComputer" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
     </li>
     <li>
-      <ImageComputer />
+      <img :src="ImageComputer" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
@@ -102,31 +104,31 @@ defineProps<{
   <p>网络通信设备</p>
   <ul class="device-list">
     <li>
-      <ImageRouter />
+      <img :src="ImageRouter" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
     </li>
     <li>
-      <ImageRouter />
+      <img :src="ImageRouter" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
     </li>
     <li>
-      <ImageRouter />
+      <img :src="ImageRouter" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
     </li>
     <li>
-      <ImageRouter />
+      <img :src="ImageRouter" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
     </li>
     <li>
-      <ImageRouter />
+      <img :src="ImageRouter" />
       <span>XXXX</span>
       <span>XXXX</span>
       <span>XXXX</span>
@@ -189,7 +191,7 @@ ul.device-list > li > *:last-child {
   border-right: none;
 }
 
-ul.device-list > li > svg {
+ul.device-list > li > img {
   flex: none;
   width: 2.4rem;
   height: 2.4rem;

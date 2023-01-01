@@ -27,6 +27,8 @@ import IconChart from "./icons/IconChart.vue";
 import IconRouter from "./icons/IconRouter.vue";
 import IconHub from "./icons/IconHub.vue";
 
+import { ImageComputer, ImageSwitch } from "./images/ImageResource";
+
 defineProps<{
   data: ReportData;
 }>();
@@ -299,92 +301,125 @@ const option03 = (() => {
 })();
 
 const option04 = (() => {
+  const a = IconHub;
+  console.log(a);
   const option = {
     title: {
-      text: "Basic Graph",
+      text: "Graph",
     },
-    tooltip: {},
     series: [
       {
         type: "graph",
-        layout: "none",
-        symbolSize: 50,
-        roam: true,
+        layout: "force",
+        force: {
+          initLayout: "circular",
+          repulsion: 400,
+          layoutAnimation: false,
+          edgeLength: 100,
+        },
+        animation: false,
+        symbol: "roundRect",
+        symbolSize: 60,
+        roam: false,
         label: {
           show: true,
+          position: "bottom",
         },
-        edgeSymbol: ["circle", "arrow"],
-        edgeSymbolSize: [4, 10],
-        edgeLabel: {
-          fontSize: 20,
-        },
-        data: [
+        categories: [
           {
-            name: "Node 1",
-            x: 300,
-            y: 300,
+            name: "switch",
+            symbol: "image://" + ImageSwitch,
           },
           {
-            name: "Node 2",
-            x: 800,
-            y: 300,
-          },
-          {
-            name: "Node 3",
-            x: 550,
-            y: 100,
-          },
-          {
-            name: "Node 4",
-            x: 550,
-            y: 500,
+            name: "device",
+            symbol: "image://" + ImageComputer,
           },
         ],
-        // links: [],
+        data: [
+          {
+            name: "Switch A",
+            id: "1",
+            category: 0,
+          },
+          {
+            name: "Switch B",
+            id: "2",
+            category: 0,
+          },
+          {
+            name: "Device 1",
+            id: "3",
+            category: 1,
+          },
+          {
+            name: "Device 2",
+            id: "4",
+            category: 1,
+          },
+          {
+            name: "Device 3",
+            id: "5",
+            category: 1,
+          },
+          {
+            name: "Device 4",
+            id: "6",
+            category: 1,
+          },
+          {
+            name: "Device 5",
+            id: "7",
+            category: 1,
+          },
+        ],
         links: [
           {
-            source: 0,
-            target: 1,
-            symbolSize: [5, 20],
-            label: {
-              show: true,
-            },
+            source: "1",
+            target: "2",
             lineStyle: {
-              width: 5,
-              curveness: 0.2,
+              color: "lightgreen",
             },
           },
           {
-            source: "Node 2",
-            target: "Node 1",
-            label: {
-              show: true,
-            },
+            source: "1",
+            target: "3",
             lineStyle: {
-              curveness: 0.2,
+              color: "lightgreen",
             },
           },
           {
-            source: "Node 1",
-            target: "Node 3",
+            source: "1",
+            target: "4",
+            lineStyle: {
+              color: "orangered",
+            },
           },
           {
-            source: "Node 2",
-            target: "Node 3",
+            source: "2",
+            target: "5",
+            lineStyle: {
+              color: "lightgreen",
+            },
           },
           {
-            source: "Node 2",
-            target: "Node 4",
+            source: "1",
+            target: "5",
+            lineStyle: {
+              color: "orange",
+            },
           },
           {
-            source: "Node 1",
-            target: "Node 4",
+            source: "1",
+            target: "6",
+          },
+          {
+            source: "2",
+            target: "7",
           },
         ],
         lineStyle: {
-          opacity: 0.9,
-          width: 2,
-          curveness: 0,
+          opacity: 1,
+          width: 4,
         },
       },
     ],
@@ -500,7 +535,7 @@ const option05 = (() => {
       <IconComputer />
     </template>
     <template #heading>网络设备工作状态数据</template>
-    <div class="chart-wrapper no-break">
+    <div class="chart-wrapper no-break chart-graph">
       <v-chart class="chart" :option="option04" autoresize />
     </div>
   </ReportSection>
