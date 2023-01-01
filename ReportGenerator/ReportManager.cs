@@ -20,6 +20,21 @@ namespace NIASReport
 
         }
 
+        public void CreateDatabase()
+        {
+
+        }
+
+        public void WriteData<T>(IEnumerable<T> data)
+        {
+
+        }
+
+        public void ReadData()
+        {
+
+        }
+
         public void GenerateNewReport()
         {
             ReportData data = new()
