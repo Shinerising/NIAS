@@ -8,6 +8,7 @@ import {
   LineChart,
   GraphChart,
   HeatmapChart,
+  ScatterChart,
 } from "echarts/charts";
 import {
   GridComponent,
@@ -28,6 +29,7 @@ import IconRouter from "./icons/IconRouter.vue";
 import IconHub from "./icons/IconHub.vue";
 
 import { ImageComputer, ImageSwitch } from "./images/ImageResource";
+import type { EChartsOption } from "echarts/types/dist/shared";
 
 defineProps<{
   data: ReportData;
@@ -45,12 +47,13 @@ use([
   BarChart,
   LineChart,
   GraphChart,
+  ScatterChart,
   HeatmapChart,
   GridComponent,
   TitleComponent,
+  LegendComponent,
   ToolboxComponent,
   TooltipComponent,
-  LegendComponent,
   VisualMapComponent,
 ]);
 
@@ -300,10 +303,19 @@ const option03 = (() => {
   return ref(option);
 })();
 
-const option04 = (() => {
-  const a = IconHub;
-  console.log(a);
-  const option = {
+const [option04, option06] = (() => {
+  const startDate = new Date();
+  const generateData = () => {
+    const data = [];
+    for (let i = 0; i < 24 * 60; i++) {
+      data.push([
+        new Date(startDate.getTime() + i * 60000),
+        Math.floor(Math.random() * 4),
+      ]);
+    }
+    return data;
+  };
+  const option01 = {
     title: {
       text: "Graph",
     },
@@ -316,6 +328,7 @@ const option04 = (() => {
           repulsion: 400,
           layoutAnimation: false,
           edgeLength: 100,
+          friction: 0.6,
         },
         animation: false,
         symbol: "roundRect",
@@ -425,7 +438,89 @@ const option04 = (() => {
     ],
   };
 
-  return ref(option);
+  const option02: EChartsOption = {
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        axis: "x",
+      },
+    },
+    xAxis: {
+      type: "time",
+    },
+    yAxis: {
+      type: "category",
+      data: [
+        {
+          value: "idle",
+          textStyle: {
+            color: "gray",
+          },
+        },
+        {
+          value: "normal",
+          textStyle: {
+            color: "green",
+          },
+        },
+        {
+          value: "warning",
+          textStyle: {
+            color: "orange",
+          },
+        },
+        {
+          value: "error",
+          textStyle: {
+            color: "red",
+          },
+        },
+      ],
+    },
+    visualMap: {
+      top: 50,
+      right: 10,
+      pieces: [
+        {
+          min: -1,
+          max: 0.5,
+          label: "idle",
+          color: "lightgray",
+        },
+        {
+          min: 0.5,
+          max: 1.5,
+          label: "normal",
+          color: "lightgreen",
+        },
+        {
+          min: 1.5,
+          max: 2.5,
+          label: "warning",
+          color: "orange",
+        },
+        {
+          min: 2.5,
+          max: 3.5,
+          label: "error",
+          color: "orangered",
+        },
+      ],
+      outOfRange: {
+        color: "red",
+      },
+    },
+    series: [
+      {
+        data: generateData(),
+        type: "scatter",
+        symbolSize: [1, 16],
+        symbol: "rect",
+      },
+    ],
+  };
+
+  return [ref(option01), ref(option02)];
 })();
 
 const option05 = (() => {
@@ -495,6 +590,68 @@ const option05 = (() => {
   };
   return ref(option);
 })();
+
+const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
+  const xAxisInfo = event.axesInfo[0];
+  if (xAxisInfo) {
+    //const dimension = xAxisInfo.value + 1;
+    const impactColor = (index: number) => {
+      return ["lightgray", "lightgreen", "orange", "orangered"][index];
+    };
+    option04.value.series[0].force = {
+      initLayout: "circular",
+      repulsion: 400,
+      layoutAnimation: false,
+      edgeLength: 100,
+      friction: 0,
+    };
+    option04.value.series[0].links = [
+      {
+        source: "1",
+        target: "2",
+        lineStyle: {
+          color: impactColor(Math.floor(Math.random() * 4)),
+        },
+      },
+      {
+        source: "1",
+        target: "3",
+        lineStyle: {
+          color: impactColor(Math.floor(Math.random() * 4)),
+        },
+      },
+      {
+        source: "1",
+        target: "4",
+        lineStyle: {
+          color: impactColor(Math.floor(Math.random() * 4)),
+        },
+      },
+      {
+        source: "2",
+        target: "5",
+        lineStyle: {
+          color: impactColor(Math.floor(Math.random() * 4)),
+        },
+      },
+      {
+        source: "1",
+        target: "5",
+        lineStyle: {
+          color: impactColor(Math.floor(Math.random() * 4)),
+        },
+      },
+      {
+        source: "1",
+        target: "6",
+      },
+      {
+        source: "2",
+        target: "7",
+      },
+    ];
+  }
+};
 </script>
 
 <template>
@@ -535,8 +692,18 @@ const option05 = (() => {
       <IconComputer />
     </template>
     <template #heading>网络设备工作状态数据</template>
-    <div class="chart-wrapper no-break chart-graph">
-      <v-chart class="chart" :option="option04" autoresize />
+    <div class="chart-wrapper no-break two-column">
+      <div>
+        <v-chart
+          class="chart"
+          :option="option06"
+          @updateAxisPointer="updateAxisPointer"
+          autoresize
+        />
+      </div>
+      <div>
+        <v-chart class="chart" :option="option04" autoresize />
+      </div>
     </div>
   </ReportSection>
 
@@ -556,5 +723,15 @@ const option05 = (() => {
   margin: 0 auto;
   min-height: 20rem;
   aspect-ratio: 5 / 2;
+}
+
+.chart-wrapper.two-column {
+  display: flex;
+}
+
+.chart-wrapper.two-column > * {
+  flex-grow: 1;
+  flex-basis: 0;
+  min-width: 0;
 }
 </style>
