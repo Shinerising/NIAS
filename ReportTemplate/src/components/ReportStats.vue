@@ -98,12 +98,12 @@ const deviceList = {
     </p>
     <p class="text">在过去24小时内，所有设备运行基本平稳。</p>
   </div>
-  <hr />
+  <hr class="top-zero" />
   <h2>局域网络整体统计数据</h2>
   <p>交换机设备</p>
   <ul class="device-list">
     <li v-for="(item, i) in deviceList.switchList" :key="i">
-      <img :src="ImageSwitch" />
+      <img :src="ImageSwitch" alt="Icon Switch Hub" />
       <span>{{ item.name }}</span>
       <span>{{ item.system }}</span>
       <span>{{ item.brief }}</span>
@@ -112,7 +112,7 @@ const deviceList = {
   <p>计算机设备</p>
   <ul class="device-list">
     <li v-for="(item, i) in deviceList.computerList" :key="i">
-      <img :src="ImageComputer" />
+      <img :src="ImageComputer" alt="Icon Computer" />
       <span>{{ item.name }}</span>
       <span>{{ item.system }}</span>
       <span>{{ item.brief }}</span>
@@ -121,7 +121,7 @@ const deviceList = {
   <p>网络通信设备</p>
   <ul class="device-list">
     <li v-for="(item, i) in deviceList.hostList" :key="i">
-      <img :src="ImageRouter" />
+      <img :src="ImageRouter" alt="Icon Network Router" />
       <span>{{ item.name }}</span>
       <span>{{ item.system }}</span>
       <span>{{ item.brief }}</span>
@@ -135,7 +135,7 @@ h2 {
 }
 
 .counter-wrapper {
-  margin: 2rem auto;
+  margin: 1rem auto;
   display: flex;
   justify-content: center;
 }
@@ -162,10 +162,12 @@ h2 {
 }
 
 .record-box {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-border);
+}
+
+hr.top-zero {
+  margin-top: 0;
 }
 
 .record-box span {

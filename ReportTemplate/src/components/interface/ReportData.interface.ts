@@ -11,8 +11,8 @@ const DemoData: ReportData = {
   Title: "测试页面",
   User: "测试用户",
   Location: "测试位置",
-  CreateTime: Date(),
-  StartTime: Date(),
-  EndTime: Date(),
+  CreateTime: null,
+  StartTime: null,
+  EndTime: null,
 };
 export { DemoData };
