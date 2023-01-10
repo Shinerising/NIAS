@@ -1,18 +1,12 @@
 import type { EChartsOption } from "echarts";
 import moment from "moment";
+import { GetColor, GetLabelColor } from "../colors/ColorImpact";
 
-const startDate = new Date();
-const generateData = () => {
-  const data = [];
-  for (let i = 0; i < 24 * 60; i++) {
-    const l = Math.random() * 20;
-    data.push([
-      new Date(startDate.getTime() + i * 60000),
-      l > 18 ? 3 : l > 16 ? 2 : l > 2 ? 1 : 0,
-    ]);
-  }
-  return data;
-};
+const startDate = new Date().getTime();
+const data = [
+  Array.from({ length: 24 * 60 }, (x, i) => new Date(startDate + i * 60000)),
+  Array.from({ length: 24 * 60 }, (x, i) => i % 4),
+];
 
 export default {
   title: {
@@ -22,6 +16,17 @@ export default {
     trigger: "axis",
     axisPointer: {
       axis: "x",
+    },
+    formatter: (args: unknown) => {
+      const [{ data, marker }] = args as [
+        {
+          data: [x: number, y: number];
+          marker: string;
+        }
+      ];
+      return `时间：${moment(data[0]).format(
+        "MM-DD HH:mm:ss"
+      )}<br>状态：${marker}${["无数据", "正常", "警告", "故障"][data[1]]}`;
     },
   },
   xAxis: {
@@ -46,28 +51,35 @@ export default {
       {
         value: "无数据",
         textStyle: {
-          color: "gray",
+          color: GetLabelColor("idle"),
         },
       },
       {
         value: "正常",
         textStyle: {
-          color: "green",
+          color: GetLabelColor("normal"),
         },
       },
       {
         value: "警告",
         textStyle: {
-          color: "orange",
+          color: GetLabelColor("warning"),
         },
       },
       {
         value: "故障",
         textStyle: {
-          color: "red",
+          color: GetLabelColor("error"),
         },
       },
     ],
+  },
+  dataset: {
+    dimensions: [
+      { name: "time", type: "time" },
+      { name: "value", type: "int" },
+    ],
+    source: data,
   },
   visualMap: {
     show: false,
@@ -76,35 +88,39 @@ export default {
         min: -1,
         max: 0.5,
         label: "idle",
-        color: "lightgray",
+        color: GetColor("idle"),
       },
       {
         min: 0.5,
         max: 1.5,
         label: "normal",
-        color: "lightgreen",
+        color: GetColor("normal"),
       },
       {
         min: 1.5,
         max: 2.5,
         label: "warning",
-        color: "orange",
+        color: GetColor("warning"),
       },
       {
         min: 2.5,
         max: 3.5,
         label: "error",
-        color: "orangered",
+        color: GetColor("error"),
       },
     ],
     outOfRange: {
-      color: "red",
+      color: GetColor("fatal"),
     },
   },
   series: [
     {
-      data: generateData(),
       type: "scatter",
+      encode: {
+        x: "time",
+        y: "value",
+      },
+      seriesLayoutBy: "row",
       animation: false,
       symbolSize: [1, 32],
       symbol: "rect",

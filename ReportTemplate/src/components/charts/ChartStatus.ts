@@ -2,18 +2,12 @@ import type { EChartsOption } from "echarts";
 import moment from "moment";
 
 const startDate = new Date().getTime();
-const cpu = Array.from({ length: 24 * 60 }, (x, i) => [
-  new Date(startDate + 60000 * i),
-  Math.random() * 0.6 + 0.1,
-]);
-const memory = Array.from({ length: 24 * 60 }, (x, i) => [
-  new Date(startDate + 60000 * i),
-  Math.random() * 0.3 + 0.2,
-]);
-const temperature = Array.from({ length: 24 * 60 }, (x, i) => [
-  new Date(startDate + 60000 * i),
-  Math.random() * 40 + 20,
-]);
+const data = [
+  Array.from({ length: 24 * 60 }, (x, i) => new Date(startDate + i * 60000)),
+  Array.from({ length: 24 * 60 }, () => Math.random() * 0.6 + 0.1),
+  Array.from({ length: 24 * 60 }, () => Math.random() * 0.3 + 0.2),
+  Array.from({ length: 24 * 60 }, () => Math.random() * 40 + 20),
+];
 
 export default {
   title: {
@@ -65,11 +59,24 @@ export default {
       },
     },
   ],
+  dataset: {
+    dimensions: [
+      { name: "time", type: "time" },
+      { name: "cpu", type: "int" },
+      { name: "memory", type: "int" },
+      { name: "temperature", type: "int" },
+    ],
+    source: data,
+  },
   series: [
     {
       type: "line",
       name: "CPU占用率",
-      data: cpu,
+      encode: {
+        x: "time",
+        y: "cpu",
+      },
+      seriesLayoutBy: "row",
       animation: false,
       showSymbol: false,
     },
@@ -77,7 +84,11 @@ export default {
       type: "line",
       name: "内存占用率",
       yAxisIndex: 1,
-      data: memory,
+      encode: {
+        x: "time",
+        y: "memory",
+      },
+      seriesLayoutBy: "row",
       animation: false,
       showSymbol: false,
     },
@@ -85,7 +96,11 @@ export default {
       type: "line",
       name: "设备温度",
       yAxisIndex: 2,
-      data: temperature,
+      encode: {
+        x: "time",
+        y: "temperature",
+      },
+      seriesLayoutBy: "row",
       animation: false,
       showSymbol: false,
     },

@@ -15,6 +15,7 @@ import {
   TitleComponent,
   TooltipComponent,
   LegendComponent,
+  DatasetComponent,
   VisualMapComponent,
 } from "echarts/components";
 import VChart, { THEME_KEY } from "vue-echarts";
@@ -50,6 +51,7 @@ use([
   GridComponent,
   TitleComponent,
   LegendComponent,
+  DatasetComponent,
   TooltipComponent,
   VisualMapComponent,
 ]);
