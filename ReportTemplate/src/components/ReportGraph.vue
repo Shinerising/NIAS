@@ -36,6 +36,8 @@ import ChartGraph from "./charts/ChartGraph";
 import ChartScatter from "./charts/ChartScatter";
 import ChartBar from "./charts/ChartBar";
 
+import { GetColor } from "./colors/ColorImpact";
+
 defineProps<{
   data: ReportData;
 }>();
@@ -68,9 +70,6 @@ const option05 = ref(ChartBar);
 const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
   const xAxisInfo = event.axesInfo[0];
   if (xAxisInfo) {
-    const impactColor = (index: number) => {
-      return ["lightgray", "lightgreen", "orange", "orangered"][index];
-    };
     option04.value.series[0].force = {
       initLayout: "circular",
       repulsion: 400,
@@ -83,35 +82,35 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
         source: "1",
         target: "2",
         lineStyle: {
-          color: impactColor(Math.floor(Math.random() * 4)),
+          color: GetColor(Math.floor(Math.random() * 4) + 1),
         },
       },
       {
         source: "1",
         target: "3",
         lineStyle: {
-          color: impactColor(Math.floor(Math.random() * 4)),
+          color: GetColor(Math.floor(Math.random() * 4) + 1),
         },
       },
       {
         source: "1",
         target: "4",
         lineStyle: {
-          color: impactColor(Math.floor(Math.random() * 4)),
+          color: GetColor(Math.floor(Math.random() * 4) + 1),
         },
       },
       {
         source: "2",
         target: "5",
         lineStyle: {
-          color: impactColor(Math.floor(Math.random() * 4)),
+          color: GetColor(Math.floor(Math.random() * 4) + 1),
         },
       },
       {
         source: "1",
         target: "5",
         lineStyle: {
-          color: impactColor(Math.floor(Math.random() * 4)),
+          color: GetColor(Math.floor(Math.random() * 4) + 1),
         },
       },
       {

@@ -79,6 +79,7 @@ export default {
       seriesLayoutBy: "row",
       animation: false,
       showSymbol: false,
+      sampling: "average",
     },
     {
       type: "line",
@@ -91,6 +92,7 @@ export default {
       seriesLayoutBy: "row",
       animation: false,
       showSymbol: false,
+      sampling: "average",
     },
     {
       type: "line",
@@ -103,6 +105,7 @@ export default {
       seriesLayoutBy: "row",
       animation: false,
       showSymbol: false,
+      sampling: "average",
     },
   ],
 } satisfies EChartsOption;

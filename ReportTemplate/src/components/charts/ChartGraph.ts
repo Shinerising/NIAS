@@ -123,6 +123,7 @@ export default {
       lineStyle: {
         opacity: 1,
         width: 4,
+        color: GetColor("unknown"),
       },
     },
   ],
