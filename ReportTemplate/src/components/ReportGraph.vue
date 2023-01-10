@@ -16,6 +16,7 @@ import {
   TooltipComponent,
   LegendComponent,
   DatasetComponent,
+  MarkAreaComponent,
   VisualMapComponent,
 } from "echarts/components";
 import VChart, { THEME_KEY } from "vue-echarts";
@@ -55,6 +56,7 @@ use([
   LegendComponent,
   DatasetComponent,
   TooltipComponent,
+  MarkAreaComponent,
   VisualMapComponent,
 ]);
 
@@ -134,8 +136,18 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
       <IconHub />
     </template>
     <template #heading>局域网络拓扑图</template>
-    <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option01" autoresize />
+    <div class="chart-wrapper no-break two-column">
+      <div>
+        <v-chart
+          class="chart"
+          :option="option06"
+          @updateAxisPointer="updateAxisPointer"
+          autoresize
+        />
+      </div>
+      <div>
+        <v-chart class="chart" :option="option04" autoresize />
+      </div>
     </div>
   </ReportSection>
 
@@ -163,19 +175,9 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
     <template #icon>
       <IconComputer />
     </template>
-    <template #heading>网络设备工作状态数据</template>
-    <div class="chart-wrapper no-break two-column">
-      <div>
-        <v-chart
-          class="chart"
-          :option="option06"
-          @updateAxisPointer="updateAxisPointer"
-          autoresize
-        />
-      </div>
-      <div>
-        <v-chart class="chart" :option="option04" autoresize />
-      </div>
+    <template #heading>网络设备工作状态总体统计数据</template>
+    <div class="chart-wrapper no-break">
+      <v-chart class="chart" :option="option01" autoresize />
     </div>
   </ReportSection>
 

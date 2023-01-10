@@ -5,7 +5,9 @@ import { GetColor, GetLabelColor } from "../colors/ColorImpact";
 const startDate = new Date().getTime();
 const data = [
   Array.from({ length: 24 * 60 }, (x, i) => new Date(startDate + i * 60000)),
-  Array.from({ length: 24 * 60 }, (x, i) => i % 4),
+  Array.from({ length: 24 * 60 }, (x, i) =>
+    Math.round(4 * Math.pow(Math.random(), (i % 3) + 1))
+  ),
 ];
 
 export default {

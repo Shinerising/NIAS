@@ -1,39 +1,58 @@
 import type { EChartsOption } from "echarts";
+import moment from "moment";
+import { GetColor } from "../colors/ColorImpact";
 
 export default {
-  title: {
-    text: "Traffic Sources",
-    left: "center",
-  },
-  tooltip: {
-    trigger: "item",
-    formatter: "{a} <br/>{b} : {c} ({d}%)",
-  },
-  legend: {
-    orient: "vertical",
-    left: "left",
-    data: ["Direct", "Email", "Ad Networks", "Video Ads", "Search Engines"],
-  },
+  title: [
+    {
+      text: "设备工作状态统计",
+      left: "5%",
+    },
+    {
+      text: "设备网络流量统计",
+      left: "35%",
+    },
+    {
+      text: "设备网络延迟统计",
+      left: "65%",
+    },
+  ],
   series: [
     {
-      name: "Traffic Sources",
       type: "pie",
-      radius: "55%",
-      center: ["50%", "60%"],
+      radius: "40%",
+      center: ["20%", "50%"],
+      animation: false,
       data: [
-        { value: 335, name: "Direct" },
-        { value: 310, name: "Email" },
-        { value: 234, name: "Ad Networks" },
-        { value: 135, name: "Video Ads" },
-        { value: 1548, name: "Search Engines" },
+        { value: 335, name: "idle" },
+        { value: 310, name: "normal" },
+        { value: 234, name: "warning" },
+        { value: 135, name: "error" },
       ],
-      emphasis: {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowOffsetX: 0,
-          shadowColor: "rgba(0, 0, 0, 0.5)",
-        },
-      },
+    },
+    {
+      type: "pie",
+      radius: "40%",
+      center: ["50%", "50%"],
+      animation: false,
+      data: [
+        { value: 335, name: "idle" },
+        { value: 310, name: "normal" },
+        { value: 234, name: "warning" },
+        { value: 135, name: "error" },
+      ],
+    },
+    {
+      type: "pie",
+      radius: "40%",
+      center: ["80%", "50%"],
+      animation: false,
+      data: [
+        { value: 335, name: "idle" },
+        { value: 310, name: "normal" },
+        { value: 234, name: "warning" },
+        { value: 135, name: "error" },
+      ],
     },
   ],
 } satisfies EChartsOption;
