@@ -3,6 +3,7 @@ import { ref } from "vue";
 
 export const PrintStore = defineStore("print", () => {
   const isPrinting = ref(false);
+  const callbackList: ((isPre: boolean) => void)[] = [];
   const beforePrint = () => {
     [].forEach.call(
       document.querySelectorAll(".chart-wrapper"),
@@ -10,6 +11,10 @@ export const PrintStore = defineStore("print", () => {
         element.style.width = "896px";
       }
     );
+
+    for (const callback of callbackList) {
+      callback(true);
+    }
 
     isPrinting.value = true;
   };
@@ -21,12 +26,25 @@ export const PrintStore = defineStore("print", () => {
       }
     );
 
+    for (const callback of callbackList) {
+      callback(false);
+    }
+
     isPrinting.value = false;
   };
   const initialize = () => {
     window.addEventListener("beforeprint", beforePrint);
     window.addEventListener("afterprint", afterPrint);
   };
+  const AddPrintCallback = (callback: (isPre: boolean) => void) => {
+    callbackList.push(callback);
+  };
 
-  return { isPrinting, beforePrint, afterPrint, initialize };
+  return {
+    isPrinting,
+    beforePrint,
+    afterPrint,
+    initialize,
+    AddPrintCallback,
+  };
 });

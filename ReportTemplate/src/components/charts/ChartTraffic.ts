@@ -1,6 +1,4 @@
 import type { EChartsOption } from "echarts";
-import moment from "moment";
-import { GetColor } from "../colors/ColorImpact";
 
 export default {
   title: [

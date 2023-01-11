@@ -18,6 +18,30 @@ export default {
     axisPointer: {
       axis: "x",
     },
+    formatter: (args: unknown) => {
+      const data = args as [
+        {
+          data: [time: Date, value0: number, value1: number, value2: number];
+          marker: string;
+          seriesName: string;
+        },
+        {
+          marker: string;
+          seriesName: string;
+        },
+        {
+          marker: string;
+          seriesName: string;
+        }
+      ];
+      return `时间：${moment(data[0].data[0]).format("MM-DD HH:mm")}<br>${
+        data[0].marker
+      }${data[0].seriesName}：${(data[0].data[1] * 100).toFixed(0) + "%"}<br>${
+        data[1].marker
+      }${data[1].seriesName}：${(data[0].data[2] * 100).toFixed(0) + "%"}<br>${
+        data[2].marker
+      }${data[2].seriesName}：${data[0].data[3].toFixed(2) + "℃"}`;
+    },
   },
   legend: {
     show: true,

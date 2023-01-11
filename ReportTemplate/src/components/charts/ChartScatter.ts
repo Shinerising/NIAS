@@ -6,7 +6,7 @@ const startDate = new Date().getTime();
 const data = [
   Array.from({ length: 24 * 60 }, (x, i) => new Date(startDate + i * 60000)),
   Array.from({ length: 24 * 60 }, (x, i) =>
-    Math.round(4 * Math.pow(Math.random(), (i % 3) + 1))
+    Math.round(3 * Math.pow(Math.random(), (i % 3) + 1))
   ),
 ];
 
@@ -27,15 +27,14 @@ export default {
         }
       ];
       return `时间：${moment(data[0]).format(
-        "MM-DD HH:mm:ss"
+        "MM-DD HH:mm"
       )}<br>状态：${marker}${["无数据", "正常", "警告", "故障"][data[1]]}`;
     },
   },
   xAxis: {
     type: "time",
     axisLabel: {
-      formatter: (value: unknown) =>
-        moment(value as Date).format("MM-DD HH:mm"),
+      formatter: (value: unknown) => moment(value as Date).format("HH:mm"),
     },
   },
   yAxis: {

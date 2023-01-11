@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, provide } from "vue";
-import { use } from "echarts/core";
+import { ref, provide, type Ref } from "vue";
+import { use, type ECharts } from "echarts/core";
 import { SVGRenderer } from "echarts/renderers";
 import {
   PieChart,
@@ -39,6 +39,8 @@ import ChartBar from "./charts/ChartBar";
 
 import { GetColor } from "./colors/ColorImpact";
 
+import { PrintStore } from "../stores/PrintStore";
+
 defineProps<{
   data: ReportData;
 }>();
@@ -69,59 +71,82 @@ const option04 = ref(ChartGraph);
 const option06 = ref(ChartScatter);
 const option05 = ref(ChartBar);
 
+const chart01: Ref<ECharts | null> = ref(null);
+const chart02: Ref<ECharts | null> = ref(null);
+const chart03: Ref<ECharts | null> = ref(null);
+const chart04: Ref<ECharts | null> = ref(null);
+const chart05: Ref<ECharts | null> = ref(null);
+const chart06: Ref<ECharts | null> = ref(null);
+
+PrintStore().AddPrintCallback(() => {
+  chart01?.value?.resize();
+  chart02?.value?.resize();
+  chart03?.value?.resize();
+  chart04?.value?.resize();
+  chart05?.value?.resize();
+  chart06?.value?.resize();
+});
+
 const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
   const xAxisInfo = event.axesInfo[0];
   if (xAxisInfo) {
-    option04.value.series[0].force = {
-      initLayout: "circular",
-      repulsion: 400,
-      layoutAnimation: false,
-      edgeLength: 100,
-      friction: 0,
-    };
+    option04.value.series[0].force.friction = 0;
     option04.value.series[0].links = [
       {
-        source: "1",
-        target: "2",
+        source: 0,
+        target: 1,
+        value: 1,
         lineStyle: {
           color: GetColor(Math.floor(Math.random() * 4) + 1),
         },
       },
       {
-        source: "1",
-        target: "3",
+        source: 0,
+        target: 2,
+        value: 1,
         lineStyle: {
           color: GetColor(Math.floor(Math.random() * 4) + 1),
         },
       },
       {
-        source: "1",
-        target: "4",
+        source: 0,
+        target: 3,
+        value: 1,
         lineStyle: {
           color: GetColor(Math.floor(Math.random() * 4) + 1),
         },
       },
       {
-        source: "2",
-        target: "5",
+        source: 1,
+        target: 4,
+        value: 1,
         lineStyle: {
           color: GetColor(Math.floor(Math.random() * 4) + 1),
         },
       },
       {
-        source: "1",
-        target: "5",
+        source: 0,
+        target: 4,
+        value: 1,
         lineStyle: {
           color: GetColor(Math.floor(Math.random() * 4) + 1),
         },
       },
       {
-        source: "1",
-        target: "6",
+        source: 0,
+        target: 5,
+        value: 1,
+        lineStyle: {
+          color: GetColor("unknown"),
+        },
       },
       {
-        source: "2",
-        target: "7",
+        source: 1,
+        target: 6,
+        value: 1,
+        lineStyle: {
+          color: GetColor("unknown"),
+        },
       },
     ];
   }
@@ -141,12 +166,13 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
         <v-chart
           class="chart"
           :option="option06"
+          ref="chart06"
           @updateAxisPointer="updateAxisPointer"
           autoresize
         />
       </div>
       <div>
-        <v-chart class="chart" :option="option04" autoresize />
+        <v-chart class="chart" :option="option04" ref="chart04" autoresize />
       </div>
     </div>
   </ReportSection>
@@ -157,7 +183,7 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
     </template>
     <template #heading>交换机工作状态数据</template>
     <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option02" autoresize />
+      <v-chart class="chart" :option="option02" ref="chart02" autoresize />
     </div>
   </ReportSection>
 
@@ -167,7 +193,7 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
     </template>
     <template #heading>交换机网络接口数据</template>
     <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option03" autoresize />
+      <v-chart class="chart" :option="option03" ref="chart03" autoresize />
     </div>
   </ReportSection>
 
@@ -177,7 +203,7 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
     </template>
     <template #heading>网络设备工作状态总体统计数据</template>
     <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option01" autoresize />
+      <v-chart class="chart" :option="option01" ref="chart01" autoresize />
     </div>
   </ReportSection>
 
@@ -187,7 +213,7 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
     </template>
     <template #heading>网络设备通信流量数据</template>
     <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option05" autoresize />
+      <v-chart class="chart" :option="option05" ref="chart05" autoresize />
     </div>
   </ReportSection>
 </template>
@@ -204,8 +230,9 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
 }
 
 .chart-wrapper.two-column > * {
-  flex-grow: 1;
-  flex-basis: 0;
-  min-width: 0;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

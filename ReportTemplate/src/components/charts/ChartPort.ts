@@ -11,7 +11,7 @@ const data = [
   ),
   Array.prototype.concat(
     ...Array.from({ length: 24 * 60 }, () =>
-      Array.from({ length: 24 }, (_x, _i) => _i)
+      Array.from({ length: 24 }, (_x, _i) => _i + 1)
     )
   ),
   Array.prototype.concat(
@@ -28,12 +28,13 @@ export default {
   tooltip: {
     position: "top",
     formatter: (args: unknown) => {
-      const { data } = args as {
+      const { data, marker } = args as {
         data: [x: string, y: number, value: number];
+        marker: string;
       };
       return `时间：${moment(data[0]).format("MM-DD HH:mm:ss")}<br>网口：${
         data[1]
-      }<br>流量：${data[2].toFixed(2)}Mbps`;
+      }<br>流量：${marker}${data[2].toFixed(2)}Mbps`;
     },
   },
   grid: {
@@ -72,25 +73,25 @@ export default {
       {
         min: -1,
         max: 0,
-        label: "idle",
+        label: "无数据",
         color: GetColor("unknown"),
       },
       {
         min: 0,
         max: 5,
-        label: "normal",
+        label: "正常",
         color: GetColor("normal"),
       },
       {
         min: 1,
         max: 50,
-        label: "warning",
+        label: "警告",
         color: GetColor("warning"),
       },
       {
         min: 50,
         max: 1024,
-        label: "error",
+        label: "严重",
         color: GetColor("error"),
       },
     ],
