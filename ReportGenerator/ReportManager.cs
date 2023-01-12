@@ -9,20 +9,37 @@ namespace NIASReport
         public string ReportTemplatePath { get; private set; }
         public string LocationName { get; private set; }
         public event ErrorEventHandler? ErrorHandler;
-        private ReportRecorder recorder;
+
+        private readonly ReportRecorder recorder;
+        private readonly DatabaseHelper dbHelper;
         public ReportManager(string directory, string template, string location, int triggerTime)
         {
             ReportDirectory = directory;
             ReportTemplatePath = template;
             LocationName = location;
 
+            dbHelper = DatabaseHelper.Initialize("raw.sqlite");
+            dbHelper.ErrorHandler += HandleError;
+
             recorder = new ReportRecorder();
             recorder.ErrorHandler += HandleError;
+        }
+
+        public async Task Initialize()
+        {
+            await dbHelper.OpenDatabase();
+
+            recorder.Start();
         }
 
         private void HandleError(object sender, ErrorEventArgs e)
         {
             ErrorHandler?.Invoke(sender, e);
+        }
+
+        public async Task Close()
+        {
+            await dbHelper.CloseDatabase();
         }
 
         public void ListReport()
@@ -35,7 +52,7 @@ namespace NIASReport
 
         }
 
-        public void SaveData<T>(IEnumerable<T> list)
+        public void AddData<T>(IEnumerable<T> list)
         {
             recorder.AddData(list);
         }

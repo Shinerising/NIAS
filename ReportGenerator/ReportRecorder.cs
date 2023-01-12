@@ -14,10 +14,14 @@ namespace NIASReport
             buffer = new Queue<KeyValuePair<Type, object>>();
             cancellation = new CancellationTokenSource();
             task = new Task(Procedure, cancellation.Token);
+        }
+
+        public void Start()
+        {
             task.Start();
         }
 
-        private void Procedure()
+        private async void Procedure()
         {
             while (!cancellation.Token.IsCancellationRequested)
             {
@@ -26,7 +30,10 @@ namespace NIASReport
                     try
                     {
                         KeyValuePair<Type, object> data = buffer.Dequeue();
-                        DatabaseHelper.SaveData((IEnumerable<Type>)data.Value);
+                        if (DatabaseHelper.Instance != null)
+                        {
+                            await DatabaseHelper.Instance.SaveData((IEnumerable<Type>)data.Value);
+                        }
                     }
                     catch (Exception e)
                     {
