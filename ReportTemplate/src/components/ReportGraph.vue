@@ -161,7 +161,7 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
       <IconHub />
     </template>
     <template #heading>局域网络拓扑图</template>
-    <div class="chart-wrapper no-break two-column">
+    <div class="chart-wrapper no-break two-column large">
       <div>
         <v-chart
           class="chart"
@@ -202,7 +202,7 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
       <IconComputer />
     </template>
     <template #heading>网络设备工作状态总体统计数据</template>
-    <div class="chart-wrapper no-break">
+    <div class="chart-wrapper no-break large">
       <v-chart class="chart" :option="option01" ref="chart01" autoresize />
     </div>
   </ReportSection>
@@ -221,7 +221,11 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
 <style scoped>
 .chart-wrapper {
   margin: 0 auto;
-  min-height: 20rem;
+  min-height: 16rem;
+  aspect-ratio: 6 / 2;
+}
+
+.chart-wrapper.large {
   aspect-ratio: 5 / 2;
 }
 
