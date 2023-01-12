@@ -374,7 +374,7 @@ namespace LanMonitor
         }
         public static SwitchDeviceModelView GetPreviewInstance(string ip)
         {
-            SwitchDeviceModelView switchDevice = new SwitchDeviceModelView("test", ip)
+            SwitchDeviceModelView switchDevice = new SwitchDeviceModelView(0, "test", ip)
             {
                 Address = ip,
                 EndPoint = new IPEndPoint(IPAddress.Parse(ip), 161),

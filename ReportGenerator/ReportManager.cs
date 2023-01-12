@@ -8,6 +8,7 @@ namespace NIASReport
         public string ReportDirectory { get; private set; }
         public string ReportTemplatePath { get; private set; }
         public string LocationName { get; private set; }
+        public event ErrorEventHandler? ErrorHandler;
         private ReportRecorder recorder;
         public ReportManager(string directory, string template, string location, int triggerTime)
         {
@@ -16,6 +17,12 @@ namespace NIASReport
             LocationName = location;
 
             recorder = new ReportRecorder();
+            recorder.ErrorHandler += HandleError;
+        }
+
+        private void HandleError(object sender, ErrorEventArgs e)
+        {
+            ErrorHandler?.Invoke(sender, e);
         }
 
         public void ListReport()
