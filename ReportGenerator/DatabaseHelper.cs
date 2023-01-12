@@ -4,6 +4,7 @@ using SQLitePCL;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Transactions;
 
 namespace NIASReport
 {
@@ -23,7 +24,7 @@ namespace NIASReport
         private readonly SqliteConnection connection;
         private DatabaseHelper(string dbFile)
         {
-            ConnectionString = string.Format("Provider=Microsoft.Data.Sqlite;Data Source=\"{0}\";Journal Mode=Off;Version=3", dbFile);
+            ConnectionString = string.Format("Data Source=\"{0}\"", dbFile);
             connection = new(ConnectionString);
         }
         public async Task OpenDatabase()
@@ -52,6 +53,8 @@ namespace NIASReport
 
         private async Task InitialDatabase()
         {
+            await connection.ExecuteAsync("PRAGMA journal_mode = Off");
+
             foreach (Type type in ReserveTypes)
             {
                 await CreateTable(type);
@@ -66,6 +69,29 @@ namespace NIASReport
                 using var transaction = connection.BeginTransaction();
                 string sql = string.Format("INSERT INTO {0} VALUES ({1}) ;", tableName, string.Join(", ", typeof(T).GetProperties().Select(item => "@" + item.Name)));
                 foreach (T item in list)
+                {
+                    await connection.ExecuteAsync(sql, item, transaction: transaction);
+                }
+                transaction.Commit();
+            }
+            catch (Exception e)
+            {
+                ErrorHandler?.Invoke(this, new ErrorEventArgs(e));
+            }
+        }
+        public async Task SaveData(Type type, object data)
+        {
+            if (data is not IEnumerable<object> list || !list.Any())
+            {
+                return;
+            }
+
+            try
+            {
+                string tableName = type.Name;
+                using var transaction = connection.BeginTransaction();
+                string sql = string.Format("INSERT INTO {0} VALUES ({1}) ;", tableName, string.Join(", ", type.GetProperties().Select(item => "@" + item.Name)));
+                foreach (object item in list)
                 {
                     await connection.ExecuteAsync(sql, item, transaction: transaction);
                 }
@@ -108,6 +134,7 @@ namespace NIASReport
         {
             if (disposing)
             {
+                connection.Dispose();
             }
         }
 

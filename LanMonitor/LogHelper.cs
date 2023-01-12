@@ -62,6 +62,7 @@ namespace LanMonitor
             Task.Run(async () =>
             {
                 await WriteLogAsync(name, text);
+                RawDataHelper.SaveLogData(name, text);
             });
         }
 

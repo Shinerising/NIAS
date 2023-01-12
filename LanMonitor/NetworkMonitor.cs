@@ -838,6 +838,8 @@ namespace LanMonitor
 
                         switchDevice.Refresh();
 
+                        RawDataHelper.SaveSwitchData(switchDevice);
+
                         Thread.Sleep(1000);
                     }
                 }, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -1083,6 +1085,9 @@ namespace LanMonitor
                 LastSwitchRefreshTimeStamp = RefreshStopwatch.ElapsedMilliseconds;
 
                 RefreshTopology();
+
+                RawDataHelper.SaveAdapterData(LanHostList);
+                RawDataHelper.SaveConnectionData(LanHostList, ConnectionList);
 
                 Thread.Sleep(1000);
             }

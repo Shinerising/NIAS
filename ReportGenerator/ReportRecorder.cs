@@ -30,9 +30,9 @@ namespace NIASReport
                     try
                     {
                         KeyValuePair<Type, object> data = buffer.Dequeue();
-                        if (DatabaseHelper.Instance != null)
+                        if (DatabaseHelper.Instance != null && data.Key != null && data.Value != null)
                         {
-                            await DatabaseHelper.Instance.SaveData((IEnumerable<Type>)data.Value);
+                            await DatabaseHelper.Instance.SaveData(data.Key, data.Value);
                         }
                     }
                     catch (Exception e)

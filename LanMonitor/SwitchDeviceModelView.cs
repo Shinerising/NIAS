@@ -23,6 +23,8 @@ namespace LanMonitor
         public long InCount { get; set; }
         public long OutCount { get; set; }
         public long RefreshDelay { get; set; } = 1;
+        public long InRate { get; set; }
+        public long OutRate { get; set; }
         public string InSpeed { get; set; } = "0B/s";
         public string OutSpeed { get; set; } = "0B/s";
         public bool IsHover { get; set; }
@@ -37,20 +39,24 @@ namespace LanMonitor
 
             if (port.InCount >= InCount)
             {
-                InSpeed = NetworkAdapter.GetSpeedString((port.InCount - InCount) * 1000 / port.RefreshDelay);
+                InRate = (port.InCount - InCount) * 1000 / port.RefreshDelay;
+                InSpeed = NetworkAdapter.GetSpeedString(InRate);
             }
             else
             {
+                InRate = 0;
                 InSpeed = "0B/s";
             }
             InCount = port.InCount;
 
             if (port.OutCount >= OutCount)
             {
-                OutSpeed = NetworkAdapter.GetSpeedString((port.OutCount - OutCount) * 1000 / port.RefreshDelay);
+                OutRate = (port.OutCount - OutCount) * 1000 / port.RefreshDelay;
+                OutSpeed = NetworkAdapter.GetSpeedString(OutRate);
             }
             else
             {
+                OutRate = 0;
                 OutSpeed = "0B/s";
             }
             OutCount = port.OutCount;

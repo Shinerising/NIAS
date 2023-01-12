@@ -2,6 +2,15 @@
 {
     public class RawData
     {
+        public enum ImpactLevel
+        {
+            Unknown,
+            Idle,
+            Normal,
+            Warning,
+            Error,
+            Fatal
+        }
         [Serializable]
         public class SwitchInfo
         {
@@ -15,7 +24,7 @@
         public class Switch
         {
             public int SwitchID { get; set; } = -1;
-            public DateTime Time { get; set; } = DateTime.Now;
+            public long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public int State { get; set; } = 0;
             public float CPU { get; set; } = 0;
             public float REM { get; set; } = 0;
@@ -45,7 +54,7 @@
         {
             public int HostID { get; set; } = -1;
             public int AdapterID { get; set; } = -1;
-            public DateTime Time { get; set; } = DateTime.Now;
+            public long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public float Latency { get; set; } = 0;
             public float InSpeed { get; set; } = 0;
             public float OutSpeed { get; set; } = 0;
@@ -53,7 +62,7 @@
         [Serializable]
         public class Connection
         {
-            public DateTime Time { get; set; } = DateTime.Now;
+            public long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public int Type { get; set; } = 0;
             public int Source { get; set; } = -1;
             public int Target { get; set; } = -1;
@@ -69,6 +78,22 @@
             public int PortCount { get; set; } = 0;
             public int WarningCount { get; set; } = 0;
             public string Warning { get; set; } = "";
+        }
+
+        [Serializable]
+        public class Log
+        {
+            public long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
+            public string Name { get; set; } = "";
+            public string Text { get; set; } = "";
+        }
+
+        [Serializable]
+        public class Alarm
+        {
+            public long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
+            public string Name { get; set; } = "";
+            public string Text { get; set; } = "";
         }
     }
 }
