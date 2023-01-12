@@ -8,11 +8,14 @@ namespace NIASReport
         public string ReportDirectory { get; private set; }
         public string ReportTemplatePath { get; private set; }
         public string LocationName { get; private set; }
+        private ReportRecorder recorder;
         public ReportManager(string directory, string template, string location, int triggerTime)
         {
             ReportDirectory = directory;
             ReportTemplatePath = template;
             LocationName = location;
+
+            recorder = new ReportRecorder();
         }
 
         public void ListReport()
@@ -25,12 +28,12 @@ namespace NIASReport
 
         }
 
-        public void WriteData<T>(IEnumerable<T> data)
+        public void SaveData<T>(IEnumerable<T> list)
         {
-
+            recorder.AddData(list);
         }
 
-        public void ReadData()
+        public void LoadData()
         {
 
         }

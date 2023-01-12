@@ -107,10 +107,10 @@ namespace LanMonitor
         public static List<SwitchDeviceModelView> SwitchDeviceList => new List<string>() { "172.16.24.1", "172.16.24.188" }.Select(item => SwitchDeviceModelView.GetPreviewInstance(item)).ToList();
         public static List<SwitchConnectonModelView> ConnectionList => new() { new SwitchConnectonModelView("", SwitchDeviceModelView.GetPreviewInstance("172.16.24.1"), SwitchDeviceModelView.GetPreviewInstance("172.16.24.2"), 0, 1, null, null) };
         public static List<LanHostModelView> LanHostList => new() {
-            new LanHostModelView("Host01", "172.16.24.90,172.16.34.90"),
-            new LanHostModelView("Host02", "172.16.24.91,172.16.34.91"),
-            new LanHostModelView("Host03", "172.16.24.92,172.16.34.92"),
-            new LanHostModelView("Host04", "172.16.24.93,172.16.34.93")
+            new LanHostModelView(0, "Host01", "172.16.24.90,172.16.34.90"),
+            new LanHostModelView(1, "Host02", "172.16.24.91,172.16.34.91"),
+            new LanHostModelView(2, "Host03", "172.16.24.92,172.16.34.92"),
+            new LanHostModelView(3, "Host04", "172.16.24.93,172.16.34.93")
         };
 
         public static NMAPReport NMAPReportData => NMAPHelper.GetExampleData();
@@ -304,8 +304,8 @@ namespace LanMonitor
             NameValueCollection deviceList = (NameValueCollection)ConfigurationManager.GetSection("deviceList");
             NameValueCollection connectionList = (NameValueCollection)ConfigurationManager.GetSection("connectionList");
 
-            SwitchDeviceList = switchList == null ? new List<SwitchDeviceModelView>() : switchList.AllKeys.Select(item => new SwitchDeviceModelView(item, switchList[item])).ToList();
-            LanHostList = deviceList == null ? new List<LanHostModelView>() : deviceList.AllKeys.Select(item => new LanHostModelView(item, deviceList[item])).ToList();
+            SwitchDeviceList = switchList == null ? new List<SwitchDeviceModelView>() : switchList.AllKeys.Select((item, index) => new SwitchDeviceModelView(index, item, switchList[item])).ToList();
+            LanHostList = deviceList == null ? new List<LanHostModelView>() : deviceList.AllKeys.Select((item, index) => new LanHostModelView(index, item, deviceList[item])).ToList();
             ConnectionList = connectionList == null ? new List<SwitchConnectonModelView>() : connectionList.AllKeys.Select(item =>
             {
                 string[] values = connectionList[item] == null ? new string[] { null, null } : connectionList[item].Split(';');

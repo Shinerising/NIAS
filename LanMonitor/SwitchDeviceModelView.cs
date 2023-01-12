@@ -147,6 +147,7 @@ namespace LanMonitor
                 Notify(new { Vector });
             }
         }
+        public int ID { get; set; }
         public string IPAddress { get; set; }
         public string MACAddress { get; set; }
         public string MACVendor => ManuHelper.Instance.FindInfo(MACAddress)?.Organization ?? AppResource.GetString(AppResource.StringKey.Unknown);
@@ -171,39 +172,42 @@ namespace LanMonitor
         {
             Notify(new { State, SwitchIPAddress, SwitchDevice, Host, Tip });
         }
-        public LanHostAdapter(string ip)
+        public LanHostAdapter(int id, string ip)
         {
+            ID = id;
             IPAddress = ip;
         }
-        public LanHostAdapter(string ip, string mac)
+        public LanHostAdapter(int id, string ip, string mac)
         {
+            ID = id;
             IPAddress = ip;
             MACAddress = mac.ToUpper();
         }
     }
     public class LanHostModelView
     {
+        public int ID { get; set; }
         public string Name { get; set; }
         public string Tip { get; set; }
         public DeviceState State { get; set; }
         public List<LanHostAdapter> AdapterList { get; set; }
         public string ActiveCount => string.Format("{0}/{1}", AdapterList.Where(item => item.State == DeviceState.Online).Count(), AdapterList.Count);
-        public LanHostModelView(string name, string iplist)
+        public LanHostModelView(int id, string name, string iplist)
         {
             Name = name;
-            AdapterList = iplist == null ? new List<LanHostAdapter>() : iplist.Split(';').Select(item =>
+            AdapterList = iplist == null ? new List<LanHostAdapter>() : iplist.Split(';').Select((item, index) =>
             {
                 if (item.Contains('|'))
                 {
                     var arr = item.Trim().Split('|');
                     var ip = arr[0];
                     var mac = arr[1];
-                    return new LanHostAdapter(ip, mac);
+                    return new LanHostAdapter(index, ip, mac);
                 }
                 else
                 {
                     var ip = item.Trim();
-                    return new LanHostAdapter(ip);
+                    return new LanHostAdapter(index, ip);
                 }
             }).ToList();
         }
@@ -287,8 +291,10 @@ namespace LanMonitor
         }
 
     }
+
     public class SwitchDeviceModelView : CustomINotifyPropertyChanged
     {
+        public int ID { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public IPEndPoint EndPoint { get; set; }
@@ -302,8 +308,9 @@ namespace LanMonitor
         public List<SwitchHost> HostList { get; set; }
         public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();
         public int HostCount => HostList == null ? 0 : HostList.Count();
-        public SwitchDeviceModelView(string name, string ip)
+        public SwitchDeviceModelView(int id, string name, string ip)
         {
+            ID = id;
             Name = name;
             Address = ip;
             EndPoint = new IPEndPoint(IPAddress.Parse(ip), 161);
