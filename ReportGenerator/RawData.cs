@@ -44,7 +44,6 @@
         {
             public int ID { get; set; } = -1;
             public int HostID { get; set; } = -1;
-            public string Name { get; set; } = "";
             public string Address { get; set; } = "";
             public string MACAddress { get; set; } = "";
             public string Vendor { get; set; } = "";
@@ -66,6 +65,7 @@
             public int Type { get; set; } = 0;
             public int Source { get; set; } = -1;
             public int Target { get; set; } = -1;
+            public int AdapterID { get; set; } = -1;
             public int State { get; set; } = 0;
         }
         [Serializable]
@@ -75,9 +75,9 @@
             public string Address { get; set; } = "";
             public string MACAddress { get; set; } = "";
             public string Vendor { get; set; } = "";
+            public string OS { get; set; } = "";
             public int PortCount { get; set; } = 0;
             public int WarningCount { get; set; } = 0;
-            public string Warning { get; set; } = "";
         }
 
         [Serializable]

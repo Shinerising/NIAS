@@ -56,6 +56,10 @@ namespace NIASReport
         {
             recorder.AddData(list);
         }
+        public void UpdateInfo<T>(IEnumerable<T> list)
+        {
+            recorder.UpdateData(list);
+        }
 
         public void LoadData()
         {

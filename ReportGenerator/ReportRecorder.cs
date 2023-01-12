@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NIASReport
 {
     public class ReportRecorder : IDisposable
     {
         public event ErrorEventHandler? ErrorHandler;
-        private readonly Queue<KeyValuePair<Type, object>> buffer;
+
+        private static TimeSpan ExpireTime = TimeSpan.FromDays(30);
+        private static TimeSpan CheckTime = TimeSpan.FromDays(1);
+
+        private readonly Queue<KeyValuePair<Type, object>> insertBuffer;
+        private readonly Queue<KeyValuePair<Type, object>> updateBuffer;
         private readonly Task task;
         private readonly CancellationTokenSource cancellation;
 
         public ReportRecorder() {
-            buffer = new Queue<KeyValuePair<Type, object>>();
+            insertBuffer = new Queue<KeyValuePair<Type, object>>();
+            updateBuffer = new Queue<KeyValuePair<Type, object>>();
             cancellation = new CancellationTokenSource();
             task = new Task(Procedure, cancellation.Token);
         }
@@ -23,13 +30,15 @@ namespace NIASReport
 
         private async void Procedure()
         {
+            DateTimeOffset timestamp = DateTimeOffset.MinValue;
+
             while (!cancellation.Token.IsCancellationRequested)
             {
-                if (buffer.Count > 0)
+                if (insertBuffer.Count > 0)
                 {
                     try
                     {
-                        KeyValuePair<Type, object> data = buffer.Dequeue();
+                        KeyValuePair<Type, object> data = insertBuffer.Dequeue();
                         if (DatabaseHelper.Instance != null && data.Key != null && data.Value != null)
                         {
                             await DatabaseHelper.Instance.SaveData(data.Key, data.Value);
@@ -41,6 +50,32 @@ namespace NIASReport
                     }
                 }
 
+                if (updateBuffer.Count > 0)
+                {
+                    try
+                    {
+                        KeyValuePair<Type, object> data = updateBuffer.Dequeue();
+                        if (DatabaseHelper.Instance != null && data.Key != null && data.Value != null)
+                        {
+                            await DatabaseHelper.Instance.ClearTable(data.Key);
+                            await DatabaseHelper.Instance.SaveData(data.Key, data.Value);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        ErrorHandler?.Invoke(this, new ErrorEventArgs(e));
+                    }
+                }
+
+                if (DateTimeOffset.Now - timestamp > CheckTime)
+                {
+                    timestamp = DateTimeOffset.Now;
+                    if (DatabaseHelper.Instance != null)
+                    {
+                        await DatabaseHelper.Instance.DeleteExpiredRecord(timestamp - ExpireTime);
+                    }
+                }
+
                 Thread.Sleep(100);
             }
         }
@@ -49,7 +84,18 @@ namespace NIASReport
         {
             try
             {
-                buffer.Enqueue(new KeyValuePair<Type, object>(typeof(T), list));
+                insertBuffer.Enqueue(new KeyValuePair<Type, object>(typeof(T), list));
+            }
+            catch (Exception e)
+            {
+                ErrorHandler?.Invoke(this, new ErrorEventArgs(e));
+            }
+        }
+        public void UpdateData<T>(IEnumerable<T> list)
+        {
+            try
+            {
+                updateBuffer.Enqueue(new KeyValuePair<Type, object>(typeof(T), list));
             }
             catch (Exception e)
             {

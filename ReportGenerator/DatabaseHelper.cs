@@ -17,7 +17,8 @@ namespace NIASReport
             return Instance;
         }
 
-        private static readonly List<Type> ReserveTypes = new() { typeof(RawData.Switch), typeof(RawData.Adapter), typeof(RawData.Connection) };
+        private static readonly List<Type> ReserveTypes = new() { typeof(RawData.Switch), typeof(RawData.Adapter), typeof(RawData.Connection), typeof(RawData.SwitchInfo), typeof(RawData.HostInfo), typeof(RawData.DeviceInfo) };
+        private static readonly List<Type> ExpirableTypes = new() { typeof(RawData.Switch), typeof(RawData.Adapter), typeof(RawData.Connection) };
 
         public event ErrorEventHandler? ErrorHandler;
         public string ConnectionString;
@@ -96,6 +97,37 @@ namespace NIASReport
                     await connection.ExecuteAsync(sql, item, transaction: transaction);
                 }
                 transaction.Commit();
+            }
+            catch (Exception e)
+            {
+                ErrorHandler?.Invoke(this, new ErrorEventArgs(e));
+            }
+        }
+        public async Task ClearTable(Type type)
+        {
+            try
+            {
+                string tableName = type.Name;
+                string sql = string.Format("DELETE FROM {0};", tableName);
+                await connection.ExecuteAsync(sql);
+            }
+            catch (Exception e)
+            {
+                ErrorHandler?.Invoke(this, new ErrorEventArgs(e));
+            }
+        }
+
+        public async Task DeleteExpiredRecord(DateTimeOffset startTime)
+        {
+            try
+            {
+                foreach (Type type in ExpirableTypes)
+                {
+                    string tableName = type.Name;
+                    string sql = string.Format("DELETE FROM {0} WHERE Time < {1};", tableName, startTime.ToUnixTimeSeconds());
+                    await connection.ExecuteAsync(sql);
+                }
+                await connection.ExecuteAsync("VACUUM;");
             }
             catch (Exception e)
             {

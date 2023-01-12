@@ -1081,13 +1081,16 @@ namespace LanMonitor
                 }
 
                 Notify(new { SwitchPortCount, SwitchHostCount, LanHostCount });
-
+                
                 LastSwitchRefreshTimeStamp = RefreshStopwatch.ElapsedMilliseconds;
 
                 RefreshTopology();
 
                 RawDataHelper.SaveAdapterData(LanHostList);
                 RawDataHelper.SaveConnectionData(LanHostList, ConnectionList);
+
+                RawDataHelper.SaveSwitchInfo(SwitchDeviceList);
+                RawDataHelper.SaveHostInfo(LanHostList);
 
                 Thread.Sleep(1000);
             }
@@ -1312,7 +1315,7 @@ namespace LanMonitor
 
                 if (NMAPReportData?.HostList!=null)
                 {
-                    NMAPReportData?.HostList.ForEach(host => AddNMAPTip(host));
+                    NMAPReportData?.HostList.ForEach(AddNMAPTip);
                 }
 
                 if (NMAPHelper.State == NMAPHelper.WorkingState.Fail)
@@ -1324,6 +1327,11 @@ namespace LanMonitor
                     NMAPErrorMessage = null;
                 }
                 Notify(new { NMAPReportData, NMAPHostCount, NMAPErrorMessage });
+
+                if (NMAPReportData?.HostList != null)
+                {
+                    RawDataHelper.SaveDeviceInfo(NMAPReportData.HostList);
+                }
 
                 Thread.Sleep(60000);
             }
