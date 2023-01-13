@@ -1,28 +1,26 @@
 ﻿using System.IO;
+using System.Text;
 using System.Text.Json;
 
 namespace NIASReport
 {
     public class ReportManager
     {
-        public string ReportDirectory { get; private set; }
-        public string ReportTemplatePath { get; private set; }
-        public string LocationName { get; private set; }
         public event ErrorEventHandler? ErrorHandler;
 
         private readonly ReportRecorder recorder;
+        private readonly ReportGenerator generator;
         private readonly DatabaseHelper dbHelper;
         public ReportManager(string directory, string template, string location, int triggerTime)
         {
-            ReportDirectory = directory;
-            ReportTemplatePath = template;
-            LocationName = location;
-
             dbHelper = DatabaseHelper.Initialize("raw.sqlite");
             dbHelper.ErrorHandler += HandleError;
 
             recorder = new ReportRecorder();
             recorder.ErrorHandler += HandleError;
+
+            generator = new ReportGenerator(directory, template, location, triggerTime);
+            generator.ErrorHandler += HandleError;
         }
 
         public async Task Initialize()
@@ -30,6 +28,7 @@ namespace NIASReport
             await dbHelper.OpenDatabase();
 
             recorder.Start();
+            //generator.Start();
         }
 
         private void HandleError(object sender, ErrorEventArgs e)
@@ -42,6 +41,18 @@ namespace NIASReport
             await dbHelper.CloseDatabase();
         }
 
+        public void Dispose()
+        {
+            dbHelper.ErrorHandler -= HandleError;
+            recorder.ErrorHandler -= HandleError;
+            generator.ErrorHandler -= HandleError;
+
+            recorder.Dispose();
+            generator.Dispose();
+
+            dbHelper.Dispose();
+        }
+
         public void AddData<T>(IEnumerable<T> list)
         {
             recorder.AddData(list);
@@ -50,9 +61,9 @@ namespace NIASReport
         {
             recorder.UpdateData(list);
         }
-
         public void GenerateReport()
         {
+            generator.IsGenerateRequested = true;
         }
     }
 }

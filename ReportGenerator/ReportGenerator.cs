@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using static NIASReport.RawData;
+using static NIASReport.ReportUtility;
 
 namespace NIASReport
 {
     public class ReportGenerator : IDisposable
     {
-        private const string scriptTag = "<script id=\"rawData\" type=\"application/json\">{0}</script>";
+        public event ErrorEventHandler? ErrorHandler;
 
         private readonly Task task;
         private readonly CancellationTokenSource cancellation;
@@ -16,12 +20,16 @@ namespace NIASReport
         public TimeSpan RefreshTime { get; set; }
         public bool IsGenerateRequested { get; set; }
 
-        public ReportGenerator()
+        public ReportGenerator(string directory, string template, string location, int triggerTime)
         {
+            ReportDirectory = directory;
+            ReportTemplatePath = template;
+            LocationName = location;
+
             cancellation = new CancellationTokenSource();
             task = new Task(Procedure, cancellation.Token);
 
-            RefreshTime = TimeSpan.FromMinutes(240);
+            RefreshTime = TimeSpan.FromMinutes(triggerTime);
         }
         public void Start()
         {
@@ -38,6 +46,7 @@ namespace NIASReport
                 }
                 else if (IsGenerateRequested)
                 {
+                    IsGenerateRequested = false;
                     await GenerateFile();
                 }
 
@@ -48,53 +57,51 @@ namespace NIASReport
 
         public async Task GenerateFile()
         {
+            try
+            {
+                ReportData data = await GetData();
+                string json = JsonSerializer.Serialize(data, new JsonSerializerOptions() { });
+                string filename = Path.Combine(ReportDirectory, string.Format("NetworkReport {0} {1}.html", LocationName, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")));
+                await ApplyDataAndExport(json, ReportTemplatePath, filename);
+            }
+            catch (Exception e)
+            {
+                ErrorHandler?.Invoke(this, new ErrorEventArgs(e));
+            }
+        }
+
+        public async Task<ReportData> GetData()
+        {
+            long startTime = (DateTimeOffset.Now - TimeSpan.FromDays(1)).ToUnixTimeSeconds();
+            long endTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+            var switchInfo = await DatabaseHelper.Instance?.GetData<SwitchInfo>()!;
+            var hostInfo = await DatabaseHelper.Instance?.GetData<HostInfo>()!;
+            var adapterInfo = await DatabaseHelper.Instance?.GetData<AdapterInfo>()!;
+            var deviceInfo = await DatabaseHelper.Instance?.GetData<DeviceInfo>()!;
+
+            var switchList = await DatabaseHelper.Instance?.GetDataByTime<Switch>(startTime, endTime)!;
+            var adapterList = await DatabaseHelper.Instance?.GetDataByTime<Adapter>(startTime, endTime)!;
+            var connectionList = await DatabaseHelper.Instance?.GetDataByTime<Connection>(startTime, endTime)!;
+
+            var reportSwitchInfo = ResolveSwitchInfo(switchInfo);
+            var reportSwitchData = ResolveSwitchData(switchInfo, switchList, startTime, endTime);
+            var reportConnectionData = ResolveConnectionData(connectionList, startTime, endTime);
+
             ReportData data = new()
             {
                 Title = "测试数据",
                 Location = LocationName,
                 User = "测试人员",
-                CreateTime = DateTime.Now
+                CreateTime = DateTime.Now,
+                SwitchInfo = reportSwitchInfo,
+                Switch = reportSwitchData,
+                Connection = reportConnectionData,
             };
-            string json = JsonSerializer.Serialize(data, new JsonSerializerOptions() { });
-            string filename = Path.Combine(ReportDirectory, string.Format("NetworkReport {0} {1}.html", LocationName, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")));
-            await ApplyData(json, ReportTemplatePath, filename);
+
+            return data;
         }
 
-        public async Task GetData()
-        {
-            DateTimeOffset startTime = DateTimeOffset.Now - TimeSpan.FromDays(1);
-            DateTimeOffset endTime = DateTimeOffset.Now;
-
-            var switchInfo = await DatabaseHelper.Instance?.GetData<RawData.SwitchInfo>()!;
-            var hostInfo = await DatabaseHelper.Instance?.GetData<RawData.HostInfo>()!;
-            var adapterInfo = await DatabaseHelper.Instance?.GetData<RawData.AdapterInfo>()!;
-            var deviceInfo = await DatabaseHelper.Instance?.GetData<RawData.DeviceInfo>()!;
-
-            var switchList = SamplingData(await DatabaseHelper.Instance?.GetDataByTime<RawData.Switch>(startTime, endTime)!, startTime, endTime);
-            var adapterList = SamplingData(await DatabaseHelper.Instance?.GetDataByTime<RawData.Adapter>(startTime, endTime)!, startTime, endTime);
-            var connectionList = SamplingData(await DatabaseHelper.Instance?.GetDataByTime<RawData.Connection>(startTime, endTime)!, startTime, endTime);
-        }
-
-        private async Task ApplyData(string data, string template, string target)
-        {
-            string tempFile = Path.GetTempFileName();
-            File.Copy(template, tempFile, true);
-            using StreamWriter sw = File.AppendText(tempFile);
-            await sw.WriteLineAsync(string.Format(scriptTag, data));
-            sw.Flush();
-            sw.Dispose();
-            File.Move(tempFile, target);
-        }
-
-        private static IEnumerable<T> SamplingData<T>(IEnumerable<T> list, DateTimeOffset startTime, DateTimeOffset endTime) where T : RawData.TimeData<T>
-        {
-            var newList = list
-                .OrderBy(item => item.Time)
-                .GroupBy(item => item.Time - (item.Time % 60))
-                .Select(group => group.First().Combine(group))
-                .SelectMany(group => group);
-            return newList;
-        }
         public void Dispose()
         {
             Dispose(true);

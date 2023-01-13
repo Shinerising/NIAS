@@ -8,8 +8,8 @@ namespace NIASReport
     {
         public event ErrorEventHandler? ErrorHandler;
 
-        private static TimeSpan ExpireTime = TimeSpan.FromDays(30);
-        private static TimeSpan CheckTime = TimeSpan.FromDays(1);
+        private static readonly TimeSpan ExpireTime = TimeSpan.FromDays(30);
+        private static readonly TimeSpan CheckTime = TimeSpan.FromDays(1);
 
         private readonly Queue<KeyValuePair<Type, object>> insertBuffer;
         private readonly Queue<KeyValuePair<Type, object>> updateBuffer;

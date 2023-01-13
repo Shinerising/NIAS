@@ -150,9 +150,9 @@ namespace NIASReport
             return Enumerable.Empty<T>();
         }
 
-        public async Task<IEnumerable<T>> GetDataByTime<T>(DateTimeOffset startTime, DateTimeOffset endTime)
+        public async Task<IEnumerable<T>> GetDataByTime<T>(long startTime, long endTime)
         {
-            string filter = string.Format("WHERE Time >= {0} AND Time < {1} ORDER BY Time", startTime.ToUnixTimeSeconds(), endTime.ToUnixTimeSeconds());
+            string filter = string.Format("WHERE Time >= {0} AND Time < {1} ORDER BY Time", startTime, endTime);
             return await GetData<T>(filter);
         }
 
