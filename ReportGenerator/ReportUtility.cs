@@ -28,6 +28,33 @@ namespace NIASReport
                 Vendor = item.Vendor,
             }).ToList();
         }
+        public static List<ReportHostInfo> ResolveHostInfo(IEnumerable<HostInfo> hostList, IEnumerable<AdapterInfo> adapterList)
+        {
+            return hostList.Select(item => {
+                var list = adapterList.Where(_item => _item.HostID == item.ID);
+                return new ReportHostInfo()
+                {
+                    ID = item.ID,
+                    Name = item.Name,
+                    Address = string.Join(',', list.Select(_item => _item.Address)),
+                    MACAddress = string.Join(',', list.Select(_item => _item.Address)),
+                    Vendor = string.Join(',', list.Select(_item => _item.Address).Distinct()),
+                };
+            }).ToList();
+        }
+        public static List<ReportDeviceInfo> ResolveDeviceInfo(IEnumerable<DeviceInfo> infoList)
+        {
+            return infoList.Select(item => new ReportDeviceInfo()
+            {
+                Name = item.Name,
+                Address = item.Address,
+                MACAddress = item.MACAddress,
+                Vendor = item.Vendor,
+                OS = item.OS,
+                PortCount = item.PortCount,
+                WarningCount = item.WarningCount,
+            }).ToList();
+        }
         public static List<ReportSwitch> ResolveSwitchData(IEnumerable<SwitchInfo> infoList, IEnumerable<Switch> dataList, long startTime, long endTime)
         {
             var result = new List<ReportSwitch>();
@@ -54,7 +81,7 @@ namespace NIASReport
                 }
 
                 Switch add;
-                Switch empty = new Switch();
+                Switch empty = new();
                 int index = 0;
                 for (long timestamp = startTime - (startTime % 60); timestamp < endTime; timestamp += 60)
                 {
@@ -77,6 +104,70 @@ namespace NIASReport
                     target.PortInSpeed.Add(add.PortInSpeed);
                     target.PortOutSpeed.Add(add.PortOutSpeed);
                 }
+
+                result.Add(target);
+            }
+
+            return result;
+        }
+        public static List<ReportHost> ResolveHostData(IEnumerable<HostInfo> hostInfo, IEnumerable<AdapterInfo> adapterInfo, IEnumerable<Adapter> adapterList, long startTime, long endTime)
+        {
+            var result = new List<ReportHost>();
+
+            if (hostInfo == null || !hostInfo.Any() || adapterInfo == null || !adapterInfo.Any())
+            {
+                return result;
+            }
+
+            var dict = adapterList == null || !adapterList.Any() ? new Dictionary<int, List<Adapter>>()
+                : adapterList
+                .GroupBy(item => item.HostID * 100 + item.AdapterID)
+                .ToDictionary(group => group.Key, group => SamplingData(group).ToList());
+
+            foreach (var item in hostInfo)
+            {
+                var target = new ReportHost(item.ID);
+
+                var collection = new List<List<Adapter>>();
+
+                foreach (var _item in adapterInfo.Where(_item => _item.HostID == item.ID))
+                {
+                    int id = _item.HostID * 100 + _item.ID;
+                    if (dict.ContainsKey(id))
+                    {
+                        collection.Add(dict[id]);
+                    }
+                }
+
+                List<Adapter> add;
+                Adapter empty = new();
+                List<int> offset = new List<int>(new int[collection.Count]);
+                for (long timestamp = startTime - (startTime % 60); timestamp < endTime; timestamp += 60)
+                {
+                    add = new List<Adapter>();
+                    int index = 0;
+                    foreach (var list in collection)
+                    {
+                        if (list.Count > offset[index] && list[offset[index]].Time == timestamp)
+                        {
+                            add.Add(list[offset[index]]);
+                            offset[index] += 1;
+                        }
+                        index += 1;
+                    }
+                    if (add.Count == 0)
+                    {
+                        add.Add(empty);
+                    }
+
+                    target.Time.Add(timestamp);
+                    target.State.Add(add.Count(item => item.State == 2) > 0 ? 2 : add.Max(item => item.State));
+                    target.Latency.Add(add.Min(item => item.Latency));
+                    target.InSpeed.Add(add.Sum(item => item.InSpeed));
+                    target.OutSpeed.Add(add.Sum(item => item.OutSpeed));
+                }
+
+                result.Add(target);
             }
 
             return result;
@@ -90,10 +181,10 @@ namespace NIASReport
                 .GroupBy(item => item.Time)
                 .GroupBy(group => group.Key - (group.Key % 60))
                 .Select(group => group.First())
-                .ToDictionary(group => group.Key, group => group.ToList());
+                .ToDictionary(group => group.Key - (group.Key % 60), group => group.ToList());
 
             List<Connection> add;
-            List<Connection> empty = new List<Connection>();
+            List<Connection> empty = new();
             int index = 0;
             for (long timestamp = startTime - (startTime % 60); timestamp < endTime; timestamp += 60)
             {
@@ -125,7 +216,11 @@ namespace NIASReport
                 .OrderBy(item => item.Time)
                 .GroupBy(item => item.Time - (item.Time % 60))
                 .Select(group => group.First().Combine(group))
-                .SelectMany(group => group);
+                .Select(item =>
+                {
+                    item.Time -= item.Time % 60;
+                    return item;
+                });
         }
     }
 }

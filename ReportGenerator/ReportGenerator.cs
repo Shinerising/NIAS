@@ -12,6 +12,8 @@ namespace NIASReport
     {
         public event ErrorEventHandler? ErrorHandler;
 
+        private static readonly TimeSpan collectTime = TimeSpan.FromDays(1);
+
         private readonly Task task;
         private readonly CancellationTokenSource cancellation;
         public string ReportDirectory { get; private set; }
@@ -72,20 +74,28 @@ namespace NIASReport
 
         public async Task<ReportData> GetData()
         {
-            long startTime = (DateTimeOffset.Now - TimeSpan.FromDays(1)).ToUnixTimeSeconds();
+            if (DatabaseHelper.Instance == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            long startTime = (DateTimeOffset.Now - collectTime).ToUnixTimeSeconds();
             long endTime = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-            var switchInfo = await DatabaseHelper.Instance?.GetData<SwitchInfo>()!;
-            var hostInfo = await DatabaseHelper.Instance?.GetData<HostInfo>()!;
-            var adapterInfo = await DatabaseHelper.Instance?.GetData<AdapterInfo>()!;
-            var deviceInfo = await DatabaseHelper.Instance?.GetData<DeviceInfo>()!;
+            var switchInfo = await DatabaseHelper.Instance.GetData<SwitchInfo>()!;
+            var hostInfo = await DatabaseHelper.Instance.GetData<HostInfo>()!;
+            var adapterInfo = await DatabaseHelper.Instance.GetData<AdapterInfo>()!;
+            var deviceInfo = await DatabaseHelper.Instance.GetData<DeviceInfo>()!;
 
-            var switchList = await DatabaseHelper.Instance?.GetDataByTime<Switch>(startTime, endTime)!;
-            var adapterList = await DatabaseHelper.Instance?.GetDataByTime<Adapter>(startTime, endTime)!;
-            var connectionList = await DatabaseHelper.Instance?.GetDataByTime<Connection>(startTime, endTime)!;
+            var switchList = await DatabaseHelper.Instance.GetDataByTime<Switch>(startTime, endTime)!;
+            var adapterList = await DatabaseHelper.Instance.GetDataByTime<Adapter>(startTime, endTime)!;
+            var connectionList = await DatabaseHelper.Instance.GetDataByTime<Connection>(startTime, endTime)!;
 
             var reportSwitchInfo = ResolveSwitchInfo(switchInfo);
+            var reportHostInfo = ResolveHostInfo(hostInfo, adapterInfo);
+            var reportDeviceInfo = ResolveDeviceInfo(deviceInfo);
             var reportSwitchData = ResolveSwitchData(switchInfo, switchList, startTime, endTime);
+            var reportHostData = ResolveHostData(hostInfo, adapterInfo, adapterList, startTime, endTime);
             var reportConnectionData = ResolveConnectionData(connectionList, startTime, endTime);
 
             ReportData data = new()
@@ -95,7 +105,10 @@ namespace NIASReport
                 User = "测试人员",
                 CreateTime = DateTime.Now,
                 SwitchInfo = reportSwitchInfo,
+                HostInfo = reportHostInfo,
+                DeviceInfo = reportDeviceInfo,
                 Switch = reportSwitchData,
+                Host = reportHostData,
                 Connection = reportConnectionData,
             };
 

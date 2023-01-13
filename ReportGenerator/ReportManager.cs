@@ -28,7 +28,7 @@ namespace NIASReport
             await dbHelper.OpenDatabase();
 
             recorder.Start();
-            //generator.Start();
+            generator.Start();
         }
 
         private void HandleError(object sender, ErrorEventArgs e)

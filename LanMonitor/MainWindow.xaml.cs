@@ -110,7 +110,7 @@ namespace LanMonitor
             reportManager = new ReportManager("C:\\sync", "C:\\sync\\index.html", "测试实验室", 240);
             RawDataHelper.SetManager(reportManager);
             _ = reportManager.Initialize();
-            //reportManager.GenerateNewReport();
+            reportManager.GenerateReport();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

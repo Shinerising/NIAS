@@ -16,7 +16,7 @@ namespace NIASReport
         public abstract class TimeData<T> where T : class
         {
             public abstract long Time { get; set; }
-            public abstract IEnumerable<T> Combine(IEnumerable<T> list);
+            public abstract T Combine(IEnumerable<T> list);
         }
         [Serializable]
         public class SwitchInfo
@@ -39,9 +39,9 @@ namespace NIASReport
             public string Port { get; set; } = "";
             public string PortInSpeed { get; set; } = "";
             public string PortOutSpeed { get; set; } = "";
-            public override IEnumerable<Switch> Combine(IEnumerable<Switch> list)
+            public override Switch Combine(IEnumerable<Switch> list)
             {
-                return list;
+                return list.First();
             }
         }
         [Serializable]
@@ -65,12 +65,13 @@ namespace NIASReport
             public override long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public int HostID { get; set; } = -1;
             public int AdapterID { get; set; } = -1;
+            public int State { get; set; } = 0;
             public float Latency { get; set; } = 0;
             public float InSpeed { get; set; } = 0;
             public float OutSpeed { get; set; } = 0;
-            public override IEnumerable<Adapter> Combine(IEnumerable<Adapter> list)
+            public override Adapter Combine(IEnumerable<Adapter> list)
             {
-                return list;
+                return list.First();
             }
         }
         [Serializable]
@@ -81,10 +82,11 @@ namespace NIASReport
             public int Source { get; set; } = -1;
             public int Target { get; set; } = -1;
             public int AdapterID { get; set; } = -1;
+            public int PortID { get; set; } = -1;
             public int State { get; set; } = 0;
-            public override IEnumerable<Connection> Combine(IEnumerable<Connection> list)
+            public override Connection Combine(IEnumerable<Connection> list)
             {
-                return list;
+                return list.First();
             }
         }
         [Serializable]
@@ -106,9 +108,9 @@ namespace NIASReport
             public string Name { get; set; } = "";
             public string Text { get; set; } = "";
 
-            public override IEnumerable<Log> Combine(IEnumerable<Log> list)
+            public override Log Combine(IEnumerable<Log> list)
             {
-                return list;
+                return list.First();
             }
         }
 
@@ -119,9 +121,9 @@ namespace NIASReport
             public string Name { get; set; } = "";
             public string Text { get; set; } = "";
 
-            public override IEnumerable<Alarm> Combine(IEnumerable<Alarm> list)
+            public override Alarm Combine(IEnumerable<Alarm> list)
             {
-                return list;
+                return list.First();
             }
         }
     }

@@ -201,6 +201,7 @@ namespace LanMonitor
         public LanHostModelView(int id, string name, string iplist)
         {
             Name = name;
+            ID = id;
             AdapterList = iplist == null ? new List<LanHostAdapter>() : iplist.Split(';').Select((item, index) =>
             {
                 if (item.Contains('|'))

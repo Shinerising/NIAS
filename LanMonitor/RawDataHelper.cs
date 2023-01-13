@@ -31,7 +31,7 @@ namespace LanMonitor
         private static DateTime switchTimestamp = DateTime.MinValue;
         public static void SaveSwitchData(SwitchDeviceModelView switchDevice)
         {
-            if (DateTime.Now - switchTimestamp < ListDataSampleSpan)
+            if (reportManager == null || DateTime.Now - switchTimestamp < ListDataSampleSpan)
             {
                 return;
             }
@@ -52,12 +52,12 @@ namespace LanMonitor
                 PortInSpeed = switchDevice.PortList == null ? "" : string.Join(',', switchDevice.PortList.Select(item => item.InRate)),
                 PortOutSpeed = switchDevice.PortList == null ? "" : string.Join(',', switchDevice.PortList.Select(item => item.OutRate)),
             };
-            reportManager?.AddData(new[] { @switch });
+            reportManager.AddData(new[] { @switch });
         }
         private static DateTime adapterTimestamp = DateTime.MinValue;
         public static void SaveAdapterData(IEnumerable<LanHostModelView> hostList)
         {
-            if (DateTime.Now - adapterTimestamp < ListDataSampleSpan)
+            if (reportManager == null || DateTime.Now - adapterTimestamp < ListDataSampleSpan)
             {
                 return;
             }
@@ -80,18 +80,19 @@ namespace LanMonitor
                     {
                         HostID = host.ID,
                         AdapterID = adapter.ID,
+                        State = ConvertState(adapter.State),
                         Latency = 0,
                         InSpeed = adapter.Host?.Port?.InRate ?? 0,
                         OutSpeed = adapter.Host?.Port?.OutRate ?? 0,
                     });
                 }
             }
-            reportManager?.AddData(list);
+            reportManager.AddData(list);
         }
         private static DateTime connectionTimestamp = DateTime.MinValue;
         public static void SaveConnectionData(IEnumerable<LanHostModelView> hostList, IEnumerable<SwitchConnectonModelView> connectionList)
         {
-            if (DateTime.Now - connectionTimestamp < ListDataSampleSpan)
+            if (reportManager == null || DateTime.Now - connectionTimestamp < ListDataSampleSpan)
             {
                 return;
             }
@@ -135,17 +136,18 @@ namespace LanMonitor
                             Source = adapter.SwitchDevice.ID,
                             Target = host.ID,
                             AdapterID = adapter.ID,
+                            PortID = adapter.Host?.Port?.Index ?? -1,
                             State = ConvertState(adapter.State)
                         });
                     }
                 }
             }
-            reportManager?.AddData(list);
+            reportManager.AddData(list);
         }
         private static DateTime logTimestamp = DateTime.MinValue;
         public static void SaveLogData(string name, string text)
         {
-            if (DateTime.Now - logTimestamp < ListDataSampleSpan)
+            if (reportManager == null || DateTime.Now - logTimestamp < ListDataSampleSpan)
             {
                 return;
             }
@@ -156,12 +158,12 @@ namespace LanMonitor
                 Name = name,
                 Text = text,
             };
-            reportManager?.AddData(new[] { @log });
+            reportManager.AddData(new[] { @log });
         }
         private static DateTime alarmTimestamp = DateTime.MinValue;
         public static void SaveAlarmData(string name, string text)
         {
-            if (DateTime.Now - alarmTimestamp < ListDataSampleSpan)
+            if (reportManager == null || DateTime.Now - alarmTimestamp < ListDataSampleSpan)
             {
                 return;
             }
@@ -172,13 +174,13 @@ namespace LanMonitor
                 Name = name,
                 Text = text,
             };
-            reportManager?.AddData(new[] { @alarm });
+            reportManager.AddData(new[] { @alarm });
         }
 
         private static DateTime switchInfoTimestamp = DateTime.MinValue;
         public static void SaveSwitchInfo(IEnumerable<SwitchDeviceModelView> switchList)
         {
-            if (DateTime.Now - switchInfoTimestamp < InfoDataSampleSpan)
+            if (reportManager == null || DateTime.Now - switchInfoTimestamp < InfoDataSampleSpan)
             {
                 return;
             }
@@ -192,13 +194,13 @@ namespace LanMonitor
                 MACAddress = item.MACAddress,
                 Vendor = item.Information
             }).ToList();
-            reportManager?.UpdateInfo(list);
+            reportManager.UpdateInfo(list);
         }
 
         private static DateTime hostInfoTimestamp = DateTime.MinValue;
         public static void SaveHostInfo(IEnumerable<LanHostModelView> hostList)
         {
-            if (DateTime.Now - hostInfoTimestamp < InfoDataSampleSpan)
+            if (reportManager == null || DateTime.Now - hostInfoTimestamp < InfoDataSampleSpan)
             {
                 return;
             }
@@ -230,14 +232,14 @@ namespace LanMonitor
                     });
                 }
             }
-            reportManager?.UpdateInfo(list);
-            reportManager?.UpdateInfo(adapterList);
+            reportManager.UpdateInfo(list);
+            reportManager.UpdateInfo(adapterList);
         }
 
         private static DateTime deviceInfoTimestamp = DateTime.MinValue;
         public static void SaveDeviceInfo(IEnumerable<NMAPHost> hostList)
         {
-            if (DateTime.Now - deviceInfoTimestamp < InfoDataSampleSpan)
+            if (reportManager == null || DateTime.Now - deviceInfoTimestamp < InfoDataSampleSpan)
             {
                 return;
             }
@@ -253,7 +255,7 @@ namespace LanMonitor
                 PortCount = item.PortList.Count,
                 WarningCount = item.PortList.Count(item => item.IsWarning),
             }).ToList();
-            reportManager?.UpdateInfo(list);
+            reportManager.UpdateInfo(list);
         }
     }
 }

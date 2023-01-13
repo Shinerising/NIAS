@@ -17,7 +17,7 @@ namespace NIASReport
             return Instance;
         }
 
-        private static readonly List<Type> ReserveTypes = new() { typeof(RawData.Switch), typeof(RawData.Adapter), typeof(RawData.Connection), typeof(RawData.SwitchInfo), typeof(RawData.HostInfo), typeof(RawData.DeviceInfo) };
+        private static readonly List<Type> ReserveTypes = new() { typeof(RawData.Switch), typeof(RawData.Adapter), typeof(RawData.Connection), typeof(RawData.SwitchInfo), typeof(RawData.HostInfo), typeof(RawData.AdapterInfo), typeof(RawData.DeviceInfo) };
         private static readonly List<Type> ExpirableTypes = new() { typeof(RawData.Switch), typeof(RawData.Adapter), typeof(RawData.Connection) };
 
         public event ErrorEventHandler? ErrorHandler;

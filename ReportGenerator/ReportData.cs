@@ -1,4 +1,5 @@
-﻿using static NIASReport.RawData;
+﻿using System.Runtime.Intrinsics.Arm;
+using static NIASReport.RawData;
 
 namespace NIASReport
 {
@@ -73,12 +74,21 @@ namespace NIASReport
 
     public class ReportHost
     {
-        public int? ID { get; set; }
-        public List<long>? Time { get; set; }
-        public List<int>? State { get; set; }
-        public List<float>? Latency { get; set; }
-        public List<float>? InSpeed { get; set; }
-        public List<float>? OutSpeed { get; set; }
+        public int ID { get; set; }
+        public List<long> Time { get; set; }
+        public List<int> State { get; set; }
+        public List<float> Latency { get; set; }
+        public List<float> InSpeed { get; set; }
+        public List<float> OutSpeed { get; set; }
+        public ReportHost(int id)
+        {
+            ID = id;
+            Time = new List<long>();
+            State = new List<int>();
+            Latency = new List<float>();
+            InSpeed = new List<float>();
+            OutSpeed = new List<float>();
+        }
     }
 
     public class ReportConnection
