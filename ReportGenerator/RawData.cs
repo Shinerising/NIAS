@@ -1,4 +1,6 @@
-﻿namespace NIASReport
+﻿using static NIASReport.RawData;
+
+namespace NIASReport
 {
     public class RawData
     {
@@ -11,6 +13,11 @@
             Error,
             Fatal
         }
+        public abstract class TimeData<T> where T : class
+        {
+            public abstract long Time { get; set; }
+            public abstract IEnumerable<T> Combine(IEnumerable<T> list);
+        }
         [Serializable]
         public class SwitchInfo
         {
@@ -21,10 +28,10 @@
             public string Vendor { get; set; } = "";
         }
         [Serializable]
-        public class Switch
+        public class Switch : TimeData<Switch>
         {
+            public override long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public int SwitchID { get; set; } = -1;
-            public long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public int State { get; set; } = 0;
             public float CPU { get; set; } = 0;
             public float REM { get; set; } = 0;
@@ -32,6 +39,10 @@
             public string Port { get; set; } = "";
             public string PortInSpeed { get; set; } = "";
             public string PortOutSpeed { get; set; } = "";
+            public override IEnumerable<Switch> Combine(IEnumerable<Switch> list)
+            {
+                return list;
+            }
         }
         [Serializable]
         public class HostInfo
@@ -49,24 +60,32 @@
             public string Vendor { get; set; } = "";
         }
         [Serializable]
-        public class Adapter
+        public class Adapter : TimeData<Adapter>
         {
+            public override long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public int HostID { get; set; } = -1;
             public int AdapterID { get; set; } = -1;
-            public long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public float Latency { get; set; } = 0;
             public float InSpeed { get; set; } = 0;
             public float OutSpeed { get; set; } = 0;
+            public override IEnumerable<Adapter> Combine(IEnumerable<Adapter> list)
+            {
+                return list;
+            }
         }
         [Serializable]
-        public class Connection
+        public class Connection : TimeData<Connection>
         {
-            public long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
+            public override long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public int Type { get; set; } = 0;
             public int Source { get; set; } = -1;
             public int Target { get; set; } = -1;
             public int AdapterID { get; set; } = -1;
             public int State { get; set; } = 0;
+            public override IEnumerable<Connection> Combine(IEnumerable<Connection> list)
+            {
+                return list;
+            }
         }
         [Serializable]
         public class DeviceInfo
@@ -81,19 +100,29 @@
         }
 
         [Serializable]
-        public class Log
+        public class Log : TimeData<Log>
         {
-            public long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
+            public override long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public string Name { get; set; } = "";
             public string Text { get; set; } = "";
+
+            public override IEnumerable<Log> Combine(IEnumerable<Log> list)
+            {
+                return list;
+            }
         }
 
         [Serializable]
-        public class Alarm
+        public class Alarm : TimeData<Alarm>
         {
-            public long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
+            public override long Time { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
             public string Name { get; set; } = "";
             public string Text { get; set; } = "";
+
+            public override IEnumerable<Alarm> Combine(IEnumerable<Alarm> list)
+            {
+                return list;
+            }
         }
     }
 }

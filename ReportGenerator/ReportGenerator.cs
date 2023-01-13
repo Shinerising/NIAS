@@ -1,8 +1,10 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace NIASReport
 {
-    public class ReportGenerator
+    public class ReportGenerator : IDisposable
     {
         private const string scriptTag = "<script id=\"rawData\" type=\"application/json\">{0}</script>";
 
@@ -12,6 +14,7 @@ namespace NIASReport
         public string ReportTemplatePath { get; private set; }
         public string LocationName { get; private set; }
         public TimeSpan RefreshTime { get; set; }
+        public bool IsGenerateRequested { get; set; }
 
         public ReportGenerator()
         {
@@ -31,7 +34,11 @@ namespace NIASReport
             {
                 if (DateTimeOffset.Now >= (DateTimeOffset.Now.Date + RefreshTime) && timestamp < (DateTimeOffset.Now.Date + RefreshTime))
                 { 
-                    GenerateFile();
+                    await GenerateFile();
+                }
+                else if (IsGenerateRequested)
+                {
+                    await GenerateFile();
                 }
 
                 timestamp = DateTimeOffset.Now;
@@ -39,7 +46,7 @@ namespace NIASReport
             }
         }
 
-        public void GenerateFile()
+        public async Task GenerateFile()
         {
             ReportData data = new()
             {
@@ -50,23 +57,43 @@ namespace NIASReport
             };
             string json = JsonSerializer.Serialize(data, new JsonSerializerOptions() { });
             string filename = Path.Combine(ReportDirectory, string.Format("NetworkReport {0} {1}.html", LocationName, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")));
-            ApplyData(json, ReportTemplatePath, filename);
+            await ApplyData(json, ReportTemplatePath, filename);
         }
 
-        public void GetData()
+        public async Task GetData()
         {
+            DateTimeOffset startTime = DateTimeOffset.Now - TimeSpan.FromDays(1);
+            DateTimeOffset endTime = DateTimeOffset.Now;
 
+            var switchInfo = await DatabaseHelper.Instance?.GetData<RawData.SwitchInfo>()!;
+            var hostInfo = await DatabaseHelper.Instance?.GetData<RawData.HostInfo>()!;
+            var adapterInfo = await DatabaseHelper.Instance?.GetData<RawData.AdapterInfo>()!;
+            var deviceInfo = await DatabaseHelper.Instance?.GetData<RawData.DeviceInfo>()!;
+
+            var switchList = SamplingData(await DatabaseHelper.Instance?.GetDataByTime<RawData.Switch>(startTime, endTime)!, startTime, endTime);
+            var adapterList = SamplingData(await DatabaseHelper.Instance?.GetDataByTime<RawData.Adapter>(startTime, endTime)!, startTime, endTime);
+            var connectionList = SamplingData(await DatabaseHelper.Instance?.GetDataByTime<RawData.Connection>(startTime, endTime)!, startTime, endTime);
         }
 
-        public void ApplyData(string data, string template, string target)
+        private async Task ApplyData(string data, string template, string target)
         {
             string tempFile = Path.GetTempFileName();
             File.Copy(template, tempFile, true);
             using StreamWriter sw = File.AppendText(tempFile);
-            sw.WriteLine(string.Format(scriptTag, data));
+            await sw.WriteLineAsync(string.Format(scriptTag, data));
             sw.Flush();
             sw.Dispose();
             File.Move(tempFile, target);
+        }
+
+        private static IEnumerable<T> SamplingData<T>(IEnumerable<T> list, DateTimeOffset startTime, DateTimeOffset endTime) where T : RawData.TimeData<T>
+        {
+            var newList = list
+                .OrderBy(item => item.Time)
+                .GroupBy(item => item.Time - (item.Time % 60))
+                .Select(group => group.First().Combine(group))
+                .SelectMany(group => group);
+            return newList;
         }
         public void Dispose()
         {

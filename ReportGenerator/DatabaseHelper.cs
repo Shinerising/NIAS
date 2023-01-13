@@ -141,7 +141,7 @@ namespace NIASReport
             {
                 string tableName = typeof(T).Name;
                 string sql = string.Format("SELECT * FROM {0} {1};", tableName, filter);
-                return await connection.QueryAsync<T>(sql);
+                return (await connection.QueryAsync<T>(sql)).ToList();
             }
             catch (Exception e)
             {
