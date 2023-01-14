@@ -7,29 +7,29 @@ import {
   ImageSwitch,
 } from "./images/ImageResource";
 
-defineProps<{
+const props = defineProps<{
   data: ReportData;
 }>();
 
 const deviceList = {
-  switchList: [
-    { name: "Switch A", system: "Huawei S5720", brief: "172.16.34.1" },
-    { name: "Switch B", system: "Huawei S5720", brief: "172.16.34.2" },
-    { name: "Switch C", system: "Huawei S5720", brief: "172.16.34.3" },
-    { name: "Switch D", system: "Huawei S5720", brief: "172.16.34.4" },
-  ],
-  computerList: [
-    { name: "Computer", system: "Windows 11", brief: "172.16.34.101" },
-    { name: "Computer", system: "Windows 11", brief: "172.16.34.101" },
-    { name: "Computer", system: "Windows 11", brief: "172.16.34.101" },
-    { name: "Computer", system: "Windows 11", brief: "172.16.34.101" },
-    { name: "Computer", system: "Windows 11", brief: "172.16.34.101" },
-  ],
-  hostList: [
-    { name: "NPort", system: "Linux", brief: "172.16.34.201" },
-    { name: "NPort", system: "Linux", brief: "172.16.34.201" },
-    { name: "NPort", system: "Linux", brief: "172.16.34.201" },
-  ],
+  switchList: props.data.SwitchInfo?.map((item) => ({
+    name: item.Name,
+    address: item.Address,
+    mac: item.MACAddress,
+    brief: item.Vendor,
+  })),
+  computerList: props.data.HostInfo?.map((item) => ({
+    name: item.Name,
+    address: item.Address,
+    mac: item.MACAddress,
+    brief: item.Vendor,
+  })),
+  hostList: props.data.DeviceInfo?.map((item) => ({
+    name: item.Name,
+    address: item.Address,
+    mac: item.MACAddress,
+    brief: item.Vendor,
+  })),
 };
 </script>
 
@@ -100,31 +100,37 @@ const deviceList = {
   </div>
   <hr class="top-zero" />
   <h2>局域网络整体统计数据</h2>
-  <p>交换机设备</p>
+  <p><b>交换机设备</b></p>
+  <p v-if="!deviceList.switchList?.length">未能收集到相关数据。</p>
   <ul class="device-list">
     <li v-for="(item, i) in deviceList.switchList" :key="i">
       <img :src="ImageSwitch" alt="Icon Switch Hub" />
-      <span>{{ item.name }}</span>
-      <span>{{ item.system }}</span>
-      <span>{{ item.brief }}</span>
+      <span>{{ item.name || "未知" }}</span>
+      <span>{{ item.address || "未知" }}</span>
+      <span>{{ item.mac || "未知" }}</span>
+      <span>{{ item.brief || "未知" }}</span>
     </li>
   </ul>
-  <p>计算机设备</p>
+  <p><b>计算机设备</b></p>
+  <p v-if="!deviceList.computerList?.length">未能收集到相关数据。</p>
   <ul class="device-list">
     <li v-for="(item, i) in deviceList.computerList" :key="i">
       <img :src="ImageComputer" alt="Icon Computer" />
-      <span>{{ item.name }}</span>
-      <span>{{ item.system }}</span>
-      <span>{{ item.brief }}</span>
+      <span>{{ item.name || "未知" }}</span>
+      <span>{{ item.address || "未知" }}</span>
+      <span>{{ item.mac || "未知" }}</span>
+      <span>{{ item.brief || "未知" }}</span>
     </li>
   </ul>
-  <p>网络通信设备</p>
+  <p><b>网络通信设备</b></p>
+  <p v-if="!deviceList.hostList?.length">未能收集到相关数据。</p>
   <ul class="device-list">
     <li v-for="(item, i) in deviceList.hostList" :key="i">
       <img :src="ImageRouter" alt="Icon Network Router" />
-      <span>{{ item.name }}</span>
-      <span>{{ item.system }}</span>
-      <span>{{ item.brief }}</span>
+      <span>{{ item.name || "未知" }}</span>
+      <span>{{ item.address || "未知" }}</span>
+      <span>{{ item.mac || "未知" }}</span>
+      <span>{{ item.brief || "未知" }}</span>
     </li>
   </ul>
 </template>
@@ -195,13 +201,17 @@ ul.device-list > li:nth-child(even) {
 
 ul.device-list > li > * {
   display: block;
-  flex: 1;
+  flex: 2 1 0;
+  width: 0;
   padding: 0.5rem;
+  word-wrap: break-word;
   border-right: 1px solid var(--color-border);
 }
 
-ul.device-list > li > *:nth-child(3) {
-  flex: 2;
+ul.device-list > li > *:nth-child(2) {
+  flex: 1 1 0;
+  width: 0;
+  word-wrap: break-word;
 }
 
 ul.device-list > li > *:last-child {

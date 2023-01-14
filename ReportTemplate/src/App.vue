@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ReportData } from "./components/interface/ReportData.interface";
-import { DemoData } from "./components/interface/ReportData.interface";
+import DemoData from "./assets/demodata.json";
 import { PrintStore } from "./stores/PrintStore";
 import ReportHeader from "./components/ReportHeader.vue";
 import ReportStats from "./components/ReportStats.vue";

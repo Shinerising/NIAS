@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, provide, type Ref } from "vue";
+import { ref, provide, type ComponentPublicInstance } from "vue";
 import { use, type ECharts } from "echarts/core";
 import { SVGRenderer } from "echarts/renderers";
 import {
@@ -33,15 +33,13 @@ import IconHub from "./icons/IconHub.vue";
 import ChartTraffic from "./charts/ChartTraffic";
 import ChartStatus from "./charts/ChartStatus";
 import ChartPort from "./charts/ChartPort";
-import ChartGraph from "./charts/ChartGraph";
-import ChartScatter from "./charts/ChartScatter";
+import ChartGraph, { updateLinks } from "./charts/ChartGraph";
+import ChartState from "././charts/ChartState";
 import ChartBar from "./charts/ChartBar";
-
-import { GetColor } from "./colors/ColorImpact";
 
 import { PrintStore } from "../stores/PrintStore";
 
-defineProps<{
+const props = defineProps<{
   data: ReportData;
 }>();
 
@@ -67,89 +65,40 @@ provide(THEME_KEY, "light");
 const option01 = ref(ChartTraffic);
 const option02 = ref(ChartStatus);
 const option03 = ref(ChartPort);
-const option04 = ref(ChartGraph);
-const option06 = ref(ChartScatter);
+const optionGraph = ref(
+  ChartGraph(
+    "网络拓扑图",
+    props.data.SwitchInfo,
+    props.data.HostInfo,
+    props.data.Connection
+  )
+);
+const optionState = ChartState("网络状态图", props.data.Connection);
 const option05 = ref(ChartBar);
 
-const chart01: Ref<ECharts | null> = ref(null);
-const chart02: Ref<ECharts | null> = ref(null);
-const chart03: Ref<ECharts | null> = ref(null);
-const chart04: Ref<ECharts | null> = ref(null);
-const chart05: Ref<ECharts | null> = ref(null);
-const chart06: Ref<ECharts | null> = ref(null);
+const refList: ECharts[] = [];
 
-PrintStore().AddPrintCallback(() => {
-  chart01?.value?.resize();
-  chart02?.value?.resize();
-  chart03?.value?.resize();
-  chart04?.value?.resize();
-  chart05?.value?.resize();
-  chart06?.value?.resize();
+const setRef = (
+  element: Element | ComponentPublicInstance | ECharts | null
+) => {
+  refList.push(element as ECharts);
+};
+
+PrintStore().AddPrintCallback((isPre: boolean) => {
+  refList.forEach((item) => item?.resize());
+  optionGraph.value.series[0].zoom = isPre ? 0.6 : 1;
 });
 
-const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
-  const xAxisInfo = event.axesInfo[0];
-  if (xAxisInfo) {
-    option04.value.series[0].force.friction = 0;
-    option04.value.series[0].links = [
-      {
-        source: 0,
-        target: 1,
-        value: 1,
-        lineStyle: {
-          color: GetColor(Math.floor(Math.random() * 4) + 1),
-        },
-      },
-      {
-        source: 0,
-        target: 2,
-        value: 1,
-        lineStyle: {
-          color: GetColor(Math.floor(Math.random() * 4) + 1),
-        },
-      },
-      {
-        source: 0,
-        target: 3,
-        value: 1,
-        lineStyle: {
-          color: GetColor(Math.floor(Math.random() * 4) + 1),
-        },
-      },
-      {
-        source: 1,
-        target: 4,
-        value: 1,
-        lineStyle: {
-          color: GetColor(Math.floor(Math.random() * 4) + 1),
-        },
-      },
-      {
-        source: 0,
-        target: 4,
-        value: 1,
-        lineStyle: {
-          color: GetColor(Math.floor(Math.random() * 4) + 1),
-        },
-      },
-      {
-        source: 0,
-        target: 5,
-        value: 1,
-        lineStyle: {
-          color: GetColor("unknown"),
-        },
-      },
-      {
-        source: 1,
-        target: 6,
-        value: 1,
-        lineStyle: {
-          color: GetColor("unknown"),
-        },
-      },
-    ];
-  }
+const updateAxisPointer = (event: { dataIndex: number }) => {
+  const index = event.dataIndex;
+  const links = updateLinks(
+    index,
+    props.data.SwitchInfo?.length ?? 0,
+    props.data.Connection
+  );
+
+  optionGraph.value.series[0].force.friction = 0;
+  optionGraph.value.series[0].links = links;
 };
 </script>
 
@@ -165,14 +114,14 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
       <div>
         <v-chart
           class="chart"
-          :option="option06"
-          ref="chart06"
+          :option="optionState"
+          :ref="setRef"
           @updateAxisPointer="updateAxisPointer"
           autoresize
         />
       </div>
       <div>
-        <v-chart class="chart" :option="option04" ref="chart04" autoresize />
+        <v-chart class="chart" :option="optionGraph" :ref="setRef" autoresize />
       </div>
     </div>
   </ReportSection>
@@ -183,7 +132,7 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
     </template>
     <template #heading>交换机工作状态数据</template>
     <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option02" ref="chart02" autoresize />
+      <v-chart class="chart" :option="option02" :ref="setRef" autoresize />
     </div>
   </ReportSection>
 
@@ -193,7 +142,7 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
     </template>
     <template #heading>交换机网络接口数据</template>
     <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option03" ref="chart03" autoresize />
+      <v-chart class="chart" :option="option03" :ref="setRef" autoresize />
     </div>
   </ReportSection>
 
@@ -203,7 +152,7 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
     </template>
     <template #heading>网络设备工作状态总体统计数据</template>
     <div class="chart-wrapper no-break large">
-      <v-chart class="chart" :option="option01" ref="chart01" autoresize />
+      <v-chart class="chart" :option="option01" :ref="setRef" autoresize />
     </div>
   </ReportSection>
 
@@ -213,7 +162,7 @@ const updateAxisPointer = (event: { axesInfo: { value: number }[] }) => {
     </template>
     <template #heading>网络设备通信流量数据</template>
     <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option05" ref="chart05" autoresize />
+      <v-chart class="chart" :option="option05" :ref="setRef" autoresize />
     </div>
   </ReportSection>
 </template>
