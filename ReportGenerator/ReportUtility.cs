@@ -200,7 +200,7 @@ namespace NIASReport
 
                 int count = add.Count;
                 int error = add.Count(item => item.State != 2);
-                int state = count == 0 ? 1 : error > 2 ? 4 : error > 0 ? 3 : 2;
+                int state = count == 0 ? 0 : error > 2 ? 3 : error > 0 ? 2 : 1;
 
                 result.Time.Add(timestamp);
                 result.State.Add(state);
