@@ -37,8 +37,8 @@ namespace NIASReport
                     ID = item.ID,
                     Name = item.Name,
                     Address = string.Join(',', list.Select(_item => _item.Address)),
-                    MACAddress = string.Join(',', list.Select(_item => _item.Address)),
-                    Vendor = string.Join(',', list.Select(_item => _item.Address).Distinct()),
+                    MACAddress = string.Join(',', list.Select(_item => _item.MACAddress)),
+                    Vendor = string.Join(',', list.Select(_item => _item.Vendor).Distinct()),
                 };
             }).ToList();
         }
