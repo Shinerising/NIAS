@@ -5,7 +5,7 @@ export const ImpactColor = [
   "#FFC400",
   "#FF3D00",
   "#D50000",
-];
+] as const;
 export const LabelColor = [
   "#212121",
   "#607D8B",
@@ -13,7 +13,7 @@ export const LabelColor = [
   "#EF6C00",
   "#D84315",
   "#B71C1C",
-];
+] as const;
 export const ImpactLevel = [
   "unknown",
   "idle",

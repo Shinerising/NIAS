@@ -1,37 +1,20 @@
 import type { EChartsOption } from "echarts";
 import moment from "moment";
 import type {
-  ReportHostInfo,
-  ReportHost,
+  ReportSwitchInfo,
+  ReportSwitch,
 } from "../interface/ReportData.interface";
 
 export default (
   title: string,
-  info: ReportHostInfo | null,
-  list: ReportHost
+  info: ReportSwitchInfo | null,
+  list: ReportSwitch
 ) => {
-  const data = [list.Time, list.InSpeed, list.OutSpeed, list.Latency];
-  const mark: [{ xAxis: number }, { xAxis: number }][] = [];
-  for (let i = 0, j = 0, s = 0; i < list.State.length; i += 1) {
-    const state = list.State[i];
-    if (s === 0 && state > 2) {
-      j = i;
-      s = 1;
-    } else if (s === 1 && state <= 2) {
-      s = 0;
-      mark.push([
-        {
-          xAxis: list.Time[j],
-        },
-        {
-          xAxis: list.Time[i],
-        },
-      ]);
-    }
-  }
+  const data = [list.Time, list.CPU, list.REM, list.TEM];
+
   return {
     title: {
-      text: `${title} • ${info?.Name ?? "未知计算机"}`,
+      text: `${title} • ${info?.Name ?? "未知交换机"}`,
     },
     tooltip: {
       trigger: "axis",
@@ -41,7 +24,12 @@ export default (
       formatter: (args: unknown) => {
         const data = args as [
           {
-            data: [number, number, number, number, number];
+            data: [
+              time: number,
+              value0: number,
+              value1: number,
+              value2: number
+            ];
             marker: string;
             seriesName: string;
           },
@@ -57,11 +45,11 @@ export default (
         return `时间：${moment
           .unix(data[0].data[0])
           .format("MM-DD HH:mm")}<br>${data[0].marker}${data[0].seriesName}：${
-          data[0].data[1].toFixed(0) + "Mbps"
+          (data[0].data[1] * 100).toFixed(0) + "%"
         }<br>${data[1].marker}${data[1].seriesName}：${
-          data[0].data[2].toFixed(0) + "Mbps"
+          (data[0].data[2] * 100).toFixed(0) + "%"
         }<br>${data[2].marker}${data[2].seriesName}：${
-          data[0].data[3].toFixed(0) + "ms"
+          data[0].data[3].toFixed(2) + "℃"
         }`;
       },
     },
@@ -77,57 +65,50 @@ export default (
     },
     yAxis: [
       {
-        name: "网络流量",
+        name: "CPU&内存占用率",
         type: "value",
+        max: 1,
+        min: 0,
         axisLabel: {
-          formatter: (value: number) => value.toFixed(0) + "Mbps",
+          formatter: (value: number) => (value * 100).toFixed(0) + "%",
         },
       },
       {
-        name: "网络时延",
+        name: "",
         type: "value",
         alignTicks: true,
-        max: 1000,
+        position: "left",
+        max: 1,
+        min: 0,
+        show: false,
+      },
+      {
+        name: "设备温度",
+        type: "value",
+        alignTicks: true,
+        max: 100,
         min: 0,
         axisLabel: {
-          formatter: (value: number) => value.toFixed(0) + "ms",
+          formatter: (value: number) => value.toFixed(0) + "℃",
         },
       },
     ],
     dataset: {
       dimensions: [
         { name: "time", type: "time" },
-        { name: "inrate", type: "int" },
-        { name: "outrate", type: "int" },
-        { name: "latency", type: "int" },
+        { name: "cpu", type: "int" },
+        { name: "memory", type: "int" },
+        { name: "temperature", type: "int" },
       ],
       source: data,
     },
     series: [
       {
         type: "line",
-        name: "传入流量",
+        name: "CPU占用率",
         encode: {
           x: "time",
-          y: "inrate",
-        },
-        seriesLayoutBy: "row",
-        animation: false,
-        showSymbol: false,
-        sampling: "average",
-        markArea: {
-          itemStyle: {
-            color: "rgba(255, 173, 177, 0.4)",
-          },
-          data: mark,
-        },
-      },
-      {
-        type: "line",
-        name: "传出流量",
-        encode: {
-          x: "time",
-          y: "outrate",
+          y: "cpu",
         },
         seriesLayoutBy: "row",
         animation: false,
@@ -136,11 +117,24 @@ export default (
       },
       {
         type: "line",
-        name: "网络时延",
+        name: "内存占用率",
         yAxisIndex: 1,
         encode: {
           x: "time",
-          y: "latency",
+          y: "memory",
+        },
+        seriesLayoutBy: "row",
+        animation: false,
+        showSymbol: false,
+        sampling: "average",
+      },
+      {
+        type: "line",
+        name: "设备温度",
+        yAxisIndex: 2,
+        encode: {
+          x: "time",
+          y: "temperature",
         },
         seriesLayoutBy: "row",
         animation: false,

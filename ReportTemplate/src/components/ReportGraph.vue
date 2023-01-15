@@ -30,12 +30,12 @@ import IconChart from "./icons/IconChart.vue";
 import IconRouter from "./icons/IconRouter.vue";
 import IconHub from "./icons/IconHub.vue";
 
-import ChartTraffic from "./charts/ChartTraffic";
-import ChartStatus from "./charts/ChartStatus";
+import ChartStats from "./charts/ChartStats";
+import ChartSwitch from "./charts/ChartSwitch";
 import ChartPort from "./charts/ChartPort";
 import ChartGraph, { updateLinks } from "./charts/ChartGraph";
 import ChartState from "././charts/ChartState";
-import ChartBar from "./charts/ChartBar";
+import ChartStatus from "./charts/ChartStatus";
 
 import { PrintStore } from "../stores/PrintStore";
 
@@ -62,9 +62,7 @@ use([
 
 provide(THEME_KEY, "light");
 
-const option01 = ref(ChartTraffic);
-const option02 = ref(ChartStatus);
-const option03 = ref(ChartPort);
+const optionStats = ChartStats();
 const optionGraph = ref(
   ChartGraph(
     "网络拓扑图",
@@ -74,7 +72,27 @@ const optionGraph = ref(
   )
 );
 const optionState = ChartState("网络状态图", props.data.Connection);
-const option05 = ref(ChartBar);
+const optionSwitchList = props.data.Switch?.map((item, index) =>
+  ChartSwitch(
+    "工作状态曲线",
+    props.data.SwitchInfo ? props.data.SwitchInfo[index] : null,
+    item
+  )
+);
+const optionSwitchPort = props.data.Switch?.map((item, index) =>
+  ChartPort(
+    "网口流量变化",
+    props.data.SwitchInfo ? props.data.SwitchInfo[index] : null,
+    item
+  )
+);
+const optionHostList = props.data.Host?.map((item, index) =>
+  ChartStatus(
+    "工作状态曲线",
+    props.data.HostInfo ? props.data.HostInfo[index] : null,
+    item
+  )
+);
 
 const refList: ECharts[] = [];
 
@@ -107,6 +125,16 @@ const updateAxisPointer = (event: { dataIndex: number }) => {
 
   <ReportSection>
     <template #icon>
+      <IconComputer />
+    </template>
+    <template #heading>网络设备工作状态总体统计数据</template>
+    <div class="chart-wrapper no-break large">
+      <v-chart class="chart" :option="optionStats" :ref="setRef" autoresize />
+    </div>
+  </ReportSection>
+
+  <ReportSection>
+    <template #icon>
       <IconHub />
     </template>
     <template #heading>局域网络拓扑图</template>
@@ -131,9 +159,11 @@ const updateAxisPointer = (event: { dataIndex: number }) => {
       <IconRouter />
     </template>
     <template #heading>交换机工作状态数据</template>
-    <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option02" :ref="setRef" autoresize />
-    </div>
+    <template v-for="(option, i) in optionSwitchList" :key="i">
+      <div class="chart-wrapper no-break">
+        <v-chart class="chart" :option="option" :ref="setRef" autoresize />
+      </div>
+    </template>
   </ReportSection>
 
   <ReportSection>
@@ -141,19 +171,11 @@ const updateAxisPointer = (event: { dataIndex: number }) => {
       <IconEthernet />
     </template>
     <template #heading>交换机网络接口数据</template>
-    <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option03" :ref="setRef" autoresize />
-    </div>
-  </ReportSection>
-
-  <ReportSection>
-    <template #icon>
-      <IconComputer />
+    <template v-for="(option, i) in optionSwitchPort" :key="i">
+      <div class="chart-wrapper no-break">
+        <v-chart class="chart" :option="option" :ref="setRef" autoresize />
+      </div>
     </template>
-    <template #heading>网络设备工作状态总体统计数据</template>
-    <div class="chart-wrapper no-break large">
-      <v-chart class="chart" :option="option01" :ref="setRef" autoresize />
-    </div>
   </ReportSection>
 
   <ReportSection>
@@ -161,9 +183,11 @@ const updateAxisPointer = (event: { dataIndex: number }) => {
       <IconChart />
     </template>
     <template #heading>网络设备通信流量数据</template>
-    <div class="chart-wrapper no-break">
-      <v-chart class="chart" :option="option05" :ref="setRef" autoresize />
-    </div>
+    <template v-for="(option, i) in optionHostList" :key="i">
+      <div class="chart-wrapper no-break">
+        <v-chart class="chart" :option="option" :ref="setRef" autoresize />
+      </div>
+    </template>
   </ReportSection>
 </template>
 
