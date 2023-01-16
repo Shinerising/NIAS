@@ -1,6 +1,4 @@
-﻿using static NIASReport.RawData;
-
-namespace NIASReport
+﻿namespace NIASReport
 {
     public class RawData
     {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
+﻿using System.Text.Json;
 using static NIASReport.RawData;
 using static NIASReport.ReportUtility;
 
@@ -43,7 +39,7 @@ namespace NIASReport
             while (!cancellation.Token.IsCancellationRequested)
             {
                 if (DateTimeOffset.Now >= (DateTimeOffset.Now.Date + RefreshTime) && timestamp < (DateTimeOffset.Now.Date + RefreshTime))
-                { 
+                {
                     await GenerateFile();
                 }
                 else if (IsGenerateRequested)

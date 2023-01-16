@@ -1,8 +1,4 @@
-﻿using System.IO;
-using System.Text;
-using System.Text.Json;
-
-namespace NIASReport
+﻿namespace NIASReport
 {
     public class ReportManager
     {

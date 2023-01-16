@@ -30,7 +30,8 @@ namespace NIASReport
         }
         public static List<ReportHostInfo> ResolveHostInfo(IEnumerable<HostInfo> hostList, IEnumerable<AdapterInfo> adapterList)
         {
-            return hostList.Select(item => {
+            return hostList.Select(item =>
+            {
                 var list = adapterList.Where(_item => _item.HostID == item.ID);
                 return new ReportHostInfo()
                 {

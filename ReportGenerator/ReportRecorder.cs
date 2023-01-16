@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace NIASReport
+﻿namespace NIASReport
 {
     public class ReportRecorder : IDisposable
     {
@@ -16,7 +12,8 @@ namespace NIASReport
         private readonly Task task;
         private readonly CancellationTokenSource cancellation;
 
-        public ReportRecorder() {
+        public ReportRecorder()
+        {
             insertBuffer = new Queue<KeyValuePair<Type, object>>();
             updateBuffer = new Queue<KeyValuePair<Type, object>>();
             cancellation = new CancellationTokenSource();

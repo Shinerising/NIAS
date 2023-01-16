@@ -1,7 +1,4 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using static NIASReport.RawData;
-
-namespace NIASReport
+﻿namespace NIASReport
 {
     public class ReportData
     {
@@ -23,7 +20,7 @@ namespace NIASReport
 
     public class ReportScore
     {
-        
+
     }
 
     public class ReportStats
@@ -116,7 +113,7 @@ namespace NIASReport
 
     public class ReportLog
     {
-        public long Time { get; set; } 
+        public long Time { get; set; }
         public string Name { get; set; }
         public string Text { get; set; }
         public ReportLog(long time, string name, string text)
