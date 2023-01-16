@@ -121,7 +121,7 @@ namespace LanMonitor
             string path = Path.Combine(GetFolder(name), currentTime.ToString("yyyyMMdd") + ".log");
             try
             {
-                FileInfo fileInfo = new FileInfo(path);
+                FileInfo fileInfo = new(path);
                 //日志文件大小超过800MB停止写入
                 if (fileInfo.Exists && fileInfo.Length > 800 * 1024 * 1024)
                 {

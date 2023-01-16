@@ -11,8 +11,9 @@ namespace LanMonitor
     public class RawDataHelper
     {
         private static ReportManager reportManager;
-        private static TimeSpan ListDataSampleSpan = TimeSpan.FromMilliseconds(0);
-        private static TimeSpan InfoDataSampleSpan = TimeSpan.FromMilliseconds(3600000);
+        private static readonly TimeSpan ListDataSampleSpan = TimeSpan.FromMilliseconds(200);
+        private static readonly TimeSpan LogDataSampleSpan = TimeSpan.FromMilliseconds(60000);
+        private static readonly TimeSpan InfoDataSampleSpan = TimeSpan.FromMilliseconds(3600000);
         public static void SetManager(ReportManager manager)
         {
             reportManager = manager;
@@ -82,8 +83,8 @@ namespace LanMonitor
                         AdapterID = adapter.ID,
                         State = ConvertState(adapter.State),
                         Latency = 0,
-                        InSpeed = adapter.Host?.Port?.InRate ?? 0,
-                        OutSpeed = adapter.Host?.Port?.OutRate ?? 0,
+                        InSpeed = adapter.Host?.Port?.OutRate ?? 0,
+                        OutSpeed = adapter.Host?.Port?.InRate ?? 0,
                     });
                 }
             }
@@ -145,13 +146,26 @@ namespace LanMonitor
             reportManager.AddData(list);
         }
         private static DateTime logTimestamp = DateTime.MinValue;
+        private static int logCount = 0;
         public static void SaveLogData(string name, string text)
         {
-            if (reportManager == null || DateTime.Now - logTimestamp < ListDataSampleSpan)
+            if (reportManager == null)
             {
                 return;
             }
-            logTimestamp = DateTime.Now;
+            if (DateTime.Now - logTimestamp < LogDataSampleSpan)
+            {
+                logCount += 1;
+                if (logCount >= 20)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                logCount = 0;
+                logTimestamp = DateTime.Now;
+            }
 
             Log @log = new()
             {
@@ -161,13 +175,26 @@ namespace LanMonitor
             reportManager.AddData(new[] { @log });
         }
         private static DateTime alarmTimestamp = DateTime.MinValue;
+        private static int alarmCount = 0;
         public static void SaveAlarmData(string name, string text)
         {
-            if (reportManager == null || DateTime.Now - alarmTimestamp < ListDataSampleSpan)
+            if (reportManager == null)
             {
                 return;
             }
-            alarmTimestamp = DateTime.Now;
+            if (DateTime.Now - alarmTimestamp < LogDataSampleSpan)
+            {
+                alarmCount += 1;
+                if (alarmCount >= 20)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                alarmCount = 0;
+                alarmTimestamp = DateTime.Now;
+            }
 
             Alarm @alarm = new()
             {

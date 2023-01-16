@@ -133,15 +133,15 @@ namespace NIASReport
                 foreach (var _item in adapterInfo.Where(_item => _item.HostID == item.ID))
                 {
                     int id = _item.HostID * 100 + _item.ID;
-                    if (dict.ContainsKey(id))
+                    if (dict.TryGetValue(id, out var value))
                     {
-                        collection.Add(dict[id]);
+                        collection.Add(value);
                     }
                 }
 
                 List<Adapter> add;
                 Adapter empty = new();
-                List<int> offset = new List<int>(new int[collection.Count]);
+                List<int> offset = new(new int[collection.Count]);
                 for (long timestamp = startTime - (startTime % 60); timestamp < endTime; timestamp += 60)
                 {
                     add = new List<Adapter>();
@@ -161,7 +161,7 @@ namespace NIASReport
                     }
 
                     target.Time.Add(timestamp);
-                    target.State.Add(add.Count(item => item.State == 2) > 0 ? 2 : add.Max(item => item.State));
+                    target.State.Add(add.Any(item => item.State == 2) ? 2 : add.Max(item => item.State));
                     target.Latency.Add(add.Min(item => item.Latency));
                     target.InSpeed.Add(add.Sum(item => item.InSpeed));
                     target.OutSpeed.Add(add.Sum(item => item.OutSpeed));
@@ -208,6 +208,15 @@ namespace NIASReport
             }
 
             return result;
+        }
+
+        public static List<ReportLog> ResolveLogData(IEnumerable<Log> logList)
+        {
+            return logList.Take(100).Select(item => new ReportLog(item.Time, item.Name, item.Text)).ToList();
+        }
+        public static List<ReportAlarm> ResolveAlarmData(IEnumerable<Alarm> alarmList)
+        {
+            return alarmList.Take(100).Select(item => new ReportAlarm(item.Time, item.Name, item.Text)).ToList();
         }
 
         public static IEnumerable<T> SamplingData<T>(IEnumerable<T> list) where T : TimeData<T>

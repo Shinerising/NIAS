@@ -91,12 +91,17 @@ namespace NIASReport
             var adapterList = await DatabaseHelper.Instance.GetDataByTime<Adapter>(startTime, endTime)!;
             var connectionList = await DatabaseHelper.Instance.GetDataByTime<Connection>(startTime, endTime)!;
 
+            var logList = await DatabaseHelper.Instance.GetDataByTime<Log>(startTime, endTime)!;
+            var alarmList = await DatabaseHelper.Instance.GetDataByTime<Alarm>(startTime, endTime)!;
+
             var reportSwitchInfo = ResolveSwitchInfo(switchInfo);
             var reportHostInfo = ResolveHostInfo(hostInfo, adapterInfo);
             var reportDeviceInfo = ResolveDeviceInfo(deviceInfo);
             var reportSwitchData = ResolveSwitchData(switchInfo, switchList, startTime, endTime);
             var reportHostData = ResolveHostData(hostInfo, adapterInfo, adapterList, startTime, endTime);
             var reportConnectionData = ResolveConnectionData(connectionList, startTime, endTime);
+            var reportLogList = ResolveLogData(logList);
+            var reportAlarmList = ResolveAlarmData(alarmList);
 
             ReportData data = new()
             {

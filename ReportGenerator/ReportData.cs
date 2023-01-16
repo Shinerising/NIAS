@@ -116,14 +116,26 @@ namespace NIASReport
 
     public class ReportLog
     {
-        public long? Time { get; set; } 
-        public string? Name { get; set; }
-        public string? Text { get; set; }
+        public long Time { get; set; } 
+        public string Name { get; set; }
+        public string Text { get; set; }
+        public ReportLog(long time, string name, string text)
+        {
+            Time = time;
+            Name = name;
+            Text = text;
+        }
     }
     public class ReportAlarm
     {
-        public long? Time { get; set; }
-        public string? Name { get; set; }
-        public string? Text { get; set; }
+        public long Time { get; set; }
+        public string Name { get; set; }
+        public string Text { get; set; }
+        public ReportAlarm(long time, string name, string text)
+        {
+            Time = time;
+            Name = name;
+            Text = text;
+        }
     }
 }
