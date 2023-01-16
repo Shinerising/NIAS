@@ -37,6 +37,10 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="fc.spr" />
+    <None Remove="images\file.png" />
+    <None Remove="images\folder.png" />
+    <None Remove="images\graph.png" />
+    <None Remove="images\list.png" />
     <None Remove="images\os_apple.png" />
     <None Remove="images\os_default.png" />
     <None Remove="images\os_huawei.png" />
@@ -47,6 +51,9 @@
     <None Remove="images\os_win2000.png" />
     <None Remove="images\os_win7.png" />
     <None Remove="images\os_winxp.png" />
+    <None Remove="images\print.png" />
+    <None Remove="images\table.png" />
+    <None Remove="images\view.png" />
   </ItemGroup>
   <ItemGroup>
     <None Update="app.config.xsd">
@@ -63,6 +70,10 @@
   <ItemGroup>
     <Resource Include="app.ico" />
     <Resource Include="fc.spr" />
+    <Resource Include="images\file.png" />
+    <Resource Include="images\folder.png" />
+    <Resource Include="images\graph.png" />
+    <Resource Include="images\list.png" />
     <Resource Include="images\os_apple.png" />
     <Resource Include="images\os_default.png" />
     <Resource Include="images\os_huawei.png" />
@@ -73,6 +84,9 @@
     <Resource Include="images\os_win2000.png" />
     <Resource Include="images\os_win7.png" />
     <Resource Include="images\os_winxp.png" />
+    <Resource Include="images\print.png" />
+    <Resource Include="images\table.png" />
+    <Resource Include="images\view.png" />
     <SplashScreen Include="splashscreen.png" />
   </ItemGroup>
   <ItemGroup>
