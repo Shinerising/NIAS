@@ -115,6 +115,8 @@ namespace NIASReport
                 Switch = reportSwitchData,
                 Host = reportHostData,
                 Connection = reportConnectionData,
+                Log = reportLogList,
+                Alarm = reportAlarmList,
             };
 
             return data;
