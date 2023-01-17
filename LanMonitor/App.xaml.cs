@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 
 namespace LanMonitor
@@ -13,6 +14,10 @@ namespace LanMonitor
     /// </summary>
     public partial class App : Application
     {
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool SetForegroundWindow(IntPtr hWnd);
+
         public static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -23,7 +28,7 @@ namespace LanMonitor
                 {
                     if (process.MainWindowHandle != IntPtr.Zero)
                     {
-                        NativeMethods.SetForegroundWindow(process.MainWindowHandle);
+                        SetForegroundWindow(process.MainWindowHandle);
                     }
                 }
                 Environment.Exit(0);
