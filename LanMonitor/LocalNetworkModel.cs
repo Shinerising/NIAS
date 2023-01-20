@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.Versioning;
 using System.Windows;
 
 namespace LanMonitor
@@ -80,7 +81,7 @@ namespace LanMonitor
         public string MaxSpeed => GetLegacySpeedString((long)networkInterface?.Speed);
         public int Status => (int)networkInterface?.OperationalStatus;
         public int Type => (int)networkInterface?.NetworkInterfaceType;
-
+        [SupportedOSPlatform("windows")]
         internal void Init()
         {
             if (downloadCount == null || uploadCounter == null)
@@ -98,7 +99,7 @@ namespace LanMonitor
                 uploadValue_Old = 0;
             }
         }
-
+        [SupportedOSPlatform("windows")]
         internal void Refresh()
         {
             if (downloadCount == null || uploadCounter == null)
@@ -136,6 +137,9 @@ namespace LanMonitor
 
         internal void Dispose()
         {
+            downloadCount?.Dispose();
+            uploadCounter?.Dispose();
+            bandwidthCounter?.Dispose();
         }
 
         public override string ToString() => Name;

@@ -38,11 +38,11 @@ namespace LanMonitor
 
                 ((FrameworkElement)sender).Loaded += (object _sender, RoutedEventArgs _e) =>
                 {
-                    Random random = new Random();
+                    Random random = new();
                     double beginTime = 500 + 100 * Grid.GetRow(element) + 100 * random.NextDouble();
                     element.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation(0, 1, new Duration(TimeSpan.FromMilliseconds(300))) { BeginTime = TimeSpan.FromMilliseconds(beginTime) });
 
-                    TranslateTransform transform = new TranslateTransform(0, 0);
+                    TranslateTransform transform = new(0, 0);
                     transform.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(12, 0, new Duration(TimeSpan.FromMilliseconds(300))) { BeginTime = TimeSpan.FromMilliseconds(beginTime) });
                     element.RenderTransform = transform;
                 };

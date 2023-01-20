@@ -36,7 +36,7 @@ namespace LanMonitor
         }
         public bool IsInitialized { get; private set; }
 
-        Dictionary<byte, Dictionary<long, MacVendorInfo>> _dicts = new Dictionary<byte, Dictionary<long, MacVendorInfo>>();
+        private readonly Dictionary<byte, Dictionary<long, MacVendorInfo>> _dicts = new();
 
         void BuildEntryDictionaries(List<MacVendorInfo> entries)
         {
@@ -84,8 +84,7 @@ namespace LanMonitor
 
                 var maskedIdent = identifier & (MAX_LONG << (64 - mask));
 
-                MacVendorInfo entry;
-                if (dict.Value.TryGetValue(maskedIdent, out entry))
+                if (dict.Value.TryGetValue(maskedIdent, out MacVendorInfo entry))
                 {
                     return entry;
                 }
@@ -103,18 +102,12 @@ namespace LanMonitor
 
         public async Task Init(string path)
         {
-            using (FileStream fs = new FileStream(path, FileMode.Open))
-            {
-                using (var decompressionStream = new GZipStream(fs, CompressionMode.Decompress))
-                {
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        decompressionStream.CopyTo(ms);
-                        ms.Position = 0;
-                        await Init(ms);
-                    }
-                }
-            }
+            using FileStream fs = new(path, FileMode.Open);
+            using GZipStream decompressionStream = new(fs, CompressionMode.Decompress);
+            using MemoryStream ms = new();
+            decompressionStream.CopyTo(ms);
+            ms.Position = 0;
+            await Init(ms);
         }
 
         private static IEnumerable<string> LineGenerator(StreamReader sr)
@@ -126,14 +119,14 @@ namespace LanMonitor
             }
         }
 
-        private List<MacVendorInfo> ParseManufData(Stream manufData)
+        private static List<MacVendorInfo> ParseManufData(Stream manufData)
         {
             var streamReader = new StreamReader(manufData, Encoding.UTF8);
             var bag = new ConcurrentBag<MacVendorInfo>();
 
             Parallel.ForEach(LineGenerator(streamReader), line =>
             {
-                if (line.TrimStart(new char[0]).StartsWith("#", StringComparison.OrdinalIgnoreCase))
+                if (line.TrimStart(Array.Empty<char>()).StartsWith("#", StringComparison.OrdinalIgnoreCase))
                 {
                     return;
                 }
@@ -142,7 +135,7 @@ namespace LanMonitor
                     return;
                 }
 
-                var parts = line.Split(new char[0], 2, StringSplitOptions.RemoveEmptyEntries);
+                var parts = line.Split(Array.Empty<char>(), 2, StringSplitOptions.RemoveEmptyEntries);
                 var macStr = parts[0];
                 var descParts = parts[1].Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
                 var shortName = descParts[0].Trim();
@@ -154,7 +147,7 @@ namespace LanMonitor
                 }
 
                 byte mask = 0;
-                if (macStr.Contains("/"))
+                if (macStr.Contains('/'))
                 {
                     var macParts = macStr.Split(new[] { '/' }, 2, StringSplitOptions.None);
                     mask = byte.Parse(macParts[1], CultureInfo.InvariantCulture);

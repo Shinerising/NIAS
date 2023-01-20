@@ -13,7 +13,7 @@ namespace LanMonitor
     {
         public class NMAPPort
         {
-            private static readonly Dictionary<ushort, string> WarningPort = new Dictionary<ushort, string>
+            private static readonly Dictionary<ushort, string> WarningPort = new()
             {
                 { 20, "FTP服务的数据传输端口" },
                 { 21, "FTP服务的连接端口，可能存在弱口令暴力破解" },
@@ -139,33 +139,29 @@ namespace LanMonitor
             }
             public static WorkingState State { get; private set; }
             public static string ErrorMessage { get; private set; }
-            public static string Target = "172.20.10.*";
+            private const string Target = "172.20.10.*";
             private const string PingParams = "-sn -oX {0} {1}";
             private const string ScanParams = "-sS -O --system-dns -oX {0} {1}";
-            private static string TempFile = Path.GetTempFileName();
+            private static readonly string TempFile = Path.GetTempFileName();
             public static NMAPReport GetExampleData()
             {
-                using (var reader = new StreamReader("test.xml"))
-                {
-                    nmaprun data = (nmaprun)new XmlSerializer(typeof(nmaprun)).Deserialize(reader);
-                    return new NMAPReport(data);
-                }
+                using var reader = new StreamReader("test.xml");
+                nmaprun data = (nmaprun)new XmlSerializer(typeof(nmaprun)).Deserialize(reader);
+                return new NMAPReport(data);
             }
 
             private static nmaprun GetNMAPData(string p, string target)
             {
                 string command = "C:\\Program Files (x86)\\Nmap\\nmap.exe";
                 string parameters = string.Format(p, TempFile, target);
-                int result = ExecuteCommand(command, parameters, out string output, out string error);
+                int result = ExecuteCommand(command, parameters, out _, out string error);
                 if (result != 0)
                 {
                     throw new Exception(error);
                 }
 
-                using (var reader = new StreamReader(TempFile))
-                {
-                    return (nmaprun)new XmlSerializer(typeof(nmaprun)).Deserialize(reader);
-                }
+                using var reader = new StreamReader(TempFile);
+                return (nmaprun)new XmlSerializer(typeof(nmaprun)).Deserialize(reader);
             }
             public static NMAPReport GetData()
             {
@@ -195,7 +191,7 @@ namespace LanMonitor
             {
                 int exitCode;
 
-                ProcessStartInfo processInfo = new ProcessStartInfo(command, parameters)
+                ProcessStartInfo processInfo = new(command, parameters)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false

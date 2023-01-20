@@ -1,18 +1,12 @@
 ﻿using NIASReport;
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Numerics;
-using System.Reflection;
-using System.Text;
+using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using System.Windows.Shell;
 
 namespace LanMonitor
 {
@@ -33,7 +27,7 @@ namespace LanMonitor
                 case WM_MOUSEHWHEEL:
                     int tilt = (short)HIWORD(wParam);
                     OnMouseTilt(tilt);
-                    return (IntPtr)1;
+                    return 1;
                 case WM_SYSCOMMAND:
                     HandleMenuCommand(SystemMenu.HandleMenuCommand(wParam.ToInt32()));
                     break;
@@ -41,29 +35,15 @@ namespace LanMonitor
             return IntPtr.Zero;
         }
 
-        /// <summary>
-        /// Gets high bits values of the pointer.
-        /// </summary>
         private static int HIWORD(IntPtr ptr)
         {
             int val32 = (int)ptr.ToInt64();
-            return ((val32 >> 16) & 0xFFFF);
+            return (val32 >> 16) & 0xFFFF;
         }
 
-        /// <summary>
-        /// Gets low bits values of the pointer.
-        /// </summary>
-        private static int LOWORD(IntPtr ptr)
+        private static void OnMouseTilt(int tilt)
         {
-            int val32 = (int)ptr.ToInt64();
-            return (val32 & 0xFFFF);
-        }
-
-        private void OnMouseTilt(int tilt)
-        {
-            UIElement element = Mouse.DirectlyOver as UIElement;
-
-            if (element == null) return;
+            if (Mouse.DirectlyOver is not UIElement element) return;
 
             ScrollViewer scrollViewer = element is ScrollViewer viewer ? viewer : FindParent<ScrollViewer>(element);
 
@@ -79,8 +59,7 @@ namespace LanMonitor
 
             if (parentObject == null) return null;
 
-            T parent = parentObject as T;
-            if (parent != null)
+            if (parentObject is T parent)
                 return parent;
             else
                 return FindParent<T>(parentObject);
@@ -90,9 +69,10 @@ namespace LanMonitor
         private readonly NetworkManager networkManager;
 
         private readonly ReportManager reportManager;
-
+        [SupportedOSPlatform("windows")]
         public static bool IsMicaEnabled => Environment.OSVersion.Version.Build >= 22000;
 
+        [SupportedOSPlatform("windows")]
         public MainWindow()
         {
             networkManager = new NetworkManager();
@@ -194,10 +174,7 @@ namespace LanMonitor
         {
             if (disposing)
             {
-                if (networkManager != null)
-                {
-                    networkManager.Dispose();
-                }
+                networkManager?.Dispose();
             }
         }
 

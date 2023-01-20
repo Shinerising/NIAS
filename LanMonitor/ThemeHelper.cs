@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,16 +12,18 @@ using System.Windows.Media;
 
 namespace LanMonitor
 {
-    public class ThemeHelper
+    public partial class ThemeHelper
     {
-        [DllImport("dwmapi.dll")]
-        public static extern int DwmSetWindowAttribute(IntPtr hwnd, DwmWindowAttribute dwAttribute, ref int pvAttribute, int cbAttribute);
+        [LibraryImport("dwmapi.dll")]
+        public static partial int DwmSetWindowAttribute(IntPtr hwnd, DwmWindowAttribute dwAttribute, ref int pvAttribute, int cbAttribute);
 
-        [DllImport("UXTheme.dll", SetLastError = true, EntryPoint = "#138")]
-        public static extern bool ShouldSystemUseDarkMode();
+        [LibraryImport("UXTheme.dll", EntryPoint = "#138", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool ShouldSystemUseDarkMode();
 
-        [DllImport("UXTheme.dll", SetLastError = true, EntryPoint = "#132")]
-        public static extern bool ShouldAppsUseDarkMode();
+        [LibraryImport("UXTheme.dll", EntryPoint = "#132", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool ShouldAppsUseDarkMode();
 
         [Flags]
         public enum DwmWindowAttribute : uint
@@ -38,23 +41,24 @@ namespace LanMonitor
             DWMSBT_TRANSIENTWINDOW = 3, // Acrylic
             DWMSBT_TABBEDWINDOW = 4 // Tabbed
         }
-
+        [SupportedOSPlatform("windows")]
         public static void ApplyTheme(Window window)
         {
             window.ContentRendered += Window_ContentRendered;
         }
-
+        [SupportedOSPlatform("windows")]
         public static void ApplySimpleTheme(Window window)
         {
             window.ContentRendered += Window_SimpleContentRendered;
         }
-
+        [SupportedOSPlatform("windows")]
         private static void Window_ContentRendered(object sender, EventArgs e)
         {
             IntPtr handle = new WindowInteropHelper(sender as Window).Handle;
             UpdateStyleAttributes(handle);
             ApplyThemeDetector(handle, WndProc);
         }
+        [SupportedOSPlatform("windows")]
         private static void Window_SimpleContentRendered(object sender, EventArgs e)
         {
             IntPtr handle = new WindowInteropHelper(sender as Window).Handle;
@@ -66,7 +70,7 @@ namespace LanMonitor
             HwndSource source = HwndSource.FromHwnd(handle);
             source.AddHook(handler);
         }
-
+        [SupportedOSPlatform("windows")]
         private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             const int WN_SETTINGCHANGE = 0x001A;
@@ -82,18 +86,14 @@ namespace LanMonitor
             return IntPtr.Zero;
         }
 
+        [SupportedOSPlatform("windows")]
         private static void UpdateDarkMode(IntPtr hwnd)
         {
             bool useLightTheme = true;
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
-                {
-                    if (key != null)
-                    {
-                        useLightTheme = (int)key.GetValue("AppsUseLightTheme") == 1;
-                    }
-                }
+                using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize");
+                useLightTheme = (int)key?.GetValue("AppsUseLightTheme") == 1;
             }
             catch
             {
@@ -129,7 +129,7 @@ namespace LanMonitor
                 resources.Add(new ResourceDictionary() {  Source = new Uri(name, UriKind.Relative) });
             }
         }
-
+        [SupportedOSPlatform("windows")]
         private static void UpdateStyleAttributes(IntPtr hwnd)
         {
             int trueValue = 0x01;
@@ -140,7 +140,7 @@ namespace LanMonitor
             DwmSetWindowAttribute(hwnd, DwmWindowAttribute.DWMWA_MICA_EFFECT, ref trueValue, Marshal.SizeOf(typeof(int)));
             DwmSetWindowAttribute(hwnd, DwmWindowAttribute.DWMWA_SYSTEMBACKDROP_TYPE, ref dwmType, Marshal.SizeOf(typeof(int)));
         }
-        
+        [SupportedOSPlatform("windows")]
         private static void UpdateSimpleStyleAttributes(IntPtr hwnd)
         {
             UpdateDarkMode(hwnd);

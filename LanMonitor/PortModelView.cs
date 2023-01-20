@@ -19,22 +19,15 @@ namespace LanMonitor
         {
             get
             {
-                switch (State)
+                return State switch
                 {
-                    case "Established":
-                        return AppResource.GetString(AppResource.StringKey.Port_Established);
-                    case "Listen":
-                        return AppResource.GetString(AppResource.StringKey.Port_Listening);
-                    case "CloseWait":
-                        return AppResource.GetString(AppResource.StringKey.Port_CloseWait);
-                    case "TimeWait":
-                        return AppResource.GetString(AppResource.StringKey.Port_TimeWait);
-                    case "SynSent":
-                        return AppResource.GetString(AppResource.StringKey.Port_SynSent);
-                    case "":
-                    default:
-                        return AppResource.GetString(AppResource.StringKey.Port_Default);
-                }
+                    "Established" => AppResource.GetString(AppResource.StringKey.Port_Established),
+                    "Listen" => AppResource.GetString(AppResource.StringKey.Port_Listening),
+                    "CloseWait" => AppResource.GetString(AppResource.StringKey.Port_CloseWait),
+                    "TimeWait" => AppResource.GetString(AppResource.StringKey.Port_TimeWait),
+                    "SynSent" => AppResource.GetString(AppResource.StringKey.Port_SynSent),
+                    _ => AppResource.GetString(AppResource.StringKey.Port_Default),
+                };
             }
         }
 

@@ -19,7 +19,7 @@ namespace LanMonitor
         /// <summary>
         /// 日志文件夹列表
         /// </summary>
-        private static readonly List<string> FolderList = new List<string>() { "ERROR" };
+        private static readonly List<string> FolderList = new() { "ERROR" };
         /// <summary>
         /// 过期时间
         /// </summary>
@@ -127,10 +127,8 @@ namespace LanMonitor
                 {
                     return false;
                 }
-                using (StreamWriter sw = new StreamWriter(path, true, Encoding.UTF8))
-                {
-                    await sw.WriteLineAsync(log);
-                }
+                using StreamWriter sw = new(path, true, Encoding.UTF8);
+                await sw.WriteLineAsync(log);
                 return true;
             }
             catch

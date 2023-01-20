@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,6 +25,7 @@ namespace LanMonitor
     {
         public Dictionary<string, string> InfoList { get; set; }
         public string Copyright { get; set; }
+        [SupportedOSPlatform("windows")]
         public AboutWindow(Window owner)
         {
             Owner = owner;

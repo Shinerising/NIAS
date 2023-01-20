@@ -32,6 +32,11 @@
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     <SignAssembly>False</SignAssembly>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NeutralLanguage>zh-CN</NeutralLanguage>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>readme_CN.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Shinerising/NIAS</RepositoryUrl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -55,6 +60,16 @@
     <None Remove="images\print.png" />
     <None Remove="images\table.png" />
     <None Remove="images\view.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\readme_CN.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Update="app.config.xsd">

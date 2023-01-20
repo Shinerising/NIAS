@@ -35,7 +35,7 @@ namespace LanMonitor
                 return;
             }
 
-            List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>();
+            List<ResourceDictionary> dictionaryList = new();
             foreach (ResourceDictionary dictionary in Current.Resources.MergedDictionaries)
             {
                 dictionaryList.Add(dictionary);
