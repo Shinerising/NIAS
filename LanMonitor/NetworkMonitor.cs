@@ -30,6 +30,7 @@ using System.Security.RightsManagement;
 using System.Numerics;
 using static LanMonitor.NetworkManager;
 using System.Runtime.InteropServices;
+using NIASReport;
 
 namespace LanMonitor
 {
@@ -114,6 +115,7 @@ namespace LanMonitor
         };
 
         public static NMAPReport NMAPReportData => NMAPHelper.GetExampleData();
+        public static List<ReportFileInfo> ReportFileList => ReportManager.GetFileList(@"C:\sync\");
     }
     public partial class NetworkManager : CustomINotifyPropertyChanged, IDisposable
     {

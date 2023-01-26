@@ -1,19 +1,19 @@
 ﻿namespace NIASReport
 {
+    public class ReportFileInfo
+    {
+        public string Name { get; set; }
+        public string Directory { get; set; }
+        public DateTime CreateTime { get; set; }
+        public ReportFileInfo(FileInfo info)
+        {
+            Name = info.Name;
+            Directory = info.Directory?.Name ?? "";
+            CreateTime = info.CreationTime;
+        }
+    }
     public class ReportManager
     {
-        public class ReportFileInfo
-        {
-            public string Name { get; set; }
-            public string Directory { get; set; }
-            public DateTime CreateTime { get; set; }
-            public ReportFileInfo(FileInfo info)
-            {
-                Name = info.Name;
-                Directory = info.Directory?.Name ?? "";
-                CreateTime = info.CreationTime;
-            }
-        }
         public event ErrorEventHandler? ErrorHandler;
 
         private const int ExpiredDays = 32;
@@ -77,9 +77,13 @@
         {
             generator.IsGenerateRequested = true;
         }
+        public static List<ReportFileInfo> GetFileList(string directory)
+        {
+            return Directory.GetFiles(directory, "NetworkReport*.html").Select(item => new ReportFileInfo(new FileInfo(item))).ToList();
+        }
         public List<ReportFileInfo> GetFileList()
         {
-            return Directory.GetFiles(FileDirectory, "NetworkReport*.html").Select(item => new ReportFileInfo(new FileInfo(item))).ToList();
+            return ReportManager.GetFileList(FileDirectory);
         }
         public void DeleteExpiredFiles()
         {
