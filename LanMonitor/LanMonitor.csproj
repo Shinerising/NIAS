@@ -58,6 +58,7 @@
     <None Remove="images\os_win7.png" />
     <None Remove="images\os_winxp.png" />
     <None Remove="images\print.png" />
+    <None Remove="images\report.png" />
     <None Remove="images\table.png" />
     <None Remove="images\view.png" />
   </ItemGroup>
@@ -101,6 +102,7 @@
     <Resource Include="images\os_win7.png" />
     <Resource Include="images\os_winxp.png" />
     <Resource Include="images\print.png" />
+    <Resource Include="images\report.png" />
     <Resource Include="images\table.png" />
     <Resource Include="images\view.png" />
     <SplashScreen Include="splashscreen.png" />

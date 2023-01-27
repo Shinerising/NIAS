@@ -1279,28 +1279,19 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
+                            <Grid Grid.Row="0" Margin="12,8" TextElement.Foreground="{DynamicResource Color_TextLight}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
                                 <TextBlock Text="分析报表文件列表"/>
-                            </StackPanel>
-                            <Border Grid.Row="1" Margin="12,0,12,12">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="1" Text="网络分析报表引擎正常工作中..." TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                        <Button Style="{StaticResource Button_Tool}" Margin="4,0" Background="Transparent">
-                                            <Image Source="images/file.png"/>
-                                        </Button>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                            <ListView Grid.Row="2" Margin="0,0,0,12" ItemsSource="{Binding ReportFileList}" DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                <TextBlock Grid.Column="1" Margin="6,0" Text="报表引擎正常工作中" TextAlignment="Right" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                <Image Grid.Column="2" Margin="0,-2,0,-4" VerticalAlignment="Center" Width="16" Height="16" Source="images/checkmark.png"/>
+                            </Grid>
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding ReportFileList}" DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="2" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}">
@@ -1311,7 +1302,7 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Image Margin="8,0,6,0" Width="18" Height="18" Source="images/os_default.png"/>
+                                                <Image Margin="8,0,6,0" Width="18" Height="18" Source="images/report.png"/>
                                                 <TextBlock Grid.Column="1" Margin="0,0,6,0" Text="{Binding CreateTime, StringFormat=yyyy-MM-dd HH:mm:ss}" VerticalAlignment="Center"/>
                                                 <TextBlock Grid.Column="2" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
                                                 <StackPanel Grid.Column="3" Orientation="Horizontal">
