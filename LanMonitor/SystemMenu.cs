@@ -44,6 +44,7 @@ namespace LanMonitor
             {
                 COMMAND_HELP => "Menu_Help",
                 COMMAND_ABOUT => "Menu_About",
+                COMMAND_OPTION => "Menu_Option",
                 _ => string.Empty,
             };
         }

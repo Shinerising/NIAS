@@ -4,6 +4,7 @@
     {
         public string Name { get; set; }
         public string Directory { get; set; }
+        public string Tip { get; set; } = "";
         public DateTime CreateTime { get; set; }
         public ReportFileInfo(FileInfo info)
         {

@@ -1,7 +1,9 @@
 ﻿using NIASReport;
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.Versioning;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,6 +22,7 @@ namespace LanMonitor
         private const int WM_SYSCOMMAND = 0x112;
         private const int WM_MOUSEHWHEEL = 0x020E;
 
+        [SupportedOSPlatform("windows")]
         private IntPtr Hook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             switch (msg)
@@ -75,7 +78,9 @@ namespace LanMonitor
         [SupportedOSPlatform("windows")]
         public MainWindow()
         {
-            networkManager = new NetworkManager();
+            Options options = LoadOptions();
+
+            networkManager = new NetworkManager(options);
 
             DataContext = networkManager;
 
@@ -90,9 +95,44 @@ namespace LanMonitor
             reportManager = new ReportManager("C:\\sync", "C:\\sync\\index.html", "测试实验室", 240);
             RawDataHelper.SetManager(reportManager);
             _ = reportManager.Initialize();
-            reportManager.GenerateReport();
+            //reportManager.GenerateReport();
         }
 
+        private static Options LoadOptions()
+        {
+            try
+            {
+                return JsonSerializer.Deserialize<Options>(File.ReadAllText("config.json"));
+            }
+            catch
+            {
+                return new Options();
+            }
+        }
+
+        private static void SaveOptions(Options options)
+        {
+            try
+            {
+                string json = JsonSerializer.Serialize(options);
+                File.WriteAllText("config.json", json);
+            }
+            catch
+            {
+            }
+        }
+
+        private void ShowOptionWindow()
+        {
+            Options options = LoadOptions();
+            var result = new OptionWindow(this, options).ShowDialog();
+            if (result == true)
+            {
+                SaveOptions(options);
+            }
+        }
+
+        [SupportedOSPlatform("windows")]
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
@@ -119,13 +159,18 @@ namespace LanMonitor
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private void HandleMenuCommand(string tag)
         {
             if (string.IsNullOrEmpty(tag))
             {
                 return;
             }
-            switch(tag){
+            switch(tag)
+            {
+                case "Menu_Option":
+                    ShowOptionWindow();
+                    break;
                 case "Menu_Help":
                     break;
                 case "Menu_About":

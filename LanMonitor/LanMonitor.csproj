@@ -43,6 +43,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="fc.spr" />
+    <None Remove="images\add.png" />
+    <None Remove="images\delete.png" />
     <None Remove="images\file.png" />
     <None Remove="images\folder.png" />
     <None Remove="images\graph.png" />
@@ -88,6 +90,8 @@
   <ItemGroup>
     <Resource Include="app.ico" />
     <Resource Include="fc.spr" />
+    <Resource Include="images\add.png" />
+    <Resource Include="images\delete.png" />
     <Resource Include="images\file.png" />
     <Resource Include="images\folder.png" />
     <Resource Include="images\graph.png" />

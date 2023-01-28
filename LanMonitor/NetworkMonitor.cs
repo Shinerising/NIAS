@@ -17,7 +17,6 @@ using System.Windows.Media;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Reflection;
-using System.Configuration;
 using System.Collections.Specialized;
 using System.Text;
 using System.Windows.Threading;
@@ -229,7 +228,7 @@ namespace LanMonitor
         public static string DomainName => Environment.UserDomainName;
         public static string UserName => Environment.UserName;
 
-        public NetworkManager()
+        public NetworkManager(Options options)
         {
             cancellation = new CancellationTokenSource();
 
@@ -243,9 +242,10 @@ namespace LanMonitor
             networkMoniter = new NetworkMonitor();
             lanMonitor = new LocalNetworkManager();
 
-            InitializeSwitchData();
+            InitializeSwitchData(options);
         }
 
+        [SupportedOSPlatform("windows")]
         public void Start()
         {
             StartManuHelper();
@@ -286,31 +286,27 @@ namespace LanMonitor
             }
         }
 
-        private void InitializeSwitchData()
+        private void InitializeSwitchData(Options options)
         {
-            string isSwitchEnabled = ConfigurationManager.AppSettings.Get("switch_enable");
-            if (isSwitchEnabled.ToUpper() != "TRUE")
+            IsSwitchEnabled = options.IsSwitchMonitorEnabled;
+            if (!IsSwitchEnabled)
             {
-                IsSwitchEnabled = false;
                 return;
             }
 
-            IsSwitchEnabled = true;
+            IsSwitchPingEnabled = options.IsSwitchPingEnabled;
 
-            string isSwitchPingEnabled = ConfigurationManager.AppSettings.Get("switch_ping");
-            IsSwitchPingEnabled = isSwitchPingEnabled.ToUpper() == "TRUE";
+            string name = options.SwitchUserName;
 
-            string name = ConfigurationManager.AppSettings.Get("switch_username");
+            var switchList = options.SwitchList;
+            var hostList = options.HostList;
+            var connectionList = options.ConnectionList;
 
-            NameValueCollection switchList = (NameValueCollection)ConfigurationManager.GetSection("switchList");
-            NameValueCollection deviceList = (NameValueCollection)ConfigurationManager.GetSection("deviceList");
-            NameValueCollection connectionList = (NameValueCollection)ConfigurationManager.GetSection("connectionList");
-
-            SwitchDeviceList = switchList == null ? new List<SwitchDeviceModelView>() : switchList.AllKeys.Select((item, index) => new SwitchDeviceModelView(index, item, switchList[item])).ToList();
-            LanHostList = deviceList == null ? new List<LanHostModelView>() : deviceList.AllKeys.Select((item, index) => new LanHostModelView(index, item, deviceList[item])).ToList();
-            ConnectionList = connectionList == null ? new List<SwitchConnectonModelView>() : connectionList.AllKeys.Select(item =>
+            SwitchDeviceList = switchList == null ? new List<SwitchDeviceModelView>() : switchList.Select((item, index) => new SwitchDeviceModelView(index, item.Name, item.Data)).ToList();
+            LanHostList = hostList == null ? new List<LanHostModelView>() : hostList.Select((item, index) => new LanHostModelView(index, item.Name, item.Data)).ToList();
+            ConnectionList = connectionList == null ? new List<SwitchConnectonModelView>() : connectionList.Select(item =>
             {
-                string[] values = connectionList[item] == null ? new string[] { null, null } : connectionList[item].Split(';');
+                string[] values = item.Data == null ? new string[] { null, null } : item.Data.Split(';');
                 if (values.Length < 2)
                 {
                     values = new string[] { null, null };
@@ -336,7 +332,7 @@ namespace LanMonitor
                 }
                 SwitchDeviceModelView deviceA = nameA == null ? null : SwitchDeviceList.FirstOrDefault(device => device.Name == nameA);
                 SwitchDeviceModelView deviceB = nameB == null ? null : SwitchDeviceList.FirstOrDefault(device => device.Name == nameB);
-                return new SwitchConnectonModelView(item, deviceA, deviceB, deviceA == null ? 0 : SwitchDeviceList.IndexOf(deviceA), deviceB == null ? 0 : SwitchDeviceList.IndexOf(deviceB), portA, portB);
+                return new SwitchConnectonModelView(item.Name, deviceA, deviceB, deviceA == null ? 0 : SwitchDeviceList.IndexOf(deviceA), deviceB == null ? 0 : SwitchDeviceList.IndexOf(deviceB), portA, portB);
             }).ToList();
 
             LoadOverdriveConnectionList();
@@ -471,7 +467,8 @@ namespace LanMonitor
                 Thread.Sleep(5000);
             }
         }
-        
+
+        [SupportedOSPlatform("windows")]
         private void NetworkMonitoring()
         {
             while (true)
@@ -1707,6 +1704,7 @@ namespace LanMonitor
             }
         }
 
+        [SupportedOSPlatform("windows")]
         public List<NetworkAdapter> Refresh()
         {
             var list = adapterList.ToList();
@@ -1717,6 +1715,7 @@ namespace LanMonitor
             return list;
         }
 
+        [SupportedOSPlatform("windows")]
         public void StartMonitoring()
         {
             if (adapterList.Count > 0)

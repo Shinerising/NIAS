@@ -58,7 +58,7 @@ namespace NIASReport
             try
             {
                 ReportData data = await GetData();
-                string json = JsonSerializer.Serialize(data, new JsonSerializerOptions() { });
+                string json = JsonSerializer.Serialize(data);
                 string filename = Path.Combine(ReportDirectory, string.Format("NetworkReport {0} {1}.html", LocationName, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")));
                 await ApplyDataAndExport(json, ReportTemplatePath, filename);
             }
