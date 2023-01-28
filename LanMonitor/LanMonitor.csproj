@@ -49,6 +49,7 @@
     <None Remove="images\list.png" />
     <None Remove="images\os_apple.png" />
     <None Remove="images\os_default.png" />
+    <None Remove="images\os_firewall.png" />
     <None Remove="images\os_huawei.png" />
     <None Remove="images\os_linux.png" />
     <None Remove="images\os_moxa.png" />
@@ -93,6 +94,7 @@
     <Resource Include="images\list.png" />
     <Resource Include="images\os_apple.png" />
     <Resource Include="images\os_default.png" />
+    <Resource Include="images\os_firewall.png" />
     <Resource Include="images\os_huawei.png" />
     <Resource Include="images\os_linux.png" />
     <Resource Include="images\os_moxa.png" />

@@ -82,7 +82,7 @@ namespace LanMonitor
             public string OSBrief {
                 get
                 {
-                    return OSVendor == "Huawei" || OSVendor == "MOXA" ? OSVendor : OSFamily == "Windows" ? OSFamily + " " + OSGen : OSFamily;
+                    return OSType == "firewall" ? "Firewall" : OSVendor == "Huawei" || OSVendor == "MOXA" || OSVendor == "Apple" ? OSVendor : OSFamily == "Windows" ? OSFamily + " " + OSGen : OSFamily;
                 }
             }
             public string Tip { get; set; }
@@ -139,7 +139,7 @@ namespace LanMonitor
             }
             public static WorkingState State { get; private set; }
             public static string ErrorMessage { get; private set; }
-            private const string Target = "172.20.10.*";
+            private const string Target = "10.211.55.*";
             private const string PingParams = "-sn -oX {0} {1}";
             private const string ScanParams = "-sS -O --system-dns -oX {0} {1}";
             private static readonly string TempFile = Path.GetTempFileName();

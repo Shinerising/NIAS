@@ -1143,7 +1143,7 @@
                 <GridSplitter Grid.Column="3" Visibility="{Binding IsSwitchEnabled, Converter={StaticResource BoolToVisibility}}" Width="6" VerticalAlignment="Stretch" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Background="Transparent"/>
                 <Grid Grid.Column="4" Visibility="{Binding IsSwitchEnabled, Converter={StaticResource BoolToVisibility}}">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" MinHeight="42"/>
+                        <RowDefinition Height="{Binding Height_Grid07, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="{Binding Height_Grid08, Source={x:Static p:Settings.Default}, Mode=TwoWay, FallbackValue=*}" MinHeight="42"/>
                         <RowDefinition Height="Auto"/>
@@ -1178,7 +1178,10 @@
                                                             <Style TargetType="Image">
                                                                 <Setter Property="Source" Value="images/os_default.png"/>
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding OSBrief}" Value="Mac">
+                                                                    <DataTrigger Binding="{Binding OSBrief}" Value="Firewall">
+                                                                        <Setter Property="Source" Value="images/os_firewall.png"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding OSBrief}" Value="Apple">
                                                                         <Setter Property="Source" Value="images/os_apple.png"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Binding="{Binding OSBrief}" Value="Linux">
@@ -1273,6 +1276,15 @@
                     </ContentControl>
                     <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
                     <ContentControl Grid.Row="2" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="12,8" Orientation="Horizontal" TextElement.Foreground="{DynamicResource Color_TextLight}">
+                                <TextBlock Text="告警日志记录"/>
+                            </StackPanel>
+                        </Grid>
                     </ContentControl>
                     <GridSplitter Grid.Row="3" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>
                     <ContentControl Grid.Row="4" Style="{StaticResource Control_Panel}" local:CustomControl.FadeInOnLoad="True">
@@ -1288,7 +1300,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="分析报表文件列表"/>
-                                <TextBlock Grid.Column="1" Margin="6,0" Text="报表引擎正常工作中" TextAlignment="Right" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Margin="6,0" Text="数据分析引擎正常工作中" TextAlignment="Right" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
                                 <Image Grid.Column="2" Margin="0,-2,0,-4" VerticalAlignment="Center" Width="16" Height="16" Source="images/checkmark.png"/>
                             </Grid>
                             <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding ReportFileList}" DataContext="{x:Static local:NetworkManager_Test.Instance}">
