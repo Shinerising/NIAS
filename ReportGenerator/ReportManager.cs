@@ -79,11 +79,11 @@
         }
         public static List<ReportFileInfo> GetFileList(string directory)
         {
-            return Directory.GetFiles(directory, "NetworkReport*.html").Select(item => new ReportFileInfo(new FileInfo(item))).ToList();
+            return Directory.GetFiles(directory, "NetworkReport*.html").Select(item => new ReportFileInfo(new FileInfo(item))).OrderByDescending(item => item.CreateTime).ToList();
         }
         public List<ReportFileInfo> GetFileList()
         {
-            return ReportManager.GetFileList(FileDirectory);
+            return GetFileList(FileDirectory);
         }
         public void DeleteExpiredFiles()
         {
