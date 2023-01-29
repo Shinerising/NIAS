@@ -238,251 +238,264 @@
                 </Grid>
             </ContentControl>
         </Border>
-        <ScrollViewer Grid.Row="2" Background="{DynamicResource Color_WindowOverlay}" Template="{DynamicResource ScrollViewerControlTemplate}">
-            <StackPanel Margin="8,0,8,8">
-                <Label Margin="0,8,0,0" Content="交换机设置" Foreground="{DynamicResource Color_TextLight}"/>
-                <ContentControl Style="{StaticResource Control_Panel}">
-                    <StackPanel>
-                        <Grid Margin="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" Text="是否启用交换机监视功能"/>
-                            <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsSwitchMonitorEnabled}"/>
-                        </Grid>
-                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
-                        <Grid Margin="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" Text="是否启用延迟检测功能"/>
-                            <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsSwitchPingEnabled}"/>
-                        </Grid>
-                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
-                        <Grid Margin="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" Text="交换机通信用户名"/>
-                            <TextBox Grid.Column="1" Width="120" Text="{Binding SwitchUserName}"/>
-                        </Grid>
-                    </StackPanel>
-                </ContentControl>
-                <Label Margin="0,8,0,0" Content="局域网扫描设置" Foreground="{DynamicResource Color_TextLight}"/>
-                <ContentControl Style="{StaticResource Control_Panel}">
-                    <StackPanel>
-                        <Grid Margin="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" Text="是否启用主机发现功能"/>
-                            <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsNmapPingScan}"/>
-                        </Grid>
-                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
-                        <Grid Margin="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" Text="是否启用快速扫描功能"/>
-                            <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsNmapFastScan}"/>
-                        </Grid>
-                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
-                        <Grid Margin="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" Text="是否启用全面端口扫描功能"/>
-                            <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsNmapFullScan}"/>
-                        </Grid>
-                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
-                        <Grid Margin="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" Text="扫描地址目标"/>
-                            <TextBox Grid.Column="1" Width="240" Text="{Binding NmapTarget}"/>
-                        </Grid>
-                    </StackPanel>
-                </ContentControl>
-                <Label Margin="0,8,0,0" Content="数据分析报表设置" Foreground="{DynamicResource Color_TextLight}"/>
-                <ContentControl Style="{StaticResource Control_Panel}">
-                    <StackPanel>
-                        <Grid Margin="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" Text="报表生成时刻"/>
-                            <TextBox Grid.Column="1" Width="72" TextAlignment="Center">
-                                <TextBox.Text>
-                                    <Binding Path="ReportTime" Converter="{StaticResource TimeValueConverter}">
-                                        <Binding.ValidationRules>
-                                            <local:TimeValueFieldValidation/>
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                        </Grid>
-                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
-                        <Grid Margin="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" Text="报表存储位置"/>
-                            <TextBox Grid.Column="1" Width="240" Text="{Binding ReportFolder}"/>
-                        </Grid>
-                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
-                        <Grid Margin="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" Text="工作地点信息"/>
-                            <TextBox Grid.Column="1" Width="240" Text="{Binding ReportLocation}"/>
-                        </Grid>
-                    </StackPanel>
-                </ContentControl>
-                <Label Margin="0,8,0,0" Content="交换机数据设置" Foreground="{DynamicResource Color_TextLight}"/>
-                <ContentControl Style="{StaticResource Control_Panel}" DataContext="{Binding SwitchList}">
-                    <StackPanel>
-                        <ItemsControl ItemsSource="{Binding}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Color_BorderLight}">
-                                        <Grid Margin="12,8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Click="Button_Delete_Click">
-                                                <Image Source="images/delete.png"/>
-                                            </Button>
-                                            <TextBox Grid.Column="1" Text="{Binding Name}" HorizontalAlignment="Left"/>
-                                            <TextBox Grid.Column="2" Margin="8,0,0,0" Width="Auto" Text="{Binding Data}"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <Grid Margin="12,6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Click="Button_Add_Click">
-                                <Image Source="images/add.png"/>
-                            </Button>
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center">
+        <Border Grid.Row="2" Background="{DynamicResource Color_WindowOverlay}">
+            <Border.OpacityMask>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop Offset="0" Color="Transparent"/>
+                        <GradientStop Offset="0.02" Color="Black"/>
+                        <GradientStop Offset="0.97" Color="Black"/>
+                        <GradientStop Offset="0.99" Color="Transparent"/>
+                        <GradientStop Offset="1" Color="Transparent"/>
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Border.OpacityMask>
+            <ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate}">
+                <StackPanel Margin="8,0,8,8">
+                    <Label Margin="0,8,0,0" Content="交换机设置" Foreground="{DynamicResource Color_TextLight}"/>
+                    <ContentControl Style="{StaticResource Control_Panel}">
+                        <StackPanel>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="是否启用交换机监视功能"/>
+                                <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsSwitchMonitorEnabled}"/>
+                            </Grid>
+                            <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="是否启用延迟检测功能"/>
+                                <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsSwitchPingEnabled}"/>
+                            </Grid>
+                            <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="交换机通信用户名"/>
+                                <TextBox Grid.Column="1" Width="120" Text="{Binding SwitchUserName}"/>
+                            </Grid>
+                        </StackPanel>
+                    </ContentControl>
+                    <Label Margin="0,8,0,0" Content="局域网扫描设置" Foreground="{DynamicResource Color_TextLight}"/>
+                    <ContentControl Style="{StaticResource Control_Panel}">
+                        <StackPanel>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="是否启用主机发现功能"/>
+                                <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsNmapPingScan}"/>
+                            </Grid>
+                            <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="是否启用快速扫描功能"/>
+                                <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsNmapFastScan}"/>
+                            </Grid>
+                            <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="是否启用全面端口扫描功能"/>
+                                <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsNmapFullScan}"/>
+                            </Grid>
+                            <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="扫描地址目标"/>
+                                <TextBox Grid.Column="1" Width="240" Text="{Binding NmapTarget}"/>
+                            </Grid>
+                        </StackPanel>
+                    </ContentControl>
+                    <Label Margin="0,8,0,0" Content="数据分析报表设置" Foreground="{DynamicResource Color_TextLight}"/>
+                    <ContentControl Style="{StaticResource Control_Panel}">
+                        <StackPanel>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="报表生成时刻"/>
+                                <TextBox Grid.Column="1" Width="72" TextAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="ReportTime" Converter="{StaticResource TimeValueConverter}">
+                                            <Binding.ValidationRules>
+                                                <local:TimeValueFieldValidation/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </Grid>
+                            <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="报表存储位置"/>
+                                <TextBox Grid.Column="1" Width="240" Text="{Binding ReportFolder}"/>
+                            </Grid>
+                            <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="工作地点信息"/>
+                                <TextBox Grid.Column="1" Width="240" Text="{Binding ReportLocation}"/>
+                            </Grid>
+                        </StackPanel>
+                    </ContentControl>
+                    <Label Margin="0,8,0,0" Content="交换机数据设置" Foreground="{DynamicResource Color_TextLight}"/>
+                    <ContentControl Style="{StaticResource Control_Panel}" DataContext="{Binding SwitchList}">
+                        <StackPanel>
+                            <ItemsControl ItemsSource="{Binding}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Color_BorderLight}">
+                                            <Grid Margin="12,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Click="Button_Delete_Click">
+                                                    <Image Source="images/delete.png"/>
+                                                </Button>
+                                                <TextBox Grid.Column="1" Text="{Binding Name}" HorizontalAlignment="Left"/>
+                                                <TextBox Grid.Column="2" Margin="8,0,0,0" Width="Auto" Text="{Binding Data}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Grid Margin="12,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Click="Button_Add_Click">
+                                    <Image Source="images/add.png"/>
+                                </Button>
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center">
                                 <Run Text="总共"/>
                                 <Run Text="{Binding Count, Mode=OneWay}"/>
                                 <Run Text="个项目"/>
-                            </TextBlock>
-                        </Grid>
-                    </StackPanel>
-                </ContentControl>
-                <Label Margin="0,8,0,0" Content="计算机数据设置" Foreground="{DynamicResource Color_TextLight}"/>
-                <ContentControl Style="{StaticResource Control_Panel}" DataContext="{Binding HostList}">
-                    <StackPanel>
-                        <ItemsControl ItemsSource="{Binding}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Color_BorderLight}">
-                                        <Grid Margin="12,8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Click="Button_Delete_Click">
-                                                <Image Source="images/delete.png"/>
-                                            </Button>
-                                            <TextBox Grid.Column="1" Text="{Binding Name}" HorizontalAlignment="Left"/>
-                                            <TextBox Grid.Column="2" Margin="8,0,0,0" Width="Auto" Text="{Binding Data}"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <Grid Margin="12,6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Click="Button_Add_Click">
-                                <Image Source="images/add.png"/>
-                            </Button>
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
+                    </ContentControl>
+                    <Label Margin="0,8,0,0" Content="计算机数据设置" Foreground="{DynamicResource Color_TextLight}"/>
+                    <ContentControl Style="{StaticResource Control_Panel}" DataContext="{Binding HostList}">
+                        <StackPanel>
+                            <ItemsControl ItemsSource="{Binding}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Color_BorderLight}">
+                                            <Grid Margin="12,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Click="Button_Delete_Click">
+                                                    <Image Source="images/delete.png"/>
+                                                </Button>
+                                                <TextBox Grid.Column="1" Text="{Binding Name}" HorizontalAlignment="Left"/>
+                                                <TextBox Grid.Column="2" Margin="8,0,0,0" Width="Auto" Text="{Binding Data}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Grid Margin="12,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Click="Button_Add_Click">
+                                    <Image Source="images/add.png"/>
+                                </Button>
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center">
                                 <Run Text="总共"/>
                                 <Run Text="{Binding Count, Mode=OneWay}"/>
                                 <Run Text="个项目"/>
-                            </TextBlock>
-                        </Grid>
-                    </StackPanel>
-                </ContentControl>
-                <Label Margin="0,8,0,0" Content="交换机连接设置" Foreground="{DynamicResource Color_TextLight}"/>
-                <ContentControl Style="{StaticResource Control_Panel}" DataContext="{Binding ConnectionList}">
-                    <StackPanel>
-                        <ItemsControl ItemsSource="{Binding}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Color_BorderLight}">
-                                        <Grid Margin="12,8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Click="Button_Delete_Click">
-                                                <Image Source="images/delete.png"/>
-                                            </Button>
-                                            <TextBox Grid.Column="1" Text="{Binding Name}" HorizontalAlignment="Left"/>
-                                            <TextBox Grid.Column="2" Margin="8,0,0,0" Width="Auto" Text="{Binding Data}"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <Grid Margin="12,6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Click="Button_Add_Click">
-                                <Image Source="images/add.png"/>
-                            </Button>
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
+                    </ContentControl>
+                    <Label Margin="0,8,0,0" Content="交换机连接设置" Foreground="{DynamicResource Color_TextLight}"/>
+                    <ContentControl Style="{StaticResource Control_Panel}" DataContext="{Binding ConnectionList}">
+                        <StackPanel>
+                            <ItemsControl ItemsSource="{Binding}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Color_BorderLight}">
+                                            <Grid Margin="12,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Click="Button_Delete_Click">
+                                                    <Image Source="images/delete.png"/>
+                                                </Button>
+                                                <TextBox Grid.Column="1" Text="{Binding Name}" HorizontalAlignment="Left"/>
+                                                <TextBox Grid.Column="2" Margin="8,0,0,0" Width="Auto" Text="{Binding Data}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Grid Margin="12,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Style="{StaticResource Button_Tool}" Margin="-4,0,8,0" Background="Transparent" Click="Button_Add_Click">
+                                    <Image Source="images/add.png"/>
+                                </Button>
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center">
                                 <Run Text="总共"/>
                                 <Run Text="{Binding Count, Mode=OneWay}"/>
                                 <Run Text="个项目"/>
-                            </TextBlock>
-                        </Grid>
-                    </StackPanel>
-                </ContentControl>
-            </StackPanel>
-        </ScrollViewer>
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
+                    </ContentControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
     </Grid>
 </Window>
