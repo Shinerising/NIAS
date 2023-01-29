@@ -16,7 +16,7 @@
     public class ReportManager
     {
         public event ErrorEventHandler? ErrorHandler;
-
+        public bool IsInitialized;
         private const int ExpiredDays = 32;
         private readonly string FileDirectory;
         private readonly ReportRecorder recorder;
@@ -42,6 +42,8 @@
 
             recorder.Start();
             generator.Start();
+
+            IsInitialized = true;
         }
 
         private void HandleError(object sender, ErrorEventArgs e)
@@ -78,9 +80,17 @@
         {
             generator.IsGenerateRequested = true;
         }
-        public static List<ReportFileInfo> GetFileList(string directory)
+        public List<ReportFileInfo> GetFileList(string directory)
         {
-            return Directory.GetFiles(directory, "NetworkReport*.html").Select(item => new ReportFileInfo(new FileInfo(item))).OrderByDescending(item => item.CreateTime).ToList();
+            try
+            {
+                return Directory.GetFiles(directory, "NetworkReport*.html").Select(item => new ReportFileInfo(new FileInfo(item))).OrderByDescending(item => item.CreateTime).ToList();
+            }
+            catch (Exception e)
+            {
+                HandleError(this, new ErrorEventArgs(e));
+            }
+            return new List<ReportFileInfo>();
         }
         public List<ReportFileInfo> GetFileList()
         {

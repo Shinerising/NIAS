@@ -92,10 +92,10 @@ namespace LanMonitor
 
             networkManager.Start();
 
-            reportManager = new ReportManager("C:\\sync", "C:\\sync\\index.html", "测试实验室", 240);
+            reportManager = new ReportManager(options.ReportFolder, "template.html", options.ReportLocation, options.ReportTime);
+            networkManager.SetManager(reportManager);
             RawDataHelper.SetManager(reportManager);
             _ = reportManager.Initialize();
-            //reportManager.GenerateReport();
         }
 
         private static Options LoadOptions()

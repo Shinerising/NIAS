@@ -229,10 +229,10 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="新设置将在下一次程序启动后生效" Margin="2,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource Color_Text}"/>
-                    <Button Grid.Column="1" IsDefault="True" IsCancel="True" Style="{StaticResource Button_Tool}" Width="Auto" Height="Auto" Background="#60FF3A2A" BorderThickness="1" Padding="8,4" Margin="6" Click="Button_Cancel_Click">
+                    <Button Grid.Column="1" IsDefault="True" IsCancel="True" Style="{StaticResource Button_Tool}" Width="Auto" Height="Auto" Background="#40FF3A2A" BorderThickness="1" Padding="8,4" Margin="6" Click="Button_Cancel_Click">
                         <TextBlock Text="取消设置"/>
                     </Button>
-                    <Button Grid.Column="2" Style="{StaticResource Button_Tool}" Width="Auto" Height="Auto" Padding="8,4" Margin="6" Background="#6022AFFA" BorderThickness="1" Click="Button_Submit_Click">
+                    <Button Grid.Column="2" Style="{StaticResource Button_Tool}" Width="Auto" Height="Auto" Padding="8,4" Margin="6" Background="#4022AFFA" BorderThickness="1" Click="Button_Submit_Click">
                         <TextBlock Text="保存配置"/>
                     </Button>
                 </Grid>
@@ -252,7 +252,7 @@
             </Border.OpacityMask>
             <ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate}">
                 <StackPanel Margin="8,0,8,8">
-                    <Label Margin="0,8,0,0" Content="交换机设置" Foreground="{DynamicResource Color_TextLight}"/>
+                    <Label Margin="0,8,0,0" Content="交换机通信设置" Foreground="{DynamicResource Color_TextLight}"/>
                     <ContentControl Style="{StaticResource Control_Panel}">
                         <StackPanel>
                             <Grid Margin="12">

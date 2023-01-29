@@ -1300,10 +1300,24 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="分析报表文件列表"/>
-                                <TextBlock Grid.Column="1" Margin="6,0" Text="数据分析引擎正常工作中" TextAlignment="Right" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                                <Image Grid.Column="2" Margin="0,-2,0,-4" VerticalAlignment="Center" Width="16" Height="16" Source="images/checkmark.png"/>
+                                <TextBlock Grid.Column="1" Margin="6,0" Text="{Binding ReportStatusText}" ToolTip="{Binding ReportStatusMessage}" TextAlignment="Right" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                <Image Grid.Column="2" Margin="0,-2,0,-4" VerticalAlignment="Center" Width="16" Height="16">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Source" Value="images/idle.png"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsReportInitialized}" Value="True">
+                                                    <Setter Property="Source" Value="images/checkmark.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsReportError}" Value="True">
+                                                    <Setter Property="Source" Value="images/error.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
                             </Grid>
-                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding ReportFileList}" DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding ReportFileList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="2" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}">

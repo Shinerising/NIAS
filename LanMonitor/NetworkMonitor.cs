@@ -114,7 +114,7 @@ namespace LanMonitor
         };
 
         public static NMAPReport NMAPReportData => NMAPHelper.GetExampleData();
-        public static List<ReportFileInfo> ReportFileList => ReportManager.GetFileList(@"C:\sync\");
+        public static List<ReportFileInfo> ReportFileList => new();
     }
     public partial class NetworkManager : CustomINotifyPropertyChanged, IDisposable
     {
@@ -125,6 +125,7 @@ namespace LanMonitor
         public List<LanHostModelView> LanHostList { get; set; }
         public List<SwitchConnectonModelView> ConnectionList { get; set; }
         public List<OverrideConnection> OverrideConnectionList { get; set; }
+        public List<ReportFileInfo> ReportFileList { get; set; }
         public string SwitchPortCount => SwitchDeviceList == null ? "0" : string.Join(", ", SwitchDeviceList.Select(item => item.PortCount));
         public string SwitchHostCount => SwitchDeviceList == null ? "0" : string.Join(", ", SwitchDeviceList.Select(item => item.HostCount));
         public string LanHostCount => SwitchDeviceList == null ? "0" : string.Join(", ", LanHostList.Select(item => item.ActiveCount));
@@ -259,6 +260,7 @@ namespace LanMonitor
             Task.Factory.StartNew(SwitchMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             Task.Factory.StartNew(SwitchRefreshMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             Task.Factory.StartNew(NMAPMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(ReportMonitoring, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
             if (IsSwitchPingEnabled)
             {
@@ -1300,8 +1302,9 @@ namespace LanMonitor
                 TopologyLineList = lineList;
                 Notify(new { TopologyLineList });
             }
-
         }
+
+        #region Nmap
 
         public NMAPReport NMAPReportData { get; set; }
         public string NMAPHostCount => NMAPReportData == null ? "0" : NMAPReportData.HostList.Count.ToString();
@@ -1345,6 +1348,77 @@ namespace LanMonitor
             host.Tip = string.Format("主机名称：{1}{0}网络地址：{2}{0}MAC地址：{3}{0}设备厂商：{4}{0}设备类型：{5}{0}运行系统：{6}{0}系统厂商：{7}{0}主机状态：{8}{0}网络延时：{9}ms{0}网络距离：{10}{0}获取时间：{11}", Environment.NewLine, host.Name, host.Address, host.MACAddress, host.MACVendor, host.OSType, host.OSName, host.OSVendor, host.State == "up" ? "在线" : "离线", host.Latency, host.Distance, host.RefreshTime.ToString("yyyy-MM-dd HH:mm:ss"));
             host.PortList?.ForEach(port => port.Tip = port.IsWarning ? string.Format("端口号：{1}{0}服务名称：{2}{0}存在风险：{3}", Environment.NewLine, port.ID, port.Name, port.WarningInfo) : string.Format("端口号：{1}{0}服务名称：{2}", Environment.NewLine, port.ID, port.Name));
         }
+
+        #endregion
+
+        #region Report
+        public string ReportStatusText { get; set; } = "数据分析引擎加载中";
+        public string ReportStatusMessage { get; set; }
+        public bool IsReportInitialized { get; set; }
+        public bool IsReportError => reportErrorCount > 0;
+        private ReportManager reportManager;
+        private int reportErrorCount;
+        public void SetManager(ReportManager manager)
+        {
+            reportManager = manager;
+            reportManager.ErrorHandler += ReportManager_ErrorHandler;
+        }
+
+        private void ReportManager_ErrorHandler(object sender, ErrorEventArgs e)
+        {
+            ReportStatusText = "数据分析引擎工作出现异常";
+            ReportStatusMessage = string.Format("错误详情: {0}", e.GetException().Message);
+            reportErrorCount = 5;
+            Notify(new { ReportStatusText, ReportStatusMessage, IsReportError });
+        }
+
+        private void ReportMonitoring()
+        {
+            while (reportManager == null || !reportManager.IsInitialized)
+            {
+                Thread.Sleep(1000);
+            }
+
+            IsReportInitialized = true;
+            ReportFileList = reportManager.GetFileList();
+            Notify(new { IsReportInitialized, ReportFileList });
+
+            DateTimeOffset timestamp = DateTimeOffset.Now;
+
+            while (true)
+            {
+                DateTimeOffset currentTimestamp = DateTimeOffset.Now;
+
+                if (reportErrorCount > 0)
+                {
+                    reportErrorCount -= 1;
+                }
+
+                if (reportErrorCount == 0)
+                {
+                    ReportStatusText = "数据分析引擎正常工作中";
+                    ReportStatusMessage = null;
+                }
+
+                Notify(new { ReportStatusText, ReportStatusMessage, IsReportError });
+
+                if (currentTimestamp.Date != timestamp.Date)
+                {
+                    reportManager.DeleteExpiredFiles();
+                }
+
+                if (currentTimestamp.Minute != timestamp.Minute)
+                {
+                    ReportFileList = reportManager.GetFileList();
+                    Notify(new { ReportFileList });
+                }
+
+                timestamp = currentTimestamp;
+
+                Thread.Sleep(1000);
+            }
+        }
+        #endregion
 
         public ObservableCollection<ToastMessage> ToastCollection { get; set; } = new ObservableCollection<ToastMessage>();
 
