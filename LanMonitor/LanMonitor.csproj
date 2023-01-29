@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="fc.spr" />
+    <None Remove="images\about.png" />
     <None Remove="images\add.png" />
     <None Remove="images\delete.png" />
     <None Remove="images\file.png" />
@@ -62,6 +63,7 @@
     <None Remove="images\os_winxp.png" />
     <None Remove="images\print.png" />
     <None Remove="images\report.png" />
+    <None Remove="images\settings.png" />
     <None Remove="images\table.png" />
     <None Remove="images\view.png" />
   </ItemGroup>
@@ -90,6 +92,7 @@
   <ItemGroup>
     <Resource Include="app.ico" />
     <Resource Include="fc.spr" />
+    <Resource Include="images\about.png" />
     <Resource Include="images\add.png" />
     <Resource Include="images\delete.png" />
     <Resource Include="images\file.png" />
@@ -109,6 +112,7 @@
     <Resource Include="images\os_winxp.png" />
     <Resource Include="images\print.png" />
     <Resource Include="images\report.png" />
+    <Resource Include="images\settings.png" />
     <Resource Include="images\table.png" />
     <Resource Include="images\view.png" />
     <SplashScreen Include="splashscreen.png" />

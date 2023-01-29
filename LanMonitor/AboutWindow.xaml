@@ -13,7 +13,7 @@
     <StackPanel>
         <Grid Panel.ZIndex="10">
             <Border HorizontalAlignment="Left">
-                <Image Source="images/title.png" RenderOptions.BitmapScalingMode="HighQuality" Width="20" Height="20" Margin="6"/>
+                <Image Source="images/about.png" RenderOptions.BitmapScalingMode="HighQuality" Width="20" Height="20" Margin="6"/>
             </Border>
             <StackPanel Margin="32,0,0,0" Orientation="Horizontal">
                 <StackPanel.Style>
