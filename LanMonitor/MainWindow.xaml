@@ -182,7 +182,7 @@
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="Margin" Value="0"/>
                         <Setter Property="CornerRadius" Value="0"/>
-                        <Setter Property="Background" Value="{DynamicResource Color_WindowOverlay}"/>
+                        <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="Effect" Value="{x:Null}"/>
                     </DataTrigger>
                     <MultiDataTrigger>

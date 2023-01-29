@@ -11,7 +11,7 @@
     <SolidColorBrush x:Key="Color_ButtonDisabled">#BDBDBD</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Window">#F5F5F5</SolidColorBrush>
     <SolidColorBrush x:Key="Color_WindowLight">#FAFAFA</SolidColorBrush>
-    <SolidColorBrush x:Key="Color_WindowOverlay">#00FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_WindowOverlay">#40FFFFFF</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Card">#FFFFFF</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Panel">#FAFAFA</SolidColorBrush>
     <SolidColorBrush x:Key="Color_Label">#FFFFFF</SolidColorBrush>
@@ -96,11 +96,12 @@
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Background" Value="{DynamicResource Color_ButtonBack}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Color_Border}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Color_Text}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Name="Border"
-                           CornerRadius="2"
+                           CornerRadius="4"
                            BorderThickness="{TemplateBinding BorderThickness}"
                            Padding="{TemplateBinding Padding}"
                            BorderBrush="{TemplateBinding BorderBrush}"

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -47,6 +51,32 @@ namespace LanMonitor
                     element.RenderTransform = transform;
                 };
             }
+        }
+    }
+
+    public class TimeValueConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return string.Format("{0:00}:{1:00}", (int)value / 60, (int)value % 60);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.ToString().Split(':').Take(2).Select(int.Parse).Aggregate(0, (acc, cur) => acc * 60 + cur);
+        }
+    }
+
+    public partial class TimeValueFieldValidation : ValidationRule
+    {
+        [GeneratedRegex(@"^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]|[0-9])$")]
+        private static partial Regex TimeRegex();
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            if (TimeRegex().IsMatch((string)value))
+                return ValidationResult.ValidResult;
+            else
+                return new ValidationResult(false, "123");
         }
     }
 }

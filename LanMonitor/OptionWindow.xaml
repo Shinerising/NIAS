@@ -7,8 +7,9 @@
         mc:Ignorable="d"
         Title="程序设置窗口"
         d:DataContext="{d:DesignInstance Type=local:Options}"
-        Width="480" MaxHeight="640" ResizeMode="NoResize" SizeToContent="Height" Background="{DynamicResource Color_WindowLight}" Foreground="{DynamicResource Color_Text}" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
+        Width="480" Height="640" ResizeMode="NoResize" WindowStyle="SingleBorderWindow" Background="{DynamicResource Color_WindowLight}" Foreground="{DynamicResource Color_Text}" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
     <Window.Resources>
+        <local:TimeValueConverter x:Key="TimeValueConverter"/>
         <ControlTemplate x:Key="ScrollViewerControlTemplate" TargetType="ScrollViewer">
             <Grid x:Name="Grid" Background="{TemplateBinding Background}">
                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
@@ -97,6 +98,11 @@
             </Setter>
         </Style>
         <Style TargetType="TextBox">
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="4"/>
+                </Style>
+            </Style.Resources>
             <Setter Property="Width" Value="120"/>
             <Setter Property="Height" Value="24"/>
             <Setter Property="Margin" Value="0,-4"/>
@@ -104,31 +110,135 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="BorderBrush" Value="{DynamicResource Color_ButtonBorder}"/>
-            <Setter Property="Background" Value="{DynamicResource Color_Card}"/>
+            <Setter Property="Background" Value="{DynamicResource Color_Label}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Color_Text}"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Margin" Value="0,-4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <BulletDecorator Background="Transparent">
+                            <BulletDecorator.Bullet>
+                                <Border x:Name="Border" Width="36" Height="20" CornerRadius="10" BorderThickness="1" ClipToBounds="True" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_Border}">
+                                    <Grid>
+                                        <Ellipse HorizontalAlignment="Left" Margin="2" Width="14" Height="14" x:Name="Thumb" SnapsToDevicePixels="False" StrokeThickness="1" Fill="{DynamicResource Color_TextLight}">
+                                            <Ellipse.RenderTransform>
+                                                <TranslateTransform X="0"/>
+                                            </Ellipse.RenderTransform>
+                                        </Ellipse>
+                                    </Grid>
+                                </Border>
+                            </BulletDecorator.Bullet>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualState x:Name="Checked">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.RenderTransform).(TranslateTransform.X)" Storyboard.TargetName="Thumb" To="16" AccelerationRatio="0.4" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unchecked">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.RenderTransform).(TranslateTransform.X)" Storyboard.TargetName="Thumb" To="0" AccelerationRatio="0.4" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left" RecognizesAccessKey="True" />
+                        </BulletDecorator>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource Color_BorderLight}"/>
+                                <Setter TargetName="Thumb" Property="Fill" Value="{DynamicResource Color_Text}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#4040D023"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource Color_ButtonBorder}"/>
+                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource Color_ButtonPressed}"/>
+                                <Setter TargetName="Thumb" Property="Fill" Value="{DynamicResource Color_Text}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value=".6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="0" UseAeroCaptionButtons="True" GlassFrameThickness="-1" CornerRadius="8"/>
+    </WindowChrome.WindowChrome>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Color_BorderLight}">
-            <Grid Margin="6">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Label Content="新设置将在下一次程序启动后生效" Margin="2,8,8,0" Foreground="{DynamicResource Color_TextLight}"/>
-                <Button Grid.Column="1" IsDefault="True" IsCancel="True" Style="{StaticResource Button_Tool}" Width="Auto" Height="Auto" Background="{DynamicResource Color_Card}" BorderBrush="#EF9A9A" BorderThickness="1" Padding="8,4" Margin="6" Click="Button_Cancel_Click">
-                    <TextBlock Text="取消设置"/>
+        <Grid Grid.Row="0" Panel.ZIndex="10">
+            <Border HorizontalAlignment="Left">
+                <Image Source="images/title.png" RenderOptions.BitmapScalingMode="HighQuality" Width="20" Height="20" Margin="6"/>
+            </Border>
+            <StackPanel Margin="32,0,0,0" Orientation="Horizontal">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsActive}" Value="False">
+                                <Setter Property="TextElement.Foreground" Value="{DynamicResource Color_TextLight}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <TextBlock Padding="0,8" LineHeight="16" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=Title}"/>
+            </StackPanel>
+            <Border HorizontalAlignment="Right">
+                <Button Click="Button_Close_Click">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource Button_Close}">
+                            <Setter Property="Border.CornerRadius" Value="0,7,0,0"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized">
+                                    <Setter Property="Border.CornerRadius" Value="0,0,0,0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <Path Data="M0 0 L10 10 M10 0 L0 10" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6"/>
                 </Button>
-                <Button Grid.Column="2" Style="{StaticResource Button_Tool}" Width="Auto" Height="Auto" Padding="8,4" Margin="6" Background="{DynamicResource Color_Card}" BorderBrush="#82AFFA" BorderThickness="1" Click="Button_Submit_Click">
-                    <TextBlock Text="保存配置"/>
-                </Button>
-            </Grid>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Source={x:Static local:MainWindow.IsMicaEnabled}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+        </Grid>
+        <Border Grid.Row="1" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Color_Border}">
+            <ContentControl Margin="8,4,8,8" Style="{StaticResource Control_Panel}">
+                <Grid Margin="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="新设置将在下一次程序启动后生效" Margin="2,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource Color_Text}"/>
+                    <Button Grid.Column="1" IsDefault="True" IsCancel="True" Style="{StaticResource Button_Tool}" Width="Auto" Height="Auto" Background="#60FF3A2A" BorderThickness="1" Padding="8,4" Margin="6" Click="Button_Cancel_Click">
+                        <TextBlock Text="取消设置"/>
+                    </Button>
+                    <Button Grid.Column="2" Style="{StaticResource Button_Tool}" Width="Auto" Height="Auto" Padding="8,4" Margin="6" Background="#6022AFFA" BorderThickness="1" Click="Button_Submit_Click">
+                        <TextBlock Text="保存配置"/>
+                    </Button>
+                </Grid>
+            </ContentControl>
         </Border>
-        <ScrollViewer Grid.Row="1" Template="{DynamicResource ScrollViewerControlTemplate}">
+        <ScrollViewer Grid.Row="2" Background="{DynamicResource Color_WindowOverlay}" Template="{DynamicResource ScrollViewerControlTemplate}">
             <StackPanel Margin="8,0,8,8">
                 <Label Margin="0,8,0,0" Content="交换机设置" Foreground="{DynamicResource Color_TextLight}"/>
                 <ContentControl Style="{StaticResource Control_Panel}">
@@ -161,7 +271,7 @@
                         </Grid>
                     </StackPanel>
                 </ContentControl>
-                <Label Margin="0,8,0,0" Content="分析报表设置" Foreground="{DynamicResource Color_TextLight}"/>
+                <Label Margin="0,8,0,0" Content="局域网扫描设置" Foreground="{DynamicResource Color_TextLight}"/>
                 <ContentControl Style="{StaticResource Control_Panel}">
                     <StackPanel>
                         <Grid Margin="12">
@@ -169,8 +279,74 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="是否启用主机发现功能"/>
+                            <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsNmapPingScan}"/>
+                        </Grid>
+                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                        <Grid Margin="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="是否启用快速扫描功能"/>
+                            <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsNmapFastScan}"/>
+                        </Grid>
+                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                        <Grid Margin="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="是否启用全面端口扫描功能"/>
+                            <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsNmapFullScan}"/>
+                        </Grid>
+                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                        <Grid Margin="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="扫描地址目标"/>
+                            <TextBox Grid.Column="1" Width="240" Text="{Binding NmapTarget}"/>
+                        </Grid>
+                    </StackPanel>
+                </ContentControl>
+                <Label Margin="0,8,0,0" Content="数据分析报表设置" Foreground="{DynamicResource Color_TextLight}"/>
+                <ContentControl Style="{StaticResource Control_Panel}">
+                    <StackPanel>
+                        <Grid Margin="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="报表生成时刻"/>
+                            <TextBox Grid.Column="1" Width="72" TextAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="ReportTime" Converter="{StaticResource TimeValueConverter}">
+                                        <Binding.ValidationRules>
+                                            <local:TimeValueFieldValidation/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                        <Grid Margin="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
                             <TextBlock VerticalAlignment="Center" Text="报表存储位置"/>
                             <TextBox Grid.Column="1" Width="240" Text="{Binding ReportFolder}"/>
+                        </Grid>
+                        <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
+                        <Grid Margin="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="工作地点信息"/>
+                            <TextBox Grid.Column="1" Width="240" Text="{Binding ReportLocation}"/>
                         </Grid>
                     </StackPanel>
                 </ContentControl>

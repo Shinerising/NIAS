@@ -65,5 +65,9 @@ namespace LanMonitor
         {
             DialogResult = true;
         }
+        private void Button_Close_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

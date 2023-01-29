@@ -122,6 +122,7 @@ namespace LanMonitor
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private void ShowOptionWindow()
         {
             Options options = LoadOptions();

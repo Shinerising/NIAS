@@ -6,8 +6,52 @@
         xmlns:local="clr-namespace:LanMonitor"
         mc:Ignorable="d"
         Title="{StaticResource About_Title}"
-        Width="360" ResizeMode="NoResize" SizeToContent="Height" Background="{DynamicResource Color_WindowLight}" Foreground="{DynamicResource Color_Text}" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        Width="360" ResizeMode="NoResize" SizeToContent="Height" WindowStyle="SingleBorderWindow" Background="{DynamicResource Color_WindowLight}" Foreground="{DynamicResource Color_Text}" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="1" UseAeroCaptionButtons="True" GlassFrameThickness="-1" CornerRadius="8"/>
+    </WindowChrome.WindowChrome>
     <StackPanel>
+        <Grid Panel.ZIndex="10">
+            <Border HorizontalAlignment="Left">
+                <Image Source="images/title.png" RenderOptions.BitmapScalingMode="HighQuality" Width="20" Height="20" Margin="6"/>
+            </Border>
+            <StackPanel Margin="32,0,0,0" Orientation="Horizontal">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=IsActive}" Value="False">
+                                <Setter Property="TextElement.Foreground" Value="{DynamicResource Color_TextLight}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <TextBlock Padding="0,8" LineHeight="16" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=Title}"/>
+            </StackPanel>
+            <Border HorizontalAlignment="Right">
+                <Button Click="Button_Close_Click">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource Button_Close}">
+                            <Setter Property="Border.CornerRadius" Value="0,7,0,0"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=WindowState}" Value="Maximized">
+                                    <Setter Property="Border.CornerRadius" Value="0,0,0,0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <Path Data="M0 0 L10 10 M10 0 L0 10" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Width="10" Height="10" Margin="16,6"/>
+                </Button>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Source={x:Static local:MainWindow.IsMicaEnabled}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+        </Grid>
         <Border>
             <Image Source="/images/app.png" Margin="0,24,0,0" Width="96"/>
         </Border>
@@ -32,7 +76,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
         <TextBlock Text="{Binding Copyright}" MaxWidth="280" TextWrapping="Wrap" TextAlignment="Center" Margin="0,6,0,24" HorizontalAlignment="Center"/>
-        <Border Background="{DynamicResource Color_Window}" Padding="0,6,0,12">
+        <Border BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_WindowOverlay}" Padding="0,6,0,12">
             <Grid>
                 <StackPanel>
                     <TextBlock Text="{StaticResource About_ThirdParty}" Foreground="{DynamicResource Color_TextLight}" Margin="0,4" HorizontalAlignment="Center"/>

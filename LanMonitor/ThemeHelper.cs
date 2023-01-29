@@ -1,11 +1,8 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -49,6 +46,10 @@ namespace LanMonitor
         [SupportedOSPlatform("windows")]
         public static void ApplySimpleTheme(Window window)
         {
+            if (MainWindow.IsMicaEnabled)
+            {
+                window.Background = Brushes.Transparent;
+            }
             window.ContentRendered += Window_SimpleContentRendered;
         }
         [SupportedOSPlatform("windows")]
@@ -143,7 +144,13 @@ namespace LanMonitor
         [SupportedOSPlatform("windows")]
         private static void UpdateSimpleStyleAttributes(IntPtr hwnd)
         {
+            int trueValue = 0x01;
+            int dwmType = (int)DwmWindowType.DWMSBT_MAINWINDOW;
+
             UpdateDarkMode(hwnd);
+
+            DwmSetWindowAttribute(hwnd, DwmWindowAttribute.DWMWA_MICA_EFFECT, ref trueValue, Marshal.SizeOf(typeof(int)));
+            DwmSetWindowAttribute(hwnd, DwmWindowAttribute.DWMWA_SYSTEMBACKDROP_TYPE, ref dwmType, Marshal.SizeOf(typeof(int)));
         }
     }
 }

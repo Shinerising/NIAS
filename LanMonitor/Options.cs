@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace LanMonitor
 {
@@ -19,8 +21,17 @@ namespace LanMonitor
         public bool IsSwitchMonitorEnabled { get; set; } = true;
         public bool IsSwitchPingEnabled { get; set; } = true;
         public string SwitchUserName { get; set; } = "adminnms02";
-        public string ReportFolder { get; set; } = "";
-		public ObservableCollection<Pair> SwitchList { get; set; } = new ObservableCollection<Pair>(new Dictionary<string, string>()
+
+        public bool IsNmapPingScan { get; set; } = false;
+        public bool IsNmapFullScan { get; set; } = false;
+        public bool IsNmapFastScan { get; set; } = false;
+        public string NmapTarget { get; set; } = "172.16.24.*";
+
+        public string ReportFolder { get; set; } = @"D:\";
+        public string ReportLocation { get; set; } = "工作地点";
+        public int ReportTime { get; set; } = 480;
+
+        public ObservableCollection<Pair> SwitchList { get; set; } = new ObservableCollection<Pair>(new Dictionary<string, string>()
         {
             { "Switch01", "172.16.24.1" },
             { "Switch02", "172.16.24.2" },

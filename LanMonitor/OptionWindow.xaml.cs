@@ -24,6 +24,7 @@ namespace LanMonitor
     /// </summary>
     public partial class OptionWindow : Window
     {
+        [SupportedOSPlatform("windows")]
         public OptionWindow(Window owner, Options options)
         {
             Owner = owner;
@@ -50,7 +51,7 @@ namespace LanMonitor
             {
                 return;
             }
-            collection.Add(new Options.Pair("", ""));
+            collection.Add(new Options.Pair("Name", ""));
         }
 
         private void Button_Submit_Click(object sender, RoutedEventArgs e)
@@ -61,6 +62,10 @@ namespace LanMonitor
         private void Button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+        }
+        private void Button_Close_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
