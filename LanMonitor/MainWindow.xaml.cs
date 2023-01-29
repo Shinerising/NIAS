@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.Versioning;
 using System.Text.Json;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -285,7 +286,7 @@ namespace LanMonitor
         {
             FrameworkElement element = sender as FrameworkElement;
             ReportFileInfo info = element.DataContext as ReportFileInfo;
-            StartProcess("msedge", string.Format("\"{0}?print=true\"", info.FullName));
+            StartProcess("msedge", string.Format("--kiosk --kiosk-printing --no-first-run --disable-print-preview \"file:///{0}?print=true\"", info.FullName));
         }
         private static void StartProcess(string name, string parameters)
         {

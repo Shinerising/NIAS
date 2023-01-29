@@ -1321,7 +1321,7 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="2" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}">
-                                            <Grid ToolTip="{Binding Tip}">
+                                            <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
@@ -1332,13 +1332,13 @@
                                                 <TextBlock Grid.Column="1" Margin="0,0,6,0" Text="{Binding CreateTime, StringFormat=yyyy-MM-dd HH:mm:ss}" VerticalAlignment="Center"/>
                                                 <TextBlock Grid.Column="2" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
                                                 <StackPanel Grid.Column="3" Orientation="Horizontal">
-                                                    <Button Style="{StaticResource Button_Tool}" Margin="2" Background="Transparent" Click="Button_ReportView_Click">
+                                                    <Button Style="{StaticResource Button_Tool}" Margin="2" Background="Transparent" ToolTip="阅览报表" Click="Button_ReportView_Click">
                                                         <Image Source="images/view.png"/>
                                                     </Button>
-                                                    <Button Style="{StaticResource Button_Tool}" Margin="2" Background="Transparent" Click="Button_ReportFolder_Click">
+                                                    <Button Style="{StaticResource Button_Tool}" Margin="2" Background="Transparent" ToolTip="打开报表位置" Click="Button_ReportFolder_Click">
                                                         <Image Source="images/folder.png"/>
                                                     </Button>
-                                                    <Button Style="{StaticResource Button_Tool}" Margin="2" Background="Transparent" Click="Button_ReportPrint_Click">
+                                                    <Button Style="{StaticResource Button_Tool}" Margin="2" Background="Transparent" ToolTip="打印报表" Click="Button_ReportPrint_Click">
                                                         <Image Source="images/print.png"/>
                                                     </Button>
                                                 </StackPanel>
