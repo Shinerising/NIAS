@@ -3,13 +3,15 @@
     public class ReportFileInfo
     {
         public string Name { get; set; }
+        public string FullName { get; set; }
         public string Directory { get; set; }
         public string Tip { get; set; } = "";
         public DateTime CreateTime { get; set; }
         public ReportFileInfo(FileInfo info)
         {
             Name = info.Name;
-            Directory = info.Directory?.Name ?? "";
+            FullName = info.FullName;
+            Directory = info.DirectoryName ?? "";
             CreateTime = info.CreationTime;
         }
     }

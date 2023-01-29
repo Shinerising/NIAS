@@ -1,6 +1,7 @@
 ﻿using NIASReport;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Versioning;
 using System.Text.Json;
@@ -265,6 +266,41 @@ namespace LanMonitor
                 case "View_Graph":
                     networkManager.SetNetworkView(false, true);
                     break;
+            }
+        }
+
+        private void Button_ReportView_Click(object sender, RoutedEventArgs e)
+        {
+            FrameworkElement element = sender as FrameworkElement;
+            ReportFileInfo info = element.DataContext as ReportFileInfo;
+            StartProcess("msedge", string.Format("\"{0}\"", info.FullName));
+        }
+        private void Button_ReportFolder_Click(object sender, RoutedEventArgs e)
+        {
+            FrameworkElement element = sender as FrameworkElement;
+            ReportFileInfo info = element.DataContext as ReportFileInfo;
+            StartProcess("explorer", string.Format("/select,\"{0}\"", info.FullName));
+        }
+        private void Button_ReportPrint_Click(object sender, RoutedEventArgs e)
+        {
+            FrameworkElement element = sender as FrameworkElement;
+            ReportFileInfo info = element.DataContext as ReportFileInfo;
+            StartProcess("msedge", string.Format("\"{0}?print=true\"", info.FullName));
+        }
+        private static void StartProcess(string name, string parameters)
+        {
+            try
+            {
+                using var process = new Process();
+                process.StartInfo = new ProcessStartInfo(name, parameters)
+                {
+                    UseShellExecute = true
+                };
+                process.Start();
+            }
+            catch
+            {
+
             }
         }
     }
