@@ -286,7 +286,7 @@ namespace LanMonitor
         {
             FrameworkElement element = sender as FrameworkElement;
             ReportFileInfo info = element.DataContext as ReportFileInfo;
-            StartProcess("msedge", string.Format("--kiosk --kiosk-printing --no-first-run --disable-print-preview \"file:///{0}?print=true\"", info.FullName));
+            StartProcess("msedge", string.Format("--kiosk-printing --no-first-run --disable-print-preview \"file:///{0}?print=true\"", info.FullName));
         }
         private static void StartProcess(string name, string parameters)
         {

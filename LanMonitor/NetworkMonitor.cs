@@ -97,6 +97,36 @@ namespace LanMonitor
                 Time = DateTime.Now
             }
         };
+        public static List<ToastMessage> LogCollection => new()
+        {
+            new ToastMessage()
+            {
+                Title = "检测到网络故障",
+                Content = "某个设备的网络通信已断开，请检查设备连接状态！",
+                Time = DateTime.Now
+            },
+            new ToastMessage()
+            {
+                Title = "检测到网络故障",
+                Content = "某个设备的网络通信已断开，请检查设备连接状态！",
+                Time = DateTime.Now,
+                Type = ToastMessage.ToastType.Info
+            },
+            new ToastMessage()
+            {
+                Title = "检测到网络故障",
+                Content = "某个设备的网络通信已断开，请检查设备连接状态！",
+                Time = DateTime.Now,
+                Type = ToastMessage.ToastType.Warning
+            },
+            new ToastMessage()
+            {
+                Title = "检测到网络故障",
+                Content = "某个设备的网络通信已断开，请检查设备连接状态！",
+                Time = DateTime.Now,
+                Type = ToastMessage.ToastType.Attention
+            }
+        };
 
         public static List<SwitchDeviceModelView> SwitchDeviceList => new List<string>() { "172.16.24.1", "172.16.24.188" }.Select(item => SwitchDeviceModelView.GetPreviewInstance(item)).ToList();
         public static List<SwitchConnectonModelView> ConnectionList => new() { new SwitchConnectonModelView("", SwitchDeviceModelView.GetPreviewInstance("172.16.24.1"), SwitchDeviceModelView.GetPreviewInstance("172.16.24.2"), 0, 1, null, null) };
@@ -119,7 +149,6 @@ namespace LanMonitor
         public List<LanHostModelView> LanHostList { get; set; }
         public List<SwitchConnectonModelView> ConnectionList { get; set; }
         public List<OverrideConnection> OverrideConnectionList { get; set; }
-        public List<ReportFileInfo> ReportFileList { get; set; }
         public string SwitchPortCount => SwitchDeviceList == null ? "0" : string.Join(", ", SwitchDeviceList.Select(item => item.PortCount));
         public string SwitchHostCount => SwitchDeviceList == null ? "0" : string.Join(", ", SwitchDeviceList.Select(item => item.HostCount));
         public string LanHostCount => SwitchDeviceList == null ? "0" : string.Join(", ", LanHostList.Select(item => item.ActiveCount));
@@ -260,6 +289,8 @@ namespace LanMonitor
             {
                 StartSwitchPingMonitoring();
             }
+
+            AddToast("系统提示", "系统正常启动", ToastMessage.ToastType.Attention, true);
         }
 
         private static void StartManuHelper()
@@ -1346,6 +1377,7 @@ namespace LanMonitor
         #endregion
 
         #region Report
+        public List<ReportFileInfo> ReportFileList { get; set; }
         public string ReportStatusText { get; set; } = "数据分析引擎加载中";
         public string ReportStatusMessage { get; set; }
         public bool IsReportInitialized { get; set; }
@@ -1415,21 +1447,32 @@ namespace LanMonitor
         #endregion
 
         public ObservableCollection<ToastMessage> ToastCollection { get; set; } = new ObservableCollection<ToastMessage>();
+        public ObservableCollection<ToastMessage> LogCollection { get; set; } = new ObservableCollection<ToastMessage>();
 
-        public void AddToast(string title, string message, ToastMessage.ToastType toastType = ToastMessage.ToastType.Alert)
+        public void AddToast(string title, string message, ToastMessage.ToastType toastType = ToastMessage.ToastType.Alert, bool silent = false)
         {
             Dispatcher dispatcher = Dispatcher.FromThread(Thread.CurrentThread);
             dispatcher ??= Application.Current.Dispatcher;
             dispatcher?.Invoke(() =>
             {
-                while (ToastCollection.Count > 4)
-                {
-                    ToastCollection.RemoveAt(0);
-                }
                 var toast = new ToastMessage(title, message)
                 {
                     Type = toastType
                 };
+                while (LogCollection.Count > 100)
+                {
+                    LogCollection.RemoveAt(0);
+                }
+                LogCollection.Add(toast);
+                if (silent)
+                {
+                    return;
+                }
+
+                while (ToastCollection.Count > 4)
+                {
+                    ToastCollection.RemoveAt(0);
+                }
                 ToastCollection.Add(toast);
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
@@ -1460,7 +1503,9 @@ namespace LanMonitor
         public enum ToastType
         {
             Alert,
-            Info
+            Info,
+            Warning,
+            Attention
         }
         public string Title { get; set; }
         public string Content { get; set; }

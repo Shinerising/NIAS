@@ -50,6 +50,7 @@
     <None Remove="images\folder.png" />
     <None Remove="images\graph.png" />
     <None Remove="images\list.png" />
+    <None Remove="images\message.png" />
     <None Remove="images\os_apple.png" />
     <None Remove="images\os_default.png" />
     <None Remove="images\os_firewall.png" />
@@ -66,6 +67,7 @@
     <None Remove="images\settings.png" />
     <None Remove="images\table.png" />
     <None Remove="images\view.png" />
+    <None Remove="images\warning.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\icon.png">
@@ -99,6 +101,7 @@
     <Resource Include="images\folder.png" />
     <Resource Include="images\graph.png" />
     <Resource Include="images\list.png" />
+    <Resource Include="images\message.png" />
     <Resource Include="images\os_apple.png" />
     <Resource Include="images\os_default.png" />
     <Resource Include="images\os_firewall.png" />
@@ -115,6 +118,7 @@
     <Resource Include="images\settings.png" />
     <Resource Include="images\table.png" />
     <Resource Include="images\view.png" />
+    <Resource Include="images\warning.png" />
     <SplashScreen Include="splashscreen.png" />
   </ItemGroup>
   <ItemGroup>
