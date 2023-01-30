@@ -931,6 +931,7 @@
                                                                                     <Line x:Name="Dot2" Canvas.Top="0" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                                                     <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                                                     <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
+                                                                                    <Path x:Name="Path0" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" Margin="0,-18,0,0" Fill="#FFC846" Data="M1 1A2 2 0 0 0 -1 1L-6 10A2 2 0 0 0 -5 12L5 12A2 2 0 0 0 6 10ZM0 4L1 4L.8 8L0 8L0 9A1 1 0 1 1 0 11A1 1 0 1 1 0 9L0 8L-.8 8L-1 4L0 4Z"/>
                                                                                 </Canvas>
                                                                                 <DataTemplate.Triggers>
                                                                                     <DataTrigger Binding="{Binding State}" Value="Unknown">
