@@ -584,6 +584,7 @@ namespace LanMonitor
             ipList.AddRange(SwitchDeviceList.Select(item => item.Address));
             LanHostList.ForEach(item => ipList.AddRange(item.AdapterList.Select(adapter => adapter.IPAddress)));
             ipList = ipList.Distinct().ToList();
+            Dictionary<string, int> dict = ipList.ToDictionary(item => item, item => 0);
 
             SwitchDeviceList.ForEach(switchDevice =>
             {
@@ -613,6 +614,7 @@ namespace LanMonitor
                             {
                                 if (waitCount > 10)
                                 {
+                                    result = 1000;
                                     break;
                                 }
                                 try
@@ -627,10 +629,15 @@ namespace LanMonitor
                                 }
                                 catch (Exception)
                                 {
+                                    result = 1000;
                                     break;
                                 }
                             }
+                            dict[targetIP] = (int)result;
                         }
+
+                        LanHostList.ForEach(item => item.AdapterList.ForEach(_item => _item.Latency = dict[_item.IPAddress]));
+
                         Thread.Sleep(1000);
                     }
                 }, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);

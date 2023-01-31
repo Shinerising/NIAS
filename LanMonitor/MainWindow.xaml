@@ -602,7 +602,7 @@
                                 <TextBlock Text="{StaticResource Row_SwitchPort}"/>
                                 <TextBlock Text="{Binding SwitchPortCount, StringFormat=({0})}" Margin="4,0,0,0"/>
                             </StackPanel>
-                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
@@ -644,13 +644,28 @@
                                                             </ItemsControl.ItemsPanel>
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <Border x:Name="Port_Border" Margin="2" ToolTip="{Binding Tip}" Background="Transparent" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave">
+                                                                    <Border x:Name="Port_Border" Margin="2" Background="Transparent" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave">
                                                                         <Grid x:Name="Port_Grid">
                                                                             <Path x:Name="Port_Icon" Width="18" Height="18" Stroke="{DynamicResource Color_Path}" StrokeThickness="1.5" Data="M5 2L5 5L2 5L2 16L16 16L16 5L13 5L13 2ZM7.5 16L7.5 10M10.5 16L10.5 10M13.5 16L13.5 10L4.5 10L4.5 16"/>
-                                                                            <Border x:Name="Port_Label" Visibility="Collapsed" Margin="-4,-6,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="1" BorderBrush="{DynamicResource Color_Line}" CornerRadius="2" Background="#F0FFFFFF">
+                                                                            <Border x:Name="Port_Label" Visibility="Collapsed" Margin="-2,-4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="1" BorderBrush="{DynamicResource Color_Line}" CornerRadius="2" Background="#F0FFFFFF">
                                                                                 <TextBlock Padding="2,0" MinWidth="12" FontSize="10" TextAlignment="Center" Text="{Binding Name}"/>
                                                                             </Border>
                                                                         </Grid>
+                                                                        <Border.ToolTip>
+                                                                            <Grid>
+                                                                                <Grid.RowDefinitions>
+                                                                                    <RowDefinition Height="Auto"/>
+                                                                                    <RowDefinition Height="Auto"/>
+                                                                                    <RowDefinition Height="Auto"/>
+                                                                                </Grid.RowDefinitions>
+                                                                                <TextBlock Text="{Binding Tip}"/>
+                                                                                <TextBlock Grid.Row="1" Text="流量曲线:"/>
+                                                                                <Grid Grid.Row="2" MinWidth="160" Height="32" Margin="0,8,0,2">
+                                                                                    <Path Data="{Binding InRateGeometry}" Stretch="Fill" Fill="#80039BE5" Stroke="#C0039BE5" StrokeThickness="1" StrokeLineJoin="Bevel"/>
+                                                                                    <Path Data="{Binding OutRateGeometry}" Stretch="Fill" Fill="#8043A047" Stroke="#C043A047" StrokeThickness="1" StrokeLineJoin="Bevel"/>
+                                                                                </Grid>
+                                                                            </Grid>
+                                                                        </Border.ToolTip>
                                                                     </Border>
                                                                     <DataTemplate.Triggers>
                                                                         <Trigger Property="ItemsControl.AlternationIndex" Value="1">
@@ -856,8 +871,8 @@
                                                         <Border x:Name="Border" Padding="12,0" VerticalAlignment="Stretch">
                                                             <Canvas MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
                                                                 <Line x:Name="Line" X1="0" X2="0" Y1="{Binding Top}" Y2="{Binding Bottom}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2"/>
-                                                                <Line x:Name="Dot1" Canvas.Top="{Binding Top}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                <Line x:Name="Dot2" Canvas.Top="{Binding Bottom}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                <Path x:Name="Dot1" Canvas.Top="{Binding Top}" StrokeThickness="2" Stroke="{DynamicResource Color_Line}" Fill="{Binding Stroke, RelativeSource={RelativeSource Self}}" Data="M0 -3A3 3 0 1 1 0 3A3 3 0 1 1 0 -3Z"/>
+                                                                <Path x:Name="Dot2" Canvas.Top="{Binding Bottom}" StrokeThickness="2" Stroke="{DynamicResource Color_Line}" Fill="{Binding Stroke, RelativeSource={RelativeSource Self}}" Data="M0 -3A3 3 0 1 1 0 3A3 3 0 1 1 0 -3Z"/>
                                                                 <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                                 <Path x:Name="Path1" Visibility="Collapsed" Canvas.Top="{Binding Top}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
                                                                 <Line x:Name="Dot4" Visibility="Collapsed" Canvas.Top="{Binding Bottom}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
@@ -927,11 +942,11 @@
                                                                                     <Line X1="0" Y1="{Binding Vector.Length}" X2="0" Y2="{Binding Vector.Offset}" Stroke="{DynamicResource Color_Panel}" StrokeThickness="6"/>
                                                                                     <Line x:Name="Line" X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="{DynamicResource Color_Line}" StrokeThickness="2" StrokeEndLineCap="Round"/>
                                                                                     <Line X1="0" Y1="0" X2="0" Y2="{Binding Vector.Length}" Stroke="Transparent" StrokeThickness="8" StrokeEndLineCap="Round"/>
-                                                                                    <Line x:Name="Dot1" Canvas.Top="{Binding Vector.Length}" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-                                                                                    <Line x:Name="Dot2" Canvas.Top="0" StrokeThickness="8" Stroke="{DynamicResource Color_Line}" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                                                    <Path x:Name="Dot1" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="{DynamicResource Color_Line}" Fill="{Binding Stroke, RelativeSource={RelativeSource Self}}" Data="M0 -3A3 3 0 1 1 0 3A3 3 0 1 1 0 -3Z"/>
+                                                                                    <Path x:Name="Dot2" Canvas.Top="0" StrokeThickness="2" Stroke="{DynamicResource Color_Line}" Fill="{Binding Stroke, RelativeSource={RelativeSource Self}}" Data="M0 -3A3 3 0 1 1 0 3A3 3 0 1 1 0 -3Z"/>
                                                                                     <Line x:Name="Dot3" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="12" Stroke="#FFF" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                                                                                     <Path x:Name="Path" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" StrokeThickness="2" Stroke="#FB3C42" Data="M-4 -4L4 4M4 -4L-4 4"/>
-                                                                                    <Path x:Name="Path0" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" Margin="0,-18,0,0" Fill="#FFC846" Data="M1 1A2 2 0 0 0 -1 1L-6 10A2 2 0 0 0 -5 12L5 12A2 2 0 0 0 6 10ZM0 4L1 4L.8 8L0 8L0 9A1 1 0 1 1 0 11A1 1 0 1 1 0 9L0 8L-.8 8L-1 4L0 4Z"/>
+                                                                                    <Path x:Name="Path0" Visibility="Collapsed" Canvas.Top="{Binding Vector.Length}" Margin="0,-18,0,0" Fill="#FFC846" Data="M1 1A2 2 0 0 0 -1 1L-6 10A2 2 0 0 0 -5 12L5 12A2 2 0 0 0 6 10ZM0 4L1 4L.8 8L0 8L0 9A1 1 0 1 1 0 11A1 1 0 1 1 0 9L0 8L-.8 8L-1 4L0 4Z" ToolTip="{Binding AlertText}"/>
                                                                                 </Canvas>
                                                                                 <DataTemplate.Triggers>
                                                                                     <DataTrigger Binding="{Binding State}" Value="Unknown">
@@ -953,6 +968,9 @@
                                                                                         <Setter TargetName="Dot2" Property="Stroke" Value="#FB3C42"/>
                                                                                         <Setter TargetName="Dot3" Property="Visibility" Value="Visible"/>
                                                                                         <Setter TargetName="Path" Property="Visibility" Value="Visible"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding IsAlert}" Value="True">
+                                                                                        <Setter TargetName="Path0" Property="Visibility" Value="Visible"/>
                                                                                     </DataTrigger>
                                                                                 </DataTemplate.Triggers>
                                                                             </DataTemplate>

@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Windows;
+using System.Windows.Media;
 using static LanMonitor.NetworkManager;
 
 namespace LanMonitor
@@ -29,6 +31,52 @@ namespace LanMonitor
         public string OutSpeed { get; set; } = "0B/s";
         public bool IsHover { get; set; }
         public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchPort), Environment.NewLine, Name, Brief, IsUp ? AppResource.GetString(AppResource.StringKey.Connected) : AppResource.GetString(AppResource.StringKey.Disconnected), InSpeed, OutSpeed);
+
+        public List<long> InRateList { get; set; } = Enumerable.Repeat<long>(0, 30).ToList();
+        public List<long> OutRateList { get; set; } = Enumerable.Repeat<long>(0, 30).ToList();
+        public long MaxRate => Math.Max(InRateList.Max(), OutRateList.Max());
+        public StreamGeometry InRateGeometry => GetChart(InRateList, Math.Max(1000, MaxRate));
+        public StreamGeometry OutRateGeometry => GetChart(OutRateList, Math.Max(1000, MaxRate));
+        private static StreamGeometry GetChart(IEnumerable<long> valueList, double maxValue)
+        {
+            double max = maxValue;
+            double min = 0;
+            double range = maxValue;
+
+            var geometry = new StreamGeometry();
+            using (StreamGeometryContext context = geometry.Open())
+            {
+                context.BeginFigure(new Point(0, range), true, true);
+                int index = 0;
+                foreach (double value in valueList)
+                {
+                    if (value > max)
+                    {
+                        context.LineTo(new Point(index, min), true, true);
+                    }
+                    else if (value < min)
+                    {
+                        context.LineTo(new Point(index, max), true, true);
+                    }
+                    else
+                    {
+                        context.LineTo(new Point(index, range - value), true, true);
+                    }
+                    index += 1;
+                }
+                context.LineTo(new Point(index - 1, range), true, true);
+                context.LineTo(new Point(index - 1, max), false, false);
+                context.LineTo(new Point(index - 1, min), false, false);
+                context.LineTo(new Point(index - 1, range), false, false);
+                context.LineTo(new Point(0, range), true, true);
+                context.LineTo(new Point(0, max), false, false);
+                context.LineTo(new Point(0, min), false, false);
+                context.LineTo(new Point(0, range), false, false);
+            }
+            geometry.Freeze();
+            return geometry;
+        }
+
         public void Refresh(SwitchPort port)
         {
             Index = port.Index;
@@ -61,7 +109,12 @@ namespace LanMonitor
             }
             OutCount = port.OutCount;
 
-            Notify(new { Index, Name, Brief, IsUp, IsFiber, InSpeed, OutSpeed, Tip });
+            InRateList.RemoveAt(0);
+            InRateList.Add(InRate);
+            OutRateList.RemoveAt(0);
+            OutRateList.Add(OutRate);
+
+            Notify(new { Index, Name, Brief, IsUp, IsFiber, InSpeed, OutSpeed, Tip, InRateGeometry, OutRateGeometry });
         }
         public void SetHover(bool flag)
         {
@@ -170,6 +223,11 @@ namespace LanMonitor
         public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Adapter), Environment.NewLine, IPAddress, MACAddress ?? (Host == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.MACAddress), MACVendor, SwitchDevice == null ? AppResource.GetString(AppResource.StringKey.Unknown) : SwitchDevice.Name, Host == null || Host.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.Port.Name, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Disconnected) : (State == DeviceState.Reserve ? AppResource.GetString(AppResource.StringKey.Reserve) : AppResource.GetString(AppResource.StringKey.Unknown))));
         public SwitchHost Host { get; set; }
         public SwitchDeviceModelView SwitchDevice { get; set; }
+        public int Latency { get; set; }
+        public long? AverageInRate => Host?.Port?.InRateList.Skip(25).Sum() / 5;
+        public long? AverageOutRate => Host?.Port?.OutRateList.Skip(25).Sum() / 5;
+        public bool IsAlert => AverageInRate > 50000000 || AverageOutRate > 50000000 || Latency > 50;
+        public string AlertText => string.Join('\n', new string[] { AverageInRate > 50000000 ? "传入流量异常" : "", AverageOutRate > 50000000 ? "传出流量异常" : "", Latency > 50 ? "网络延迟异常" : "" }.Where(item => !string.IsNullOrEmpty(item)));
 
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
@@ -183,7 +241,7 @@ namespace LanMonitor
         }
         public void Refresh()
         {
-            Notify(new { State, SwitchIPAddress, SwitchDevice, Host, Tip });
+            Notify(new { State, SwitchIPAddress, SwitchDevice, Host, Tip, IsAlert, AlertText });
         }
         public LanHostAdapter(int id, string ip)
         {
@@ -398,7 +456,9 @@ namespace LanMonitor
                     Name = item.ToString(),
                     Brief = "GigabitEthernet1/0/" + item.ToString(),
                     IsUp = item % 3 == 1,
-                    IsFiber = item >= 24
+                    IsFiber = item >= 24,
+                    InRateList = Enumerable.Repeat<long>(0, 30).Select(item => new Random().NextInt64(100000)).ToList(),
+                    OutRateList = Enumerable.Repeat<long>(0, 30).Select(item => new Random().NextInt64(100000)).ToList(),
                 }).ToList(),
                 HostList = new List<SwitchHost>()
                 {
