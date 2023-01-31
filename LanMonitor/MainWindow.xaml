@@ -602,7 +602,7 @@
                                 <TextBlock Text="{StaticResource Row_SwitchPort}"/>
                                 <TextBlock Text="{Binding SwitchPortCount, StringFormat=({0})}" Margin="4,0,0,0"/>
                             </StackPanel>
-                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                            <ListView Grid.Row="1" Margin="0,0,0,12" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="12,0,12,12" Padding="0,8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource Color_Border}" Background="{DynamicResource Color_Panel}" MouseLeftButtonUp="Network_MouseLeftButtonUp">
