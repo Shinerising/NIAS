@@ -80,9 +80,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Update="app.config.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Update="manuf.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
