@@ -250,6 +250,16 @@
                     </LinearGradientBrush.GradientStops>
                 </LinearGradientBrush>
             </Border.OpacityMask>
+            <Border.Triggers>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(Border.OpacityMask).(LinearGradientBrush.GradientStops)[2].Offset" From="0.00" To="0.97" Duration="0:0:0.3" AccelerationRatio="0.6"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(Border.OpacityMask).(LinearGradientBrush.GradientStops)[3].Offset" From="0.02" To="0.99" Duration="0:0:0.3" AccelerationRatio="0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Border.Triggers>
             <ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate}">
                 <StackPanel Margin="8,0,8,8">
                     <Label Margin="0,8,0,0" Content="交换机通信设置" Foreground="{DynamicResource Color_TextLight}"/>
