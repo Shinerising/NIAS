@@ -267,6 +267,7 @@ namespace LanMonitor
             lanMonitor = new LocalNetworkManager();
 
             InitializeSwitchData(options);
+            NMAPHelper.ApplyOptions(options);
         }
 
         [SupportedOSPlatform("windows")]

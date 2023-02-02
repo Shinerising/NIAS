@@ -143,6 +143,17 @@ namespace LanMonitor
             private const string PingParams = "-sn -oX {0} {1}";
             private const string ScanParams = "-sS -O --system-dns -oX {0} {1}";
             private static readonly string TempFile = Path.GetTempFileName();
+            private static bool isPingScan = false;
+            private static bool isFastScan = false;
+            private static bool isFullScan = false;
+
+            public static void ApplyOptions(Options option)
+            {
+                isPingScan = option.IsNmapPingScan;
+                isFastScan = option.IsNmapFastScan;
+                isFullScan = option.IsNmapFullScan;
+            }
+
             public static NMAPReport GetExampleData()
             {
                 using var reader = new StreamReader("test.xml");
@@ -169,12 +180,27 @@ namespace LanMonitor
                 {
                     ErrorMessage = string.Empty;
                     State = WorkingState.Executing;
-                    var pingResult = GetNMAPData(PingParams, Target);
-
-                    string target = pingResult.Items == null ? "" : string.Join(' ', pingResult.Items.OfType<host>().Select(item => item.address.addr).Where(item => item != null));
-
+                    string target;
+                    if (isPingScan)
+                    {
+                        var pingResult = GetNMAPData((isFastScan ? "-T5" : "") + PingParams, Target);
+                        target = pingResult.Items == null ? "" : string.Join(' ', pingResult.Items.OfType<host>().Select(item => item.address.addr).Where(item => item != null));
+                    }
+                    else
+                    {
+                        target = Target;
+                    }
                     State = WorkingState.Parsing;
-                    var scanResult = GetNMAPData(ScanParams, target);
+                    var p = ScanParams;
+                    if (isFastScan)
+                    {
+                        p = "-T5 " + p;
+                    }
+                    if (isFullScan)
+                    {
+                        p = "-p 1-65535 " + p;
+                    }
+                    var scanResult = GetNMAPData(p, target);
                     var report = new NMAPReport(scanResult);
                     State = WorkingState.Succeed;
                     return report;

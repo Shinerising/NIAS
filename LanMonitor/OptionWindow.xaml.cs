@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
+using System.IO;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LanMonitor
 {
@@ -34,6 +23,33 @@ namespace LanMonitor
             InitializeComponent();
 
             ThemeHelper.ApplySimpleTheme(this);
+        }
+
+        public static bool IsNmapInstalled => ExistsOnPath("nmap.exe");
+        public static bool IsNpcapInstalled => ExistsOnPath("C:\\Program Files\\Npcap\\NPFInstall.exe");
+
+        public static bool ExistsOnPath(string fileName)
+        {
+            return GetFullPath(fileName) != null;
+        }
+
+        public static string GetFullPath(string fileName)
+        {
+            if (File.Exists(fileName))
+            {
+                return Path.GetFullPath(fileName);
+            }
+
+            var values = Environment.GetEnvironmentVariable("PATH");
+            foreach (var path in values.Split(Path.PathSeparator))
+            {
+                var fullPath = Path.Combine(path, fileName);
+                if (File.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+            }
+            return null;
         }
 
         private void Button_Delete_Click(object sender, RoutedEventArgs e)
@@ -66,6 +82,11 @@ namespace LanMonitor
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true});
+            e.Handled = true;
         }
     }
 }
