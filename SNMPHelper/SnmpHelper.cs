@@ -1,9 +1,5 @@
 ﻿using Lextm.SharpSnmpLib;
 using Lextm.SharpSnmpLib.Messaging;
-using Lextm.SharpSnmpLib.Security;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 
 namespace SNMP
@@ -78,9 +74,9 @@ namespace SNMP
             }
         }
 
-        public static string Username = string.Empty;
-        public const int Timeout = 1000;
-        public const int RetryCount = 3;
+        private static string Username = string.Empty;
+        private const int Timeout = 1000;
+        private const int RetryCount = 3;
 
         public static void Initialize(string user)
         {
@@ -88,7 +84,7 @@ namespace SNMP
         }
         private static List<Variable> FetchData(IPEndPoint endpoint, string OID)
         {
-            List<Variable> result = new List<Variable>();
+            List<Variable> result = new ();
             _ = Messenger.BulkWalk(VersionCode.V2,
                               endpoint,
                               new OctetString(Username),
