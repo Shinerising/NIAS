@@ -169,6 +169,11 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="Separator">
+            <Setter Property="Background" Value="{DynamicResource Color_BorderLight}"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+        </Style>
     </Window.Resources>
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="32" ResizeBorderThickness="0" UseAeroCaptionButtons="True" GlassFrameThickness="-1" CornerRadius="8"/>
@@ -327,6 +332,7 @@
                                 <TextBlock VerticalAlignment="Center" Text="是否启用主机发现功能"/>
                                 <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsNmapPingScan}"/>
                             </Grid>
+                            <Separator Margin="0" Background="{DynamicResource Color_BorderLight}"/>
                             <Grid Margin="12">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
