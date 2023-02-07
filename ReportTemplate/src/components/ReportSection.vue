@@ -38,11 +38,18 @@ header > h3 {
 }
 header > div {
   margin-left: 0.5rem;
+<<<<<<< HEAD
   font-size: 0.9rem;
+=======
+>>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
   color: var(--color-text-second);
 }
 
 .details {
+<<<<<<< HEAD
   margin-top: 1rem;
+=======
+  margin-top:1rem;
+>>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
 }
 </style>

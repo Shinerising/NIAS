@@ -56,7 +56,11 @@ svg {
 }
 
 @media print {
+<<<<<<< HEAD
   .no-break, h1, h2, h3, tr, li {
+=======
+  .no-break, h1, h2, h3, tr {
+>>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
     break-inside: avoid;
   }
 }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+<<<<<<< HEAD
 import moment from "moment";
 import type { ReportData } from "./interface/ReportData.interface";
 import ReportSection from "./ReportSection.vue";
@@ -38,6 +39,26 @@ const logs: Log[] = [
     type: "XXXXXXXX",
     level: 2,
   },
+=======
+import type { NetworkData } from "./interface/NetworkData.interface";
+import ReportSection from "./ReportSection.vue";
+import IconReport from "./icons/IconReport.vue";
+import IconAlarm from "./icons/IconAlarm.vue";
+
+defineProps<{
+  data: NetworkData;
+}>();
+
+const sales = [
+  [
+    { Year: 2018, Month: 1, Sale: 512 },
+    { Year: 2018, Month: 2, Sale: 1025 },
+  ],
+  [
+    { Year: 2017, Month: 1, Sale: 155 },
+    { Year: 2017, Month: 2, Sale: 12 },
+  ],
+>>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
 ];
 </script>
 
@@ -48,6 +69,7 @@ const logs: Log[] = [
       <IconReport />
     </template>
     <template #heading>网络故障与异常报警</template>
+<<<<<<< HEAD
     <template #brief>共包含{{ logs.length }}条数据</template>
     <table class="table">
       <thead>
@@ -80,6 +102,22 @@ const logs: Log[] = [
               <IconError />
             </span>
           </td>
+=======
+    <template #brief>XX条数据</template>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>2018</th>
+          <th>2017</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(sale, i) in sales[0]" :key="i">
+          <td>{{ sale.Month }}</td>
+          <td>{{ sale.Sale }}</td>
+          <td>{{ sales[1][i].Sale }}</td>
+>>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
         </tr>
       </tbody>
     </table>
@@ -140,12 +178,19 @@ th {
 table,
 th,
 td {
+<<<<<<< HEAD
   padding: 0.5rem;
+=======
+  padding: 0.5rem 1rem;
+>>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
   border: 1px solid var(--color-border);
   border-collapse: collapse;
 }
 table {
+<<<<<<< HEAD
   font-size: 0.9rem;
+=======
+>>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
   border-radius: 0.5rem;
   border-style: hidden;
   box-shadow: 0 0 0 1px var(--color-border);
@@ -162,6 +207,7 @@ tr:last-of-type td:first-of-type {
 tr:last-of-type td:last-of-type {
   border-bottom-right-radius: 0.5rem;
 }
+<<<<<<< HEAD
 .log-icon {
   padding: 0 0.5rem;
 }
@@ -177,4 +223,6 @@ tr:last-of-type td:last-of-type {
 .log-icon .level-error {
   color: #c62828;
 }
+=======
+>>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
 </style>
