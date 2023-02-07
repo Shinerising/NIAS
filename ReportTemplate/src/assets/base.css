@@ -18,11 +18,7 @@
   --vt-c-text-light-1: var(--vt-c-indigo);
   --vt-c-text-light-2: rgba(60, 60, 60, 0.85);
   --vt-c-text-dark-1: var(--vt-c-white);
-<<<<<<< HEAD
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.85);
-=======
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
 
   --vt-c-highlight-1:#01579B;
   --vt-c-highlight-2:#0288D1;

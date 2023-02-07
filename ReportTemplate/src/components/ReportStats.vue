@@ -1,5 +1,4 @@
 <script setup lang="ts">
-<<<<<<< HEAD
 import type { ReportData } from "./interface/ReportData.interface";
 import ArcCounter from "./controls/ArcCounter.vue";
 import {
@@ -32,17 +31,6 @@ const deviceList = {
     brief: item.Vendor,
   })),
 };
-=======
-import type { NetworkData } from "./interface/NetworkData.interface";
-import ArcCounter from "./controls/ArcCounter.vue";
-import ImageComputer from "./images/ImageComputer.vue";
-import ImageRouter from "./images/ImageRouter.vue";
-import ImageSwitch from "./images/ImageSwitch.vue";
-
-defineProps<{
-  data: NetworkData;
-}>();
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
 </script>
 
 <template>
@@ -50,11 +38,7 @@ defineProps<{
   <div class="counter-wrapper">
     <ArcCounter :percent="0.15">
       <div class="counter-text">
-<<<<<<< HEAD
         <div>网络稳定</div>
-=======
-        <div>网络安全</div>
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
         <div class="number">15</div>
       </div>
     </ArcCounter>
@@ -75,16 +59,11 @@ defineProps<{
     <div class="sepline-vertical" />
     <ArcCounter :percent="0.85">
       <div class="counter-text">
-<<<<<<< HEAD
         <div>安全风险</div>
-=======
-        <div>预期风险</div>
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
         <div class="number">85</div>
       </div>
     </ArcCounter>
   </div>
-<<<<<<< HEAD
   <div class="record-box">
     <p class="text">
       <b>网络稳定指数：</b>
@@ -152,97 +131,6 @@ defineProps<{
       <span>{{ item.address || "未知" }}</span>
       <span>{{ item.mac || "未知" }}</span>
       <span>{{ item.brief || "未知" }}</span>
-=======
-  <p class="text">
-    路东分化养机全个压意小们，压圆起风议心被证正带，把专史5与鹰队家成辰。
-    委走内把效越你强采派层，前部选状历Q管常油。
-    论六加利传起例门团，器活个教间为识十，义状询年造率僚。
-    近备月看月走越声律并厂，发政深今众精前少眼结主，叫选-类在委子扭励。
-    运华派称即始层强条石先要决布治，济林龙细间特U素果该公程。
-    规京力每同或金有极，今证器居串带。
-  </p>
-  <hr />
-  <h2>局域网络整体统计数据</h2>
-  <p>交换机设备</p>
-  <ul class="device-list">
-    <li>
-      <ImageSwitch />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-    <li>
-      <ImageSwitch />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-    <li>
-      <ImageSwitch />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-  </ul>
-  <p>计算机设备</p>
-  <ul class="device-list">
-    <li>
-      <ImageComputer />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-    <li>
-      <ImageComputer />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-    <li>
-      <ImageComputer />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-    <li>
-      <ImageComputer />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-  </ul>
-  <p>网络通信设备</p>
-  <ul class="device-list">
-    <li>
-      <ImageRouter />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-    <li>
-      <ImageRouter />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-    <li>
-      <ImageRouter />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-    <li>
-      <ImageRouter />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
-    </li>
-    <li>
-      <ImageRouter />
-      <span>XXXX</span>
-      <span>XXXX</span>
-      <span>XXXX</span>
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
     </li>
   </ul>
 </template>
@@ -253,7 +141,6 @@ h2 {
 }
 
 .counter-wrapper {
-<<<<<<< HEAD
   margin: 1rem auto;
   display: flex;
   justify-content: center;
@@ -267,26 +154,11 @@ h2 {
   border-right: 1px solid var(--color-border);
 }
 
-=======
-  margin: 2rem 0;
-  display: flex;
-  justify-content: center;
-}
-.counter-wrapper > * {
-  margin: 1rem;
-}
-.sepline-vertical {
-  border-right: 1px solid var(--color-border);
-}
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
 .counter-text > div {
   font-weight: bold;
   font-size: 1rem;
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
 .counter-text > .number {
   display: block;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -295,7 +167,6 @@ h2 {
   text-align: center;
 }
 
-<<<<<<< HEAD
 .record-box {
   padding: 1rem 0;
   border-top: 1px solid var(--color-border);
@@ -309,8 +180,6 @@ hr.top-zero {
   color: var(--color-text-second);
 }
 
-=======
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
 ul.device-list {
   margin: 1rem 0;
   padding: 0;
@@ -325,7 +194,6 @@ ul.device-list > li {
   border: 1px solid var(--color-border);
   font-size: 0.9rem;
 }
-<<<<<<< HEAD
 
 ul.device-list > li:nth-child(even) {
   background-color: var(--color-background-soft);
@@ -346,38 +214,20 @@ ul.device-list > li > *:nth-child(2) {
   word-wrap: break-word;
 }
 
-=======
-ul.device-list > li:nth-child(even) {
-  background-color: var(--color-background-soft);
-}
-ul.device-list > li > * {
-  display: block;
-  flex: 1;
-  padding: 0.5rem;
-  border-right: 1px solid var(--color-border);
-}
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
 ul.device-list > li > *:last-child {
   border-right: none;
 }
 
-<<<<<<< HEAD
 ul.device-list > li > img {
-=======
-ul.device-list > li > svg {
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
   flex: none;
   width: 2.4rem;
   height: 2.4rem;
   margin: 0;
 }
-<<<<<<< HEAD
 
 @media print {
   .sepline-vertical {
     margin: 1rem 0;
   }
 }
-=======
->>>>>>> 3d122b55bd850f8abe910dcd6ff9497bba1b5a24
 </style>
