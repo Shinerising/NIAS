@@ -31,6 +31,13 @@ jobs:
       with:
         dotnet-version: 7.0.x
         
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+        cache-dependency-path: ./ReportTemplate/package-lock.json
+        
     - name: Restore Packages
       run: dotnet restore $env:Solution_Name
     
