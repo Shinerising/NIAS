@@ -374,8 +374,11 @@ namespace LanMonitor
         public string MACVendor => ManuHelper.Instance.FindInfo(MACAddress)?.Organization ?? AppResource.GetString(AppResource.StringKey.Unknown);
         public string Information { get; set; }
         public DeviceState State { get; set; } = DeviceState.Unknown;
+        public float CpuUsage { get; set; }
+        public float MemoryUsage { get; set; }
+        public float Temperature { get; set; }
         public string UpTime { get; set; }
-        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchDevice), Environment.NewLine, Name, Address, MACAddress, MACVendor, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Online) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Offline) : AppResource.GetString(AppResource.StringKey.Unknown)), UpTime ?? AppResource.GetString(AppResource.StringKey.Unknown));
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchDevice), Environment.NewLine, Name, Address, MACAddress, MACVendor, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Online) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Offline) : AppResource.GetString(AppResource.StringKey.Unknown)), UpTime ?? AppResource.GetString(AppResource.StringKey.Unknown), CpuUsage, MemoryUsage, Temperature);
         public List<SwitchPort> PortList { get; set; }
         public List<SwitchHost> HostList { get; set; }
         public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();

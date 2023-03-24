@@ -673,12 +673,18 @@ namespace LanMonitor
                                 }
                                 var dict1 = SnmpHelper.FetchTimeSpanData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_sysUpTime);
                                 var dict2 = SnmpHelper.FetchBytesData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwStackSystemMac);
+                                var dict3 = SnmpHelper.FetchIntData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwEntityCpuUsage);
+                                var dict4 = SnmpHelper.FetchIntData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwEntityMemUsage);
+                                var dict5 = SnmpHelper.FetchIntData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwEntityTemperature);
                                 TimeSpan upTime = dict1 == null ? new TimeSpan() : dict1.FirstOrDefault().Value;
                                 switchDevice.UpTime = upTime.TotalMilliseconds == 0 ? AppResource.GetString(AppResource.StringKey.Unknown) : string.Format(AppResource.GetString(AppResource.StringKey.TimeSpan), upTime.Days, upTime.Hours, upTime.Minutes, upTime.Seconds);
                                 if (dict2 != null && dict2.Count > 0)
                                 {
                                     switchDevice.MACAddress = BitConverter.ToString(dict2.FirstOrDefault().Value, 2).Replace("-", ":");
                                 }
+                                switchDevice.CpuUsage = dict3 == null ? 0 : dict3.FirstOrDefault(item => item.Value > 0).Value;
+                                switchDevice.MemoryUsage = dict4 == null ? 0 : dict3.FirstOrDefault(item => item.Value > 0).Value;
+                                switchDevice.Temperature = dict5 == null ? 0 : dict3.FirstOrDefault(item => item.Value > 0).Value;
                             }
 
                             {
