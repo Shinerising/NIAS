@@ -675,7 +675,10 @@ namespace LanMonitor
                                 var dict2 = SnmpHelper.FetchBytesData(switchDevice.EndPoint, SnmpHelper.OIDString.OID_hwStackSystemMac);
                                 TimeSpan upTime = dict1 == null ? new TimeSpan() : dict1.FirstOrDefault().Value;
                                 switchDevice.UpTime = upTime.TotalMilliseconds == 0 ? AppResource.GetString(AppResource.StringKey.Unknown) : string.Format(AppResource.GetString(AppResource.StringKey.TimeSpan), upTime.Days, upTime.Hours, upTime.Minutes, upTime.Seconds);
-                                switchDevice.MACAddress = BitConverter.ToString(dict2.FirstOrDefault().Value, 2).Replace("-", ":");
+                                if (dict2 != null && dict2.Count > 0)
+                                {
+                                    switchDevice.MACAddress = BitConverter.ToString(dict2.FirstOrDefault().Value, 2).Replace("-", ":");
+                                }
                             }
 
                             {

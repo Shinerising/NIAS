@@ -236,6 +236,14 @@ namespace LanMonitor
 
         }
 
+        private void ReportIcon_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                reportManager.GenerateReport();
+            }
+        }
+
         private void CloseToast_Click(object sender, RoutedEventArgs e)
         {
             networkManager.RemoveToast(((FrameworkElement)sender).DataContext as ToastMessage);

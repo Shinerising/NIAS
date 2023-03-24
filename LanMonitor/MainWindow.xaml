@@ -1357,7 +1357,7 @@
                                 <TextBlock Text="数据分析报表"/>
                                 <TextBlock Grid.Column="1" Text="{Binding ReportFileList.Count, StringFormat=({0})}" Margin="4,0,0,0"/>
                                 <TextBlock Grid.Column="2" Margin="6,0" Text="{Binding ReportStatusText}" ToolTip="{Binding ReportStatusMessage}" TextAlignment="Right" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                                <Image Grid.Column="3" Margin="0,-2,0,-4" VerticalAlignment="Center" Width="16" Height="16">
+                                <Image Grid.Column="3" Margin="0,-2,0,-4" VerticalAlignment="Center" Width="16" Height="16" MouseDown="ReportIcon_MouseDown">
                                     <Image.Style>
                                         <Style TargetType="Image">
                                             <Setter Property="Source" Value="images/idle.png"/>
