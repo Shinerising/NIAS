@@ -49,7 +49,7 @@ namespace LanMonitor
                 CPU = switchDevice.CpuUsage,
                 REM = switchDevice.MemoryUsage,
                 TEM = switchDevice.Temperature,
-                Port = switchDevice.PortList == null ? "" : string.Join(',', switchDevice.PortList.Select(item => item.Index)),
+                Port = switchDevice.PortList == null ? "" : string.Join(',', switchDevice.PortList.Select(item => item.Name)),
                 PortInSpeed = switchDevice.PortList == null ? "" : string.Join(',', switchDevice.PortList.Select(item => item.InRate)),
                 PortOutSpeed = switchDevice.PortList == null ? "" : string.Join(',', switchDevice.PortList.Select(item => item.OutRate)),
             };

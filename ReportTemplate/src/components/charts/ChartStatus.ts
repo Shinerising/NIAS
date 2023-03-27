@@ -10,7 +10,12 @@ export default (
   info: ReportHostInfo | null,
   list: ReportHost
 ) => {
-  const data = [list.Time, list.InSpeed, list.OutSpeed, list.Latency];
+  const data = [
+    list.Time,
+    list.InSpeed.map((n) => n / 1048576.0),
+    list.OutSpeed.map((n) => n / 1048576.0),
+    list.Latency,
+  ];
   const mark: [{ xAxis: number }, { xAxis: number }][] = [];
   for (let i = 0, j = 0, s = 0; i < list.State.length; i += 1) {
     const state = list.State[i];
@@ -97,8 +102,8 @@ export default (
     dataset: {
       dimensions: [
         { name: "time", type: "time" },
-        { name: "inrate", type: "int" },
-        { name: "outrate", type: "int" },
+        { name: "inrate", type: "float" },
+        { name: "outrate", type: "float" },
         { name: "latency", type: "int" },
       ],
       source: data,

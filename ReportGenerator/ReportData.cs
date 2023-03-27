@@ -47,6 +47,7 @@
         public List<string> Port { get; set; }
         public List<string> PortInSpeed { get; set; }
         public List<string> PortOutSpeed { get; set; }
+        public List<string> PortTotalSpeed { get; set; }
         public ReportSwitch(int id)
         {
             ID = id;
@@ -58,6 +59,7 @@
             Port = new List<string>();
             PortInSpeed = new List<string>();
             PortOutSpeed = new List<string>();
+            PortTotalSpeed = new List<string>();
         }
     }
     public class ReportHostInfo

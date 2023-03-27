@@ -16,12 +16,12 @@ export default (
   const value: number[] = [];
   for (let i = 0; i < list.Time.length; i += 1) {
     const t = list.Time[i];
-    let j = 0;
-    for (const rate of list.Port[i].split(",")) {
+    for (const name of list.Port[i].split(",")) {
       time.push(t);
-      id.push(j);
-      value.push(parseFloat(rate));
-      j += 1;
+      id.push(parseInt(name));
+    }
+    for (const rate of list.PortTotalSpeed[i].split(",")) {
+      value.push(parseFloat(rate) / 1048576.0);
     }
   }
   const data = [time, id, value];
@@ -64,8 +64,8 @@ export default (
     dataset: {
       dimensions: [
         { name: "time", type: "time" },
-        { name: "id", type: "int" },
-        { name: "value", type: "int" },
+        { name: "id", type: "number" },
+        { name: "value", type: "float" },
       ],
       source: data,
     },

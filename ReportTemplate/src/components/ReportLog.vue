@@ -8,7 +8,7 @@ import IconInfo from "./icons/IconInfo.vue";
 import IconWarning from "./icons/IconWarning.vue";
 import IconError from "./icons/IconError.vue";
 
-defineProps<{
+const props = defineProps<{
   data: ReportData;
 }>();
 
@@ -19,26 +19,12 @@ type Log = {
   level: 0 | 1 | 2;
 };
 
-const logs: Log[] = [
-  {
-    time: new Date(),
-    text: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    type: "XXXXXXXX",
-    level: 0,
-  },
-  {
-    time: new Date(),
-    text: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    type: "XXXXXXXX",
-    level: 1,
-  },
-  {
-    time: new Date(),
-    text: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    type: "XXXXXXXX",
-    level: 2,
-  },
-];
+const logs: Log[] = props.data.Log?.map((item) => ({
+  time: moment.unix(item.Time ?? 0).toDate(),
+  text: item.Text ?? "",
+  type: item.Name ?? "",
+  level: 0,
+})) ?? [];
 </script>
 
 <template>
