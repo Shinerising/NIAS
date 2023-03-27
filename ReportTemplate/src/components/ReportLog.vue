@@ -22,8 +22,8 @@ type Log = {
 const logs: Log[] = props.data.Log?.map((item) => ({
   time: moment.unix(item.Time ?? 0).toDate(),
   text: item.Text ?? "",
-  type: item.Name ?? "",
-  level: 0,
+  type: item.Name == "ERROR" ? "故障信息" : item.Name == "WARNING" ? "警告信息" : "通知信息",
+  level: item.Name == "ERROR" ? 2 : item.Name == "WARNING" ? 1 : 0,
 })) ?? [];
 </script>
 
