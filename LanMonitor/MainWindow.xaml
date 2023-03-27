@@ -1291,6 +1291,19 @@
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
+                            <StackPanel Grid.Row="1" Margin="0,0,0,12" Background="{DynamicResource Color_WindowOverlay}">
+                                <TextBlock Text="设备扫描错误" Margin="16,8" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding NMAPErrorMessage}" Margin="16,0"/>
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding NMAPErrorMessage}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                            </StackPanel>
                         </Grid>
                     </ContentControl>
                     <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="Transparent"/>

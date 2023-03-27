@@ -184,7 +184,7 @@ namespace LanMonitor
                     string target;
                     if (isPingScan)
                     {
-                        var pingResult = GetNMAPData((isFastScan ? "-T5" : "") + PingParams, Target);
+                        var pingResult = GetNMAPData((isFastScan ? "-T5 " : "") + PingParams, Target);
                         target = pingResult.Items == null ? "" : string.Join(' ', pingResult.Items.OfType<host>().Select(item => item.address.addr).Where(item => item != null));
                     }
                     else
