@@ -20,8 +20,10 @@ export default (
       time.push(t);
       id.push(parseInt(name));
     }
-    for (const rate of list.PortTotalSpeed[i].split(",")) {
-      value.push(parseFloat(rate) / 1048576.0);
+    if (list.PortTotalSpeed) {
+      for (const rate of list.PortTotalSpeed[i].split(",")) {
+        value.push(parseFloat(rate) / 1048576.0);
+      }
     }
   }
   const data = [time, id, value];
@@ -37,11 +39,9 @@ export default (
           data: [time: number, id: number, value: number];
           marker: string;
         };
-        return `时间：${moment.unix(data[0]).format("MM-DD HH:mm")}<br>网口：${
-          data[1]
-        }<br>流量：${
-          Number.isNaN(data[2]) ? 0 : data[2].toFixed(2)
-        }Mbps${marker}`;
+        return `时间：${moment.unix(data[0]).format("MM-DD HH:mm")}<br>网口：${data[1]
+          }<br>流量：${Number.isNaN(data[2]) ? 0 : data[2].toFixed(2)
+          }Mbps${marker}`;
       },
     },
     grid: {
