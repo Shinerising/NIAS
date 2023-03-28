@@ -15,21 +15,66 @@ namespace LanMonitor
         bool IsHover { get; }
         void SetHover(bool flag);
     }
+    /// <summary>
+    /// ModelView for Switch Port
+    /// </summary>
     public class SwitchPort : CustomINotifyPropertyChanged, IHoverable
     {
+        /// <summary>
+        /// Index of the port
+        /// </summary>
         public int Index { get; set; }
+        /// <summary>
+        /// Name of the port
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Brief of the port
+        /// </summary>
         public string Brief { get; set; }
+        /// <summary>
+        /// Is the port up
+        /// </summary>
         public bool IsUp { get; set; }
+        /// <summary>
+        /// Is the port a fiber port
+        /// </summary>
         public bool IsFiber { get; set; }
+        /// <summary>
+        /// Bytes count in
+        /// </summary>
         public long InCount { get; set; }
+        /// <summary>
+        /// Bytes count out
+        /// </summary>
         public long OutCount { get; set; }
+        /// <summary>
+        /// Refresh delay
+        /// </summary>
         public long RefreshDelay { get; set; } = 1;
+        /// <summary>
+        /// In rate
+        /// </summary>
         public long InRate { get; set; }
+        /// <summary>
+        /// Out rate
+        /// </summary>
         public long OutRate { get; set; }
+        /// <summary>
+        /// In speed
+        /// </summary>
         public string InSpeed { get; set; } = "0B/s";
+        /// <summary>
+        /// Out speed
+        /// </summary>
         public string OutSpeed { get; set; } = "0B/s";
+        /// <summary>
+        /// Is the port hovered
+        /// </summary>
         public bool IsHover { get; set; }
+        /// <summary>
+        /// Tooltip of the port
+        /// </summary>
         public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchPort), Environment.NewLine, Name, Brief, IsUp ? AppResource.GetString(AppResource.StringKey.Connected) : AppResource.GetString(AppResource.StringKey.Disconnected), InSpeed, OutSpeed);
 
         public List<long> InRateList { get; set; } = Enumerable.Repeat<long>(0, 30).ToList();
@@ -122,17 +167,50 @@ namespace LanMonitor
             Notify(new { IsHover });
         }
     }
+    /// <summary>
+    /// Host in switch record
+    /// </summary>
     public class SwitchHost : CustomINotifyPropertyChanged, IHoverable
     {
+        /// <summary>
+        /// Hostname of the network device
+        /// </summary>
         public string HostName { get; set; }
+        /// <summary>
+        /// IP address
+        /// </summary>
         public string IPAddress { get; set; }
+        /// <summary>
+        /// MAC address
+        /// </summary>
         public string MACAddress { get; set; }
+        /// <summary>
+        /// MAC vendor
+        /// </summary>
         public string MACVendor => ManuHelper.Instance.FindInfo(MACAddress)?.Organization ?? AppResource.GetString(AppResource.StringKey.Unknown);
+        /// <summary>
+        /// Port index of the host
+        /// </summary>
         public int PortIndex { get; set; }
+        /// <summary>
+        /// Port of the host
+        /// </summary>
         public SwitchPort Port { get; set; }
+        /// <summary>
+        /// Is the host a cascade device
+        /// </summary>
         public bool IsCascade { get; set; }
+        /// <summary>
+        /// State of the host
+        /// </summary>
         public HostState State { get; set; }
+        /// <summary>
+        /// Tooltip of the host
+        /// </summary>
         public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchHost), Environment.NewLine, IPAddress, MACAddress, MACVendor, Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Port.Name, State == HostState.Dynamic ? AppResource.GetString(AppResource.StringKey.Dynamic) : (State == HostState.Static ? AppResource.GetString(AppResource.StringKey.Static) : (State == HostState.Invalid ? AppResource.GetString(AppResource.StringKey.Invalid) : AppResource.GetString(AppResource.StringKey.Other))));
+        /// <summary>
+        /// Is the host hovered
+        /// </summary>
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
         {
@@ -153,6 +231,9 @@ namespace LanMonitor
             Notify(new { HostName, IPAddress, MACAddress, Port, PortIndex, IsCascade, State, Tip });
         }
     }
+    /// <summary>
+    /// Adapter of the host in LAN
+    /// </summary>
     public class LanHostAdapter : CustomINotifyPropertyChanged, IHoverable
     {
         public struct LineVector
@@ -213,22 +294,67 @@ namespace LanMonitor
                 Notify(new { Vector });
             }
         }
+        /// <summary>
+        /// ID of the adapter
+        /// </summary>
         public int ID { get; set; }
+        /// <summary>
+        /// Host of the adapter
+        /// </summary>
         public string IPAddress { get; set; }
+        /// <summary>
+        /// Host of the adapter
+        /// </summary>
         public string MACAddress { get; set; }
+        /// <summary>
+        /// Mac vendor of the adapter
+        /// </summary>
         public string MACVendor => ManuHelper.Instance.FindInfo(MACAddress)?.Organization ?? AppResource.GetString(AppResource.StringKey.Unknown);
+        /// <summary>
+        /// Switch IP Address
+        /// </summary>
         public string SwitchIPAddress { get; set; }
         public LineVector Vector { get; set; }
+        /// <summary>
+        /// State of the adapter
+        /// </summary>
         public DeviceState State { get; set; }
+        /// <summary>
+        /// Tooltip of the adapter
+        /// </summary>
         public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Adapter), Environment.NewLine, IPAddress, MACAddress ?? (Host == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.MACAddress), MACVendor, SwitchDevice == null ? AppResource.GetString(AppResource.StringKey.Unknown) : SwitchDevice.Name, Host == null || Host.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.Port.Name, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Disconnected) : (State == DeviceState.Reserve ? AppResource.GetString(AppResource.StringKey.Reserve) : AppResource.GetString(AppResource.StringKey.Unknown))));
+        /// <summary>
+        /// Host of the adapter
+        /// </summary>
         public SwitchHost Host { get; set; }
+        /// <summary>
+        /// Switch device of the adapter
+        /// </summary>
         public SwitchDeviceModelView SwitchDevice { get; set; }
+        /// <summary>
+        /// Latency of the adapter
+        /// </summary>
         public int Latency { get; set; }
+        /// <summary>
+        /// Average in rate of the adapter
+        /// </summary>
         public long? AverageInRate => Host?.Port?.InRateList.Skip(25).Sum() / 5;
+        /// <summary>
+        /// Average out rate of the adapter
+        /// </summary>
         public long? AverageOutRate => Host?.Port?.OutRateList.Skip(25).Sum() / 5;
+        /// <summary>
+        /// Is the adapter alert
+        /// </summary>
         public bool IsAlert => AverageInRate > 50000000 || AverageOutRate > 50000000 || Latency > 50;
+        /// <summary>
+        /// Alert text of the adapter
+        /// </summary>
         public string AlertText => string.Join('\n', new string[] { AverageInRate > 50000000 ? "传入流量异常" : "", AverageOutRate > 50000000 ? "传出流量异常" : "", Latency > 50 ? "网络延迟异常" : "" }.Where(item => !string.IsNullOrEmpty(item)));
 
+        /// <summary>
+        /// Is the adapter hover
+        /// </summary>
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
         {
@@ -255,13 +381,34 @@ namespace LanMonitor
             MACAddress = mac.ToUpper();
         }
     }
+    /// <summary>
+    /// Modelview of the host in LAN
+    /// </summary>
     public class LanHostModelView
     {
+        /// <summary>
+        /// ID of the host
+        /// </summary>
         public int ID { get; set; }
+        /// <summary>
+        /// Name of the host
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Tooltip of the host
+        /// </summary>
         public string Tip { get; set; }
+        /// <summary>
+        /// State of the host
+        /// </summary>
         public DeviceState State { get; set; }
+        /// <summary>
+        /// Adapter list of the host
+        /// </summary>
         public List<LanHostAdapter> AdapterList { get; set; }
+        /// <summary>
+        /// Active count of the host
+        /// </summary>
         public string ActiveCount => string.Format("{0}/{1}", AdapterList.Where(item => item.State == DeviceState.Online).Count(), AdapterList.Count);
         public LanHostModelView(int id, string name, string iplist)
         {
@@ -298,19 +445,46 @@ namespace LanMonitor
         Dynamic = 3,
         Static = 4,
     }
+    /// <summary>
+    /// Modelview of the switch connection
+    /// </summary>
     public class SwitchConnectonModelView : CustomINotifyPropertyChanged, IHoverable
     {
         public double Top { get; set; }
         public double Bottom { get; set; }
         public string Brief { get; set; }
         public bool IsHidden { get; set; }
+        /// <summary>
+        /// State of the connection
+        /// </summary>
         public DeviceState State { get; set; }
+        /// <summary>
+        /// Device A of the connection
+        /// </summary>
         public SwitchDeviceModelView DeviceA { get; set; }
+        /// <summary>
+        /// Host A of the connection
+        /// </summary>
         public SwitchHost HostA { get; set; }
+        /// <summary>
+        /// Port A of the connection
+        /// </summary>
         public string PortA { get; set; }
+        /// <summary>
+        /// Device B of the connection
+        /// </summary>
         public SwitchDeviceModelView DeviceB { get; set; }
+        /// <summary>
+        /// Host B of the connection
+        /// </summary>
         public SwitchHost HostB { get; set; }
+        /// <summary>
+        /// Port B of the connection
+        /// </summary>
         public string PortB { get; set; }
+        /// <summary>
+        /// Tooltip of the connection
+        /// </summary>
         public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchConnection), Environment.NewLine, AppResource.GetString(AppResource.StringKey.SwitchCascading), string.Format("{0} - {1}", DeviceA?.Name, DeviceB?.Name), string.Format("{0} - {1}", PortA ?? (HostA?.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : HostA.Port.Name), PortB ?? (HostB?.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : HostB.Port.Name)), State == DeviceState.Unknown ? AppResource.GetString(AppResource.StringKey.Unknown) : (State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : AppResource.GetString(AppResource.StringKey.Disconnected)));
         public bool IsHover { get; set; }
         public void SetHover(bool flag)
@@ -364,15 +538,42 @@ namespace LanMonitor
 
     }
 
+    /// <summary>
+    /// Modelview of the switch device
+    /// </summary>
     public class SwitchDeviceModelView : CustomINotifyPropertyChanged
     {
+        /// <summary>
+        /// ID of the device
+        /// </summary>
         public int ID { get; set; }
+        /// <summary>
+        /// Name of the device
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// IP address of the device
+        /// </summary>
         public string Address { get; set; }
+        /// <summary>
+        /// End point of the device
+        /// </summary>
         public IPEndPoint EndPoint { get; set; }
+        /// <summary>
+        /// MAC address of the device
+        /// </summary>
         public string MACAddress { get; set; }
+        /// <summary>
+        /// Vendor of the device
+        /// </summary>
         public string MACVendor => ManuHelper.Instance.FindInfo(MACAddress)?.Organization ?? AppResource.GetString(AppResource.StringKey.Unknown);
+        /// <summary>
+        /// Information of the device
+        /// </summary>
         public string Information { get; set; }
+        /// <summary>
+        /// State of the device
+        /// </summary>
         public DeviceState State { get; set; } = DeviceState.Unknown;
         public float CpuUsage { get; set; }
         public float MemoryUsage { get; set; }
@@ -380,8 +581,17 @@ namespace LanMonitor
         public string UpTime { get; set; }
         public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchDevice), Environment.NewLine, Name, Address, MACAddress, MACVendor, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Online) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Offline) : AppResource.GetString(AppResource.StringKey.Unknown)), UpTime ?? AppResource.GetString(AppResource.StringKey.Unknown), CpuUsage, MemoryUsage, Temperature);
         public List<SwitchPort> PortList { get; set; }
+        /// <summary>
+        /// List of the hosts of the device
+        /// </summary>
         public List<SwitchHost> HostList { get; set; }
+        /// <summary>
+        /// Count of the ports of the device
+        /// </summary>
         public int PortCount => PortList == null ? 0 : PortList.Where(item => item.IsUp).Count();
+        /// <summary>
+        /// Count of the hosts of the device
+        /// </summary>
         public int HostCount => HostList == null ? 0 : HostList.Count;
         public SwitchDeviceModelView(int id, string name, string ip)
         {
