@@ -99,6 +99,12 @@ namespace NIASReport
             var reportLogList = ResolveLogData(logList);
             var reportAlarmList = ResolveAlarmData(alarmList);
 
+            var reportStatsList = new List<int[]>();
+            reportStatsList.Add(GetHealthStats(reportSwitchData, reportHostData));
+            reportStatsList.Add(GetNetworkStats(reportHostData));
+            reportStatsList.Add(GetSensorStats(reportSwitchData));
+            reportStatsList.Add(GetPortStats(reportDeviceInfo));
+
             ReportData data = new()
             {
                 Title = "测试数据",
@@ -113,6 +119,7 @@ namespace NIASReport
                 Connection = reportConnectionData,
                 Log = reportLogList,
                 Alarm = reportAlarmList,
+                Stats = reportStatsList
             };
 
             return data;

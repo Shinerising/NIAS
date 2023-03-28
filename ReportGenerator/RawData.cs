@@ -64,9 +64,9 @@
             public int HostID { get; set; } = -1;
             public int AdapterID { get; set; } = -1;
             public int State { get; set; } = 0;
-            public float Latency { get; set; } = 0;
-            public float InSpeed { get; set; } = 0;
-            public float OutSpeed { get; set; } = 0;
+            public int Latency { get; set; } = 0;
+            public int InSpeed { get; set; } = 0;
+            public int OutSpeed { get; set; } = 0;
             public override Adapter Combine(IEnumerable<Adapter> list)
             {
                 return list.First();

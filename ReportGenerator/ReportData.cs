@@ -16,6 +16,7 @@
         public List<ReportLog>? Log { get; set; }
         public List<ReportAlarm>? Alarm { get; set; }
         public ReportConnection? Connection { get; set; }
+        public List<int[]>? Stats { get; set; }
     }
 
     public class ReportScore
@@ -47,7 +48,6 @@
         public List<string> Port { get; set; }
         public List<string> PortInSpeed { get; set; }
         public List<string> PortOutSpeed { get; set; }
-        public List<string> PortTotalSpeed { get; set; }
         public ReportSwitch(int id)
         {
             ID = id;
@@ -59,7 +59,6 @@
             Port = new List<string>();
             PortInSpeed = new List<string>();
             PortOutSpeed = new List<string>();
-            PortTotalSpeed = new List<string>();
         }
     }
     public class ReportHostInfo
@@ -76,17 +75,17 @@
         public int ID { get; set; }
         public List<long> Time { get; set; }
         public List<int> State { get; set; }
-        public List<float> Latency { get; set; }
-        public List<float> InSpeed { get; set; }
-        public List<float> OutSpeed { get; set; }
+        public List<int> Latency { get; set; }
+        public List<int> InSpeed { get; set; }
+        public List<int> OutSpeed { get; set; }
         public ReportHost(int id)
         {
             ID = id;
             Time = new List<long>();
             State = new List<int>();
-            Latency = new List<float>();
-            InSpeed = new List<float>();
-            OutSpeed = new List<float>();
+            Latency = new List<int>();
+            InSpeed = new List<int>();
+            OutSpeed = new List<int>();
         }
     }
 

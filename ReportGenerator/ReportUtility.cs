@@ -5,6 +5,12 @@ namespace NIASReport
     public static class ReportUtility
     {
         private const string scriptTag = "<script id=\"rawData\" type=\"application/json\">{0}</script>";
+        private const int CPUThreshold = 80;
+        private const int MemoryThreshold = 80;
+        private const int TemperatureThreshold = 80;
+        private const int LatencyThreshold = 50;
+        private const int RateThreshold = 1000000;
+        private const int NormalState = 1;
 
         public static async Task ApplyDataAndExport(string data, string template, string target)
         {
@@ -15,6 +21,46 @@ namespace NIASReport
             sw.Flush();
             sw.Dispose();
             File.Move(tempFile, target);
+        }
+
+        public static int[] GetHealthStats(List<ReportSwitch> list0, List<ReportHost> list1)
+        {
+            int switchCount = list0.Sum(item => item.State.Count());
+            int switchErrorCount = list0.Sum(item => item.State.Count(_item => _item != NormalState));
+            int hostCount = list1.Sum(item => item.State.Count());
+            int hostErrorCount = list1.Sum(item => item.State.Count(_item => _item != NormalState));
+
+            return new int[]{ switchErrorCount, switchCount, hostErrorCount, hostCount};
+        }
+
+
+        public static int[] GetNetworkStats(List<ReportHost> list)
+        {
+            int totalCount = list.Sum(item => item.InSpeed.Count());
+            int intSpeedCount = list.Sum(item => item.InSpeed.Count(_item => _item > RateThreshold));
+            int outSpeedCount = list.Sum(item => item.OutSpeed.Count(_item => _item > RateThreshold));
+            int latencyCount = list.Sum(item => item.Latency.Count(_item => _item > LatencyThreshold));
+
+            return new int[]{ intSpeedCount, totalCount, outSpeedCount, totalCount, latencyCount, totalCount };
+        }
+        public static int[] GetSensorStats(List<ReportSwitch> list)
+        {
+            int totalCount = list.Sum(item => item.CPU.Count());
+            int cpuCount = list.Sum(item => item.CPU.Count(_item => _item > CPUThreshold));
+            int memoryCount = list.Sum(item => item.REM.Count(_item => _item > MemoryThreshold));
+            int temperatureCount = list.Sum(item => item.TEM.Count(_item => _item > TemperatureThreshold));
+
+            return new int[]{ cpuCount, totalCount, memoryCount, totalCount, temperatureCount, totalCount };
+        }
+
+        public static int[] GetPortStats(List<ReportDeviceInfo> list)
+        {
+            int totalCount = list.Count();
+            int systemCount = list.Count(item => item.OS?.Contains("XP") ?? false);
+            int portCount = list.Sum(item => item.PortCount ?? 0);
+            int warningCount = list.Sum(item => item.WarningCount ?? 0);
+
+            return new int[]{ systemCount, totalCount, portCount, warningCount };
         }
 
         public static List<ReportSwitchInfo> ResolveSwitchInfo(IEnumerable<SwitchInfo> infoList)
@@ -104,7 +150,6 @@ namespace NIASReport
                     target.Port.Add(add.Port);
                     target.PortInSpeed.Add(add.PortInSpeed);
                     target.PortOutSpeed.Add(add.PortOutSpeed);
-                    target.PortTotalSpeed.Add(add.PortInSpeed + add.PortOutSpeed);
                 }
 
                 result.Add(target);
