@@ -33,6 +33,7 @@ export interface ReportSwitch {
   Port: string[];
   PortInSpeed: string[];
   PortOutSpeed: string[];
+  PortTotalSpeed: string[];
 }
 
 export interface ReportHostInfo {

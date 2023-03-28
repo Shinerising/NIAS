@@ -575,17 +575,11 @@ namespace LanMonitor
         /// State of the device
         /// </summary>
         public DeviceState State { get; set; } = DeviceState.Unknown;
-        /// <summary>
-        /// Uptime of the device
-        /// </summary>
+        public float CpuUsage { get; set; }
+        public float MemoryUsage { get; set; }
+        public float Temperature { get; set; }
         public string UpTime { get; set; }
-        /// <summary>
-        /// Tooltip of the device
-        /// </summary>
-        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchDevice), Environment.NewLine, Name, Address, MACAddress, MACVendor, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Online) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Offline) : AppResource.GetString(AppResource.StringKey.Unknown)), UpTime ?? AppResource.GetString(AppResource.StringKey.Unknown));
-        /// <summary>
-        /// List of the ports of the device
-        /// </summary>
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchDevice), Environment.NewLine, Name, Address, MACAddress, MACVendor, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Online) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Offline) : AppResource.GetString(AppResource.StringKey.Unknown)), UpTime ?? AppResource.GetString(AppResource.StringKey.Unknown), CpuUsage, MemoryUsage, Temperature);
         public List<SwitchPort> PortList { get; set; }
         /// <summary>
         /// List of the hosts of the device

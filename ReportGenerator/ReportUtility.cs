@@ -104,6 +104,7 @@ namespace NIASReport
                     target.Port.Add(add.Port);
                     target.PortInSpeed.Add(add.PortInSpeed);
                     target.PortOutSpeed.Add(add.PortOutSpeed);
+                    target.PortTotalSpeed.Add(add.PortInSpeed + add.PortOutSpeed);
                 }
 
                 result.Add(target);

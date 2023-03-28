@@ -139,7 +139,7 @@ namespace LanMonitor
             }
             public static WorkingState State { get; private set; }
             public static string ErrorMessage { get; private set; }
-            private const string Target = "10.211.55.*";
+            private static string Target { get; set; } = "172.16.24.*";
             private const string PingParams = "-sn -oX {0} {1}";
             private const string ScanParams = "-sS -O --system-dns -oX {0} {1}";
             private static readonly string TempFile = Path.GetTempFileName();
@@ -149,6 +149,7 @@ namespace LanMonitor
 
             public static void ApplyOptions(Options option)
             {
+                Target = option.NmapTarget;
                 isPingScan = option.IsNmapPingScan;
                 isFastScan = option.IsNmapFastScan;
                 isFullScan = option.IsNmapFullScan;
@@ -183,7 +184,7 @@ namespace LanMonitor
                     string target;
                     if (isPingScan)
                     {
-                        var pingResult = GetNMAPData((isFastScan ? "-T5" : "") + PingParams, Target);
+                        var pingResult = GetNMAPData((isFastScan ? "-T5 " : "") + PingParams, Target);
                         target = pingResult.Items == null ? "" : string.Join(' ', pingResult.Items.OfType<host>().Select(item => item.address.addr).Where(item => item != null));
                     }
                     else
