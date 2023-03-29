@@ -13,6 +13,7 @@ export interface ReportData {
   Log: ReportLog[] | null;
   Alarm: ReportAlarm[] | null;
   Connection: ReportConnection | null;
+  Stats: [[number, number, number, number], [number, number, number, number, number, number], [number, number, number, number, number, number], [number, number, number, number]] | null;
 }
 
 export interface ReportSwitchInfo {
@@ -33,7 +34,6 @@ export interface ReportSwitch {
   Port: string[];
   PortInSpeed: string[];
   PortOutSpeed: string[];
-  PortTotalSpeed: string[];
 }
 
 export interface ReportHostInfo {

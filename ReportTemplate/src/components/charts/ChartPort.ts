@@ -16,14 +16,15 @@ export default (
   const value: number[] = [];
   for (let i = 0; i < list.Time.length; i += 1) {
     const t = list.Time[i];
-    for (const name of list.Port[i].split(",")) {
+    const ports = list.Port[i].split(",");
+    const inrates = list.PortInSpeed[i].split(",");
+    const ourtates = list.PortOutSpeed[i].split(",");
+    for (let j = 0; j < ports.length; j += 1) {
       time.push(t);
-      id.push(parseInt(name));
-    }
-    if (list.PortTotalSpeed) {
-      for (const rate of list.PortTotalSpeed[i].split(",")) {
-        value.push(parseFloat(rate) / 1048576.0);
-      }
+      id.push(parseInt(ports[j]));
+      value.push(
+        (parseFloat(inrates[j]) + parseFloat(ourtates[j])) / 131072
+      );
     }
   }
   const data = [time, id, value];

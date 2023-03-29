@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Reflection;
+using System.Text.Json;
 using static NIASReport.RawData;
 using static NIASReport.ReportUtility;
 
@@ -99,15 +100,17 @@ namespace NIASReport
             var reportLogList = ResolveLogData(logList);
             var reportAlarmList = ResolveAlarmData(alarmList);
 
-            var reportStatsList = new List<int[]>();
-            reportStatsList.Add(GetHealthStats(reportSwitchData, reportHostData));
-            reportStatsList.Add(GetNetworkStats(reportHostData));
-            reportStatsList.Add(GetSensorStats(reportSwitchData));
-            reportStatsList.Add(GetPortStats(reportDeviceInfo));
+            var reportStatsList = new List<int[]>
+            {
+                GetHealthStats(reportSwitchData, reportHostData),
+                GetNetworkStats(reportHostData),
+                GetSensorStats(reportSwitchData),
+                GetPortStats(reportDeviceInfo)
+            };
 
             ReportData data = new()
             {
-                Title = "测试数据",
+                Title = "系统版本号：" + Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
                 Location = LocationName,
                 User = "测试人员",
                 CreateTime = DateTime.Now,

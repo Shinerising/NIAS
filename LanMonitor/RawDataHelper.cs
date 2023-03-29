@@ -42,6 +42,7 @@ namespace LanMonitor
             {
                 return;
             }
+            var portList = switchDevice.PortList.OrderBy(item => item.Name);
             Switch @switch = new()
             {
                 SwitchID = switchDevice.ID,
@@ -49,9 +50,9 @@ namespace LanMonitor
                 CPU = switchDevice.CpuUsage,
                 REM = switchDevice.MemoryUsage,
                 TEM = switchDevice.Temperature,
-                Port = switchDevice.PortList == null ? "" : string.Join(',', switchDevice.PortList.Select(item => item.Name)),
-                PortInSpeed = switchDevice.PortList == null ? "" : string.Join(',', switchDevice.PortList.Select(item => item.InRate)),
-                PortOutSpeed = switchDevice.PortList == null ? "" : string.Join(',', switchDevice.PortList.Select(item => item.OutRate)),
+                Port = switchDevice.PortList == null ? "" : string.Join(',', portList.Select(item => item.Name)),
+                PortInSpeed = switchDevice.PortList == null ? "" : string.Join(',', portList.Select(item => item.InRate)),
+                PortOutSpeed = switchDevice.PortList == null ? "" : string.Join(',', portList.Select(item => item.OutRate)),
             };
             reportManager.AddData(new[] { @switch });
         }
@@ -83,8 +84,8 @@ namespace LanMonitor
                         AdapterID = adapter.ID,
                         State = ConvertState(adapter.State),
                         Latency = 0,
-                        InSpeed = adapter.Host?.Port?.OutRate ?? 0,
-                        OutSpeed = adapter.Host?.Port?.InRate ?? 0,
+                        InSpeed = (int)(adapter.Host?.Port?.OutRate ?? 0),
+                        OutSpeed = (int)(adapter.Host?.Port?.InRate ?? 0),
                     });
                 }
             }
@@ -279,8 +280,8 @@ namespace LanMonitor
                 MACAddress = item.MACAddress,
                 Vendor = item.MACVendor,
                 OS = item.OSName,
-                PortCount = item.PortList.Count,
-                WarningCount = item.PortList.Count(item => item.IsWarning),
+                PortCount = item.PortList == null ? 0 : item.PortList.Count,
+                WarningCount = item.PortList == null ? 0 : item.PortList.Count(item => item.IsWarning),
             }).ToList();
             reportManager.UpdateInfo(list);
         }

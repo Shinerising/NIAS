@@ -12,8 +12,8 @@ export default (
 ) => {
   const data = [
     list.Time,
-    list.InSpeed.map((n) => n / 1048576.0),
-    list.OutSpeed.map((n) => n / 1048576.0),
+    list.InSpeed.map((n) => n / 131072),
+    list.OutSpeed.map((n) => n / 131072),
     list.Latency,
   ];
   const mark: [{ xAxis: number }, { xAxis: number }][] = [];
@@ -62,9 +62,9 @@ export default (
         return `时间：${moment
           .unix(data[0].data[0])
           .format("MM-DD HH:mm")}<br>${data[0].marker}${data[0].seriesName}：${
-          data[0].data[1].toFixed(0) + "Mbps"
+          data[0].data[1].toFixed(2) + "Mbps"
         }<br>${data[1].marker}${data[1].seriesName}：${
-          data[0].data[2].toFixed(0) + "Mbps"
+          data[0].data[2].toFixed(2) + "Mbps"
         }<br>${data[2].marker}${data[2].seriesName}：${
           data[0].data[3].toFixed(0) + "ms"
         }`;
