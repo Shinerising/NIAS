@@ -62,7 +62,7 @@ use([
 
 provide(THEME_KEY, "light");
 
-const optionStats = ChartStats();
+const optionStats = ChartStats("总体统计数据", props.data.Switch, props.data.Host);
 const optionGraph = ref(
   ChartGraph(
     "网络拓扑图",
@@ -140,13 +140,7 @@ const updateAxisPointer = (event: { dataIndex: number }) => {
     <template #heading>局域网络拓扑图</template>
     <div class="chart-wrapper no-break two-column large">
       <div>
-        <v-chart
-          class="chart"
-          :option="optionState"
-          :ref="setRef"
-          @updateAxisPointer="updateAxisPointer"
-          autoresize
-        />
+        <v-chart class="chart" :option="optionState" :ref="setRef" @updateAxisPointer="updateAxisPointer" autoresize />
       </div>
       <div>
         <v-chart class="chart" :option="optionGraph" :ref="setRef" autoresize />
@@ -206,7 +200,7 @@ const updateAxisPointer = (event: { dataIndex: number }) => {
   display: flex;
 }
 
-.chart-wrapper.two-column > * {
+.chart-wrapper.two-column>* {
   width: 50%;
   display: flex;
   align-items: center;

@@ -1,6 +1,88 @@
 import type { EChartsOption } from "echarts";
+import type {
+  ReportSwitch,
+  ReportHost
+} from "../interface/ReportData.interface";
 
-export default () => {
+export default (
+  title: string,
+  switchList: ReportSwitch[] | null,
+  hostList: ReportHost[] | null
+) => {
+  let list = (switchList as { State: number[] }[])?.concat(hostList as { State: number[] }[] ?? { State: [] });
+  let stateCount: [number, number, number, number, number] = list?.reduce((prev, curr) =>
+    curr.State.reduce(
+      (_prev, _curr) => {
+        _prev[_curr] += 1;
+        return prev;
+      }
+      , [0, 0, 0, 0, 0]
+    ), [0, 0, 0, 0, 0]) ?? [0, 0, 0, 0, 0];
+  let inSpeedCount: [number, number, number, number] = hostList?.reduce((prev, curr) =>
+    curr.InSpeed.reduce(
+      (_prev, _curr) => {
+        let idx = 0;
+        if (_curr < 10240) {
+          idx = 0;
+        }
+        else if (_curr < 512000) {
+          idx = 1;
+        }
+        else if (_curr < 10485760) {
+          idx = 2;
+        }
+        else {
+          idx = 3;
+        }
+        _prev[idx] += 1;
+        return prev;
+      }
+      , [0, 0, 0, 0]
+    ), [0, 0, 0, 0]) ?? [0, 0, 0, 0];
+  let outSpeedCount: [number, number, number, number] = hostList?.reduce((prev, curr) =>
+    curr.OutSpeed.reduce(
+      (_prev, _curr) => {
+        let idx = 0;
+        if (_curr < 10240) {
+          idx = 0;
+        }
+        else if (_curr < 512000) {
+          idx = 1;
+        }
+        else if (_curr < 10485760) {
+          idx = 2;
+        }
+        else {
+          idx = 3;
+        }
+        _prev[idx] += 1;
+        return prev;
+      }
+      , [0, 0, 0, 0]
+    ), [0, 0, 0, 0]) ?? [0, 0, 0, 0];
+  let speedCount = inSpeedCount.map((v, i) => v + outSpeedCount[i]);
+  let latencyCount: [number, number, number, number] = hostList?.reduce((prev, curr) =>
+    curr.Latency.reduce(
+      (_prev, _curr) => {
+        let idx = 0;
+        if (_curr < 10) {
+          idx = 0;
+        }
+        else if (_curr < 50) {
+          idx = 1;
+        }
+        else if (_curr < 200) {
+          idx = 2;
+        }
+        else {
+          idx = 3;
+        }
+        _prev[idx] += 1;
+        return prev;
+      }
+      , [0, 0, 0, 0]
+    ), [0, 0, 0, 0]) ?? [0, 0, 0, 0];
+
   return {
     title: [
       {
@@ -23,10 +105,11 @@ export default () => {
         center: ["20%", "50%"],
         animation: false,
         data: [
-          { value: 335, name: "idle" },
-          { value: 310, name: "normal" },
-          { value: 234, name: "warning" },
-          { value: 135, name: "error" },
+          { value: stateCount[0] || '-', name: "未知状态" },
+          { value: stateCount[1] || '-', name: "默认状态" },
+          { value: stateCount[2] || '-', name: "正常状态" },
+          { value: stateCount[3] || '-', name: "警告状态" },
+          { value: stateCount[4] || '-', name: "故障状态" },
         ],
       },
       {
@@ -35,10 +118,10 @@ export default () => {
         center: ["50%", "50%"],
         animation: false,
         data: [
-          { value: 335, name: "idle" },
-          { value: 310, name: "normal" },
-          { value: 234, name: "warning" },
-          { value: 135, name: "error" },
+          { value: speedCount[0] || '-', name: "<10KB/s" },
+          { value: speedCount[1] || '-', name: "<500KB/s" },
+          { value: speedCount[2] || '-', name: "<10MB/s" },
+          { value: speedCount[3] || '-', name: "≥10MB/s" },
         ],
       },
       {
@@ -47,10 +130,10 @@ export default () => {
         center: ["80%", "50%"],
         animation: false,
         data: [
-          { value: 335, name: "idle" },
-          { value: 310, name: "normal" },
-          { value: 234, name: "warning" },
-          { value: 135, name: "error" },
+          { value: latencyCount[0] || '-', name: "<10ms" },
+          { value: latencyCount[1] || '-', name: "<50ms" },
+          { value: latencyCount[2] || '-', name: "<200ms" },
+          { value: latencyCount[3] || '-', name: "≥200ms" },
         ],
       },
     ],

@@ -153,10 +153,10 @@ const deviceList = {
   <ul class="device-list">
     <li v-for="(item, i) in deviceList.switchList" :key="i">
       <img :src="ImageSwitch" alt="Icon Switch Hub" />
-      <span>{{ item.name || "未知" }}</span>
-      <span>{{ item.address || "未知" }}</span>
-      <span>{{ item.mac || "未知" }}</span>
-      <span>{{ item.brief || "未知" }}</span>
+      <span :title="item.name || '未知'">{{ item.name || "未知" }}</span>
+      <span :title="item.address || '未知'">{{ item.address || "未知" }}</span>
+      <span :title="item.mac || '未知'">{{ item.mac || "未知" }}</span>
+      <span :title="item.brief || '未知'">{{ item.brief || "未知" }}</span>
     </li>
   </ul>
   <p><b>计算机设备</b></p>
@@ -164,10 +164,10 @@ const deviceList = {
   <ul class="device-list">
     <li v-for="(item, i) in deviceList.computerList" :key="i">
       <img :src="ImageComputer" alt="Icon Computer" />
-      <span>{{ item.name || "未知" }}</span>
-      <span>{{ item.address || "未知" }}</span>
-      <span>{{ item.mac || "未知" }}</span>
-      <span>{{ item.brief || "未知" }}</span>
+      <span :title="item.name || '未知'">{{ item.name || "未知" }}</span>
+      <span :title="item.address || '未知'">{{ item.address || "未知" }}</span>
+      <span :title="item.mac || '未知'">{{ item.mac || "未知" }}</span>
+      <span :title="item.brief || '未知'">{{ item.brief || "未知" }}</span>
     </li>
   </ul>
   <p><b>网络通信设备</b></p>
@@ -175,10 +175,10 @@ const deviceList = {
   <ul class="device-list">
     <li v-for="(item, i) in deviceList.hostList" :key="i">
       <img :src="ImageRouter" alt="Icon Network Router" />
-      <span>{{ item.name || "未知" }}</span>
-      <span>{{ item.address || "未知" }}</span>
-      <span>{{ item.mac || "未知" }}</span>
-      <span>{{ item.brief || "未知" }}</span>
+      <span :title="item.name || '未知'">{{ item.name || "未知" }}</span>
+      <span :title="item.address || '未知'">{{ item.address || "未知" }}</span>
+      <span :title="item.mac || '未知'">{{ item.mac || "未知" }}</span>
+      <span :title="item.brief || '未知'">{{ item.brief || "未知" }}</span>
     </li>
   </ul>
 </template>
