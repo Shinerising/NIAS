@@ -16,14 +16,16 @@ namespace NIASReport
         public string ReportDirectory { get; private set; }
         public string ReportTemplatePath { get; private set; }
         public string LocationName { get; private set; }
+        public string UserName { get; private set; }
         public TimeSpan RefreshTime { get; set; }
         public bool IsGenerateRequested { get; set; }
 
-        public ReportGenerator(string directory, string template, string location, int triggerTime)
+        public ReportGenerator(string directory, string template, string location, string username, int triggerTime)
         {
             ReportDirectory = directory;
             ReportTemplatePath = template;
             LocationName = location;
+            UserName = username;
 
             cancellation = new CancellationTokenSource();
             task = new Task(Procedure, cancellation.Token);
@@ -112,7 +114,7 @@ namespace NIASReport
             {
                 Title = "系统版本号：" + Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
                 Location = LocationName,
-                User = "测试人员",
+                User = UserName,
                 CreateTime = DateTime.Now,
                 SwitchInfo = reportSwitchInfo,
                 HostInfo = reportHostInfo,

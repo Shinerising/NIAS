@@ -24,7 +24,7 @@
         private readonly ReportRecorder recorder;
         private readonly ReportGenerator generator;
         private readonly DatabaseHelper dbHelper;
-        public ReportManager(string directory, string template, string location, int triggerTime)
+        public ReportManager(string directory, string template, string location, string username, int triggerTime)
         {
             FileDirectory = directory;
 
@@ -34,7 +34,7 @@
             recorder = new ReportRecorder();
             recorder.ErrorHandler += HandleError;
 
-            generator = new ReportGenerator(directory, template, location, triggerTime);
+            generator = new ReportGenerator(directory, template, location, username, triggerTime);
             generator.ErrorHandler += HandleError;
         }
 

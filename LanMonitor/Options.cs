@@ -29,6 +29,7 @@ namespace LanMonitor
 
         public string ReportFolder { get; set; } = @"D:\";
         public string ReportLocation { get; set; } = "工作地点";
+        public string ReportUser { get; set; } = "测试人员";
         public int ReportTime { get; set; } = 480;
 
         public ObservableCollection<Pair> SwitchList { get; set; } = new ObservableCollection<Pair>(new Dictionary<string, string>()

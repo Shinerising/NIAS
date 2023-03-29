@@ -398,6 +398,14 @@
                                 <TextBlock VerticalAlignment="Center" Text="工作地点信息"/>
                                 <TextBox Grid.Column="1" Width="240" Text="{Binding ReportLocation}"/>
                             </Grid>
+                            <Grid Margin="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="作业人员信息"/>
+                                <TextBox Grid.Column="1" Width="240" Text="{Binding ReportUser}"/>
+                            </Grid>
                         </StackPanel>
                     </ContentControl>
                     <Label Margin="0,8,0,0" Content="交换机数据设置" Foreground="{DynamicResource Color_TextLight}"/>

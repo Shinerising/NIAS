@@ -94,7 +94,7 @@ namespace LanMonitor
 
             networkManager.Start();
 
-            reportManager = new ReportManager(options.ReportFolder, "template.html", options.ReportLocation, options.ReportTime);
+            reportManager = new ReportManager(options.ReportFolder, "template.html", options.ReportLocation, options.ReportUser, options.ReportTime);
             networkManager.SetManager(reportManager);
             RawDataHelper.SetManager(reportManager);
             _ = reportManager.Initialize();
