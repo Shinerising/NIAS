@@ -42,7 +42,7 @@ namespace LanMonitor
             {
                 return;
             }
-            var portList = switchDevice.PortList.OrderBy(item => item.Name);
+            var portList = (switchDevice.PortList ?? new List<SwitchPort>()).OrderBy(item => item.Name);
             Switch @switch = new()
             {
                 SwitchID = switchDevice.ID,

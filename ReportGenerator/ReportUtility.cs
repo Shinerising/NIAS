@@ -1,10 +1,13 @@
-﻿using static NIASReport.RawData;
+﻿using System.IO;
+using System.IO.Compression;
+using System.Text;
+using static NIASReport.RawData;
 
 namespace NIASReport
 {
     public static class ReportUtility
     {
-        private const string scriptTag = "<script id=\"rawData\" type=\"application/json\">{0}</script>";
+        private const string scriptTag = "<script id=\"rawData\" type=\"application/json\" {0}>{1}</script>";
         private const int CPUThreshold = 60;
         private const int MemoryThreshold = 60;
         private const int TemperatureThreshold = 60;
@@ -12,15 +15,32 @@ namespace NIASReport
         private const int RateThreshold = 10485760;
         private const int NormalState = 2;
 
-        public static async Task ApplyDataAndExport(string data, string template, string target)
-        {
+        private static bool IsCompressing = true;
+
+        public static async Task ApplyDataAndExport(string data, string template, string target) {
             string tempFile = Path.GetTempFileName();
             File.Copy(template, tempFile, true);
             using StreamWriter sw = File.AppendText(tempFile);
-            await sw.WriteLineAsync(string.Format(scriptTag, data));
+            if (IsCompressing) {
+                await sw.WriteLineAsync(string.Format(scriptTag, "compressed", await CompressText(data)));
+            }
+            else {
+                await sw.WriteLineAsync(string.Format(scriptTag, "", data));
+            }
             sw.Flush();
             sw.Dispose();
             File.Move(tempFile, target);
+        }
+
+        public static async Task<string> CompressText(string text)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(text);
+            using MemoryStream memoryStream = new();
+            using (GZipStream gzipStream = new(memoryStream, CompressionMode.Compress)) {
+                await gzipStream.WriteAsync(bytes, 0, bytes.Length);
+                await gzipStream.FlushAsync();
+            }
+            return Convert.ToBase64String(memoryStream.ToArray());
         }
 
         public static int[] GetHealthStats(List<ReportSwitch> list0, List<ReportHost> list1)
