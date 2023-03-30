@@ -5,9 +5,9 @@
         public string? Title { get; set; }
         public string? User { get; set; }
         public string? Location { get; set; }
-        public DateTime? CreateTime { get; set; }
-        public DateTime? StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
+        public long? CreateTime { get; set; }
+        public long? StartTime { get; set; }
+        public long? EndTime { get; set; }
         public List<ReportSwitchInfo>? SwitchInfo { get; set; }
         public List<ReportHostInfo>? HostInfo { get; set; }
         public List<ReportDeviceInfo>? DeviceInfo { get; set; }

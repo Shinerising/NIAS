@@ -1426,7 +1426,7 @@ namespace LanMonitor
             ReportFileList = reportManager.GetFileList();
             Notify(new { IsReportInitialized, ReportFileList });
 
-            DateTimeOffset timestamp = DateTimeOffset.Now;
+            DateTimeOffset timestamp = DateTimeOffset.MinValue;
 
             while (true)
             {
