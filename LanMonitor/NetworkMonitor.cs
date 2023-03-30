@@ -565,7 +565,7 @@ namespace LanMonitor
                     {
                         string message = AppResource.GetString(AppResource.StringKey.Message_SNMPWarning);
                         AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message);
-                        LogHelper.WriteLog("WARNING", message);
+                        LogHelper.WriteLog("ERROR", message);
                         isRefreshExpiredAlert = true;
                     }
                 }
@@ -873,13 +873,15 @@ namespace LanMonitor
                                 {
                                     string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchDisconnect), switchDevice.Address, switchDevice.Name);
                                     AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message);
-                                    LogHelper.WriteLog("WARNING", message);
+                                    LogHelper.WriteLog("ERROR", message);
                                 }
                                 switchDevice.SetIdle();
                             }
                         }
 
                         switchDevice.Refresh();
+
+                        CheckHealth(switchDevice);
 
                         RawDataHelper.SaveSwitchData(switchDevice);
 
@@ -1128,6 +1130,8 @@ namespace LanMonitor
                 LastSwitchRefreshTimeStamp = RefreshStopwatch.ElapsedMilliseconds;
 
                 RefreshTopology();
+                
+                CheckHealth(LanHostList);
 
                 RawDataHelper.SaveAdapterData(LanHostList);
                 RawDataHelper.SaveConnectionData(LanHostList, ConnectionList);
@@ -1136,6 +1140,21 @@ namespace LanMonitor
                 RawDataHelper.SaveHostInfo(LanHostList);
 
                 Thread.Sleep(1000);
+            }
+        }
+
+        public void CheckHealth(List<LanHostModelView> hostList)
+        {
+            foreach(var host in hostList)
+            {
+
+            }
+        }
+
+        public void CheckHealth(SwitchDeviceView switchDevice)
+        {
+            if (switchDevice.CpuUsage >= 80)
+            {
             }
         }
 

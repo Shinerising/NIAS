@@ -66,6 +66,15 @@ namespace LanMonitor
             });
         }
 
+        public static void WriteAlarm(string name, string text)
+        {
+            Task.Run(async () =>
+            {
+                await WriteLogAsync(name, text);
+                RawDataHelper.SaveAlarmData(name, text);
+            });
+        }
+
         public static async Task<bool> WriteLogAsync(string name, string text)
         {
             if (name + text == lastMessage)
