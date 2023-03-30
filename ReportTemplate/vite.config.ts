@@ -1,4 +1,4 @@
-import { fileURLToPath, URL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { resolve, dirname } from "node:path";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
@@ -20,8 +20,22 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-    },
+    alias: [
+      {
+        find: "@",
+        replacement: fileURLToPath(new URL("./src", import.meta.url)),
+      },
+      {
+        find: "./assets/demodata.json",
+        replacement: fileURLToPath(
+          new URL(
+            process.env.APP_ENV === "production"
+              ? "./src/assets/empty.json"
+              : "./src/assets/demodata.json",
+            import.meta.url
+          )
+        ),
+      },
+    ],
   },
 });

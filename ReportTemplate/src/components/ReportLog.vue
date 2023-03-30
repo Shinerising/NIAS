@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import moment from "moment";
+import { format, fromUnixTime } from "date-fns";
 import type { ReportData } from "./interface/ReportData.interface";
 import ReportSection from "./ReportSection.vue";
 import IconReport from "./icons/IconReport.vue";
@@ -19,20 +19,31 @@ type Log = {
   level: 0 | 1 | 2;
 };
 
-const logs: Log[] = props.data.Log?.map((item) => ({
-  time: moment.unix(item.Time ?? 0).toDate(),
-  text: item.Text ?? "",
-  type: item.Name == "ERROR" ? "故障信息" : item.Name == "WARNING" ? "警告信息" : "通知信息",
-  level: item.Name == "ERROR" ? 2 : item.Name == "WARNING" ? 1 : 0,
-})) ?? [];
+const logs: Log[] =
+  props.data.Log?.map((item) => ({
+    time: fromUnixTime(item.Time ?? 0),
+    text: item.Text ?? "",
+    type:
+      item.Name == "ERROR"
+        ? "故障信息"
+        : item.Name == "WARNING"
+        ? "警告信息"
+        : "通知信息",
+    level: item.Name == "ERROR" ? 2 : item.Name == "WARNING" ? 1 : 0,
+  })) ?? [];
 
-const alarms: Log[] = props.data.Alarm?.map((item) => ({
-  time: moment.unix(item.Time ?? 0).toDate(),
-  text: item.Text ?? "",
-  type: item.Name == "ERROR" ? "故障信息" : item.Name == "WARNING" ? "警告信息" : "通知信息",
-  level: item.Name == "ERROR" ? 2 : item.Name == "WARNING" ? 1 : 0,
-})) ?? [];
-
+const alarms: Log[] =
+  props.data.Alarm?.map((item) => ({
+    time: fromUnixTime(item.Time ?? 0),
+    text: item.Text ?? "",
+    type:
+      item.Name == "ERROR"
+        ? "故障信息"
+        : item.Name == "WARNING"
+        ? "警告信息"
+        : "通知信息",
+    level: item.Name == "ERROR" ? 2 : item.Name == "WARNING" ? 1 : 0,
+  })) ?? [];
 </script>
 
 <template>
@@ -58,7 +69,7 @@ const alarms: Log[] = props.data.Alarm?.map((item) => ({
           <td align="center">{{ i }}</td>
           <td align="center">
             <time>
-              {{ moment(log.time).format("yyyy-MM-DD HH:mm:ss") }}
+              {{ format(log.time, "yyyy-MM-dd HH:mm:ss") }}
             </time>
           </td>
           <td>{{ log.text }}</td>
@@ -100,7 +111,7 @@ const alarms: Log[] = props.data.Alarm?.map((item) => ({
           <td align="center">{{ i }}</td>
           <td align="center">
             <time>
-              {{ moment(log.time).format("yyyy-MM-DD HH:mm:ss") }}
+              {{ format(log.time, "yyyy-MM-dd HH:mm:ss") }}
             </time>
           </td>
           <td>{{ log.text }}</td>

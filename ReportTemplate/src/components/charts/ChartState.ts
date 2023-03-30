@@ -1,5 +1,5 @@
 import type { EChartsOption } from "echarts";
-import moment from "moment";
+import { format, fromUnixTime } from "date-fns";
 import { GetColor, GetLabelColor } from "../colors/ColorImpact";
 import type { ReportConnection } from "../interface/ReportData.interface";
 
@@ -21,18 +21,17 @@ export default (title: string, connection: ReportConnection | null) => {
             marker: string;
           }
         ];
-        return `时间：${moment
-          .unix(data[0])
-          .format("MM-DD HH:mm")}<br>状态：${marker}${
-          ["无数据", "正常", "警告", "故障"][data[1]]
-        }`;
+        return `时间：${format(
+          fromUnixTime(data[0]),
+          "MM-dd HH:mm"
+        )}<br>状态：${marker}${["无数据", "正常", "警告", "故障"][data[1]]}`;
       },
     },
     xAxis: {
       type: "time",
       axisLabel: {
         formatter: (value: unknown) =>
-          moment.unix(value as number).format("HH:mm"),
+          format(fromUnixTime(value as number), "HH:mm"),
       },
     },
     yAxis: {

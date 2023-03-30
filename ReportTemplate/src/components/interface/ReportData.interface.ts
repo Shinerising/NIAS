@@ -2,9 +2,9 @@ export interface ReportData {
   Title: string | null;
   User: string | null;
   Location: string | null;
-  CreateTime: Date | null;
-  StartTime: Date | null;
-  EndTime: Date | null;
+  CreateTime: number | null;
+  StartTime: number | null;
+  EndTime: number | null;
   SwitchInfo: ReportSwitchInfo[] | null;
   HostInfo: ReportHostInfo[] | null;
   DeviceInfo: ReportDeviceInfo[] | null;
@@ -13,7 +13,7 @@ export interface ReportData {
   Log: ReportLog[] | null;
   Alarm: ReportAlarm[] | null;
   Connection: ReportConnection | null;
-  Stats: [[number, number, number, number], [number, number, number, number, number, number], [number, number, number, number, number, number], [number, number, number, number]] | null;
+  Stats: number[][] | null;
 }
 
 export interface ReportSwitchInfo {

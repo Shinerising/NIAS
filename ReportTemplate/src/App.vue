@@ -14,6 +14,7 @@ PrintStore().initialize();
 
 const rawData = document.getElementById("rawData")?.textContent;
 const reportData: ReportData = rawData ? JSON.parse(rawData) : DemoData;
+
 const data = reportData;
 </script>
 

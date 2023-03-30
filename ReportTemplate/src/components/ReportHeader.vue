@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, nextTick } from "vue";
 import type { Ref } from "vue";
-import moment from "moment";
+import { format, fromUnixTime } from "date-fns";
 import type { ReportData } from "./interface/ReportData.interface";
 import { PrintStore } from "../stores/PrintStore";
 import IconPrint from "./icons/IconPrint.vue";
@@ -143,7 +143,9 @@ const focusOutListPanel = async () => {
       }}</span>
       <span class="subtitle-text" title="报告作者">{{ data.User }}</span>
       <time class="subtitle-time" title="报告生成时间">{{
-        moment(data.CreateTime).format("yyyy-MM-DD HH:mm:ss")
+        data.CreateTime
+          ? format(fromUnixTime(data.CreateTime), "yyyy-MM-dd HH:mm:ss")
+          : "未知"
       }}</time>
     </p>
     <p class="text description">

@@ -1,5 +1,5 @@
 import type { EChartsOption } from "echarts";
-import moment from "moment";
+import { format, fromUnixTime } from "date-fns";
 import type {
   ReportSwitchInfo,
   ReportSwitch,
@@ -42,9 +42,10 @@ export default (
             seriesName: string;
           }
         ];
-        return `时间：${moment
-          .unix(data[0].data[0])
-          .format("MM-DD HH:mm")}<br>${data[0].marker}${data[0].seriesName}：${
+        return `时间：${format(
+          fromUnixTime(data[0].data[0]),
+          "MM-dd HH:mm"
+        )}<br>${data[0].marker}${data[0].seriesName}：${
           (data[0].data[1] * 100).toFixed(0) + "%"
         }<br>${data[1].marker}${data[1].seriesName}：${
           (data[0].data[2] * 100).toFixed(0) + "%"
@@ -60,7 +61,7 @@ export default (
       type: "time",
       axisLabel: {
         formatter: (value: unknown) =>
-          moment.unix(value as number).format("MM-DD HH:mm"),
+          format(fromUnixTime(value as number), "MM-dd HH:mm"),
       },
     },
     yAxis: [

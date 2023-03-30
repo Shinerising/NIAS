@@ -1,5 +1,5 @@
 import type { EChartsOption } from "echarts";
-import moment from "moment";
+import { format, fromUnixTime } from "date-fns";
 import { GetColor } from "../colors/ColorImpact";
 import type {
   ReportSwitchInfo,
@@ -22,9 +22,7 @@ export default (
     for (let j = 0; j < ports.length; j += 1) {
       time.push(t);
       id.push(parseInt(ports[j]));
-      value.push(
-        (parseFloat(inrates[j]) + parseFloat(ourtates[j])) / 131072
-      );
+      value.push((parseFloat(inrates[j]) + parseFloat(ourtates[j])) / 131072);
     }
   }
   const data = [time, id, value];
@@ -40,9 +38,12 @@ export default (
           data: [time: number, id: number, value: number];
           marker: string;
         };
-        return `时间：${moment.unix(data[0]).format("MM-DD HH:mm")}<br>网口：${data[1]
-          }<br>流量：${Number.isNaN(data[2]) ? 0 : data[2].toFixed(2)
-          }Mbps${marker}`;
+        return `时间：${format(
+          fromUnixTime(data[0]),
+          "MM-dd HH:mm"
+        )}<br>网口：${data[1]}<br>流量：${
+          Number.isNaN(data[2]) ? 0 : data[2].toFixed(2)
+        }Mbps${marker}`;
       },
     },
     grid: {
@@ -56,7 +57,7 @@ export default (
       },
       axisLabel: {
         formatter: (value: unknown) =>
-          moment.unix(value as number).format("MM-DD HH:mm"),
+          format(fromUnixTime(value as number), "MM-dd HH:mm"),
       },
     },
     yAxis: {
