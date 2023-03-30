@@ -16,6 +16,7 @@ import {
   TooltipComponent,
   LegendComponent,
   DatasetComponent,
+  DataZoomComponent,
   MarkAreaComponent,
   VisualMapComponent,
 } from "echarts/components";
@@ -56,6 +57,7 @@ use([
   LegendComponent,
   DatasetComponent,
   TooltipComponent,
+  DataZoomComponent,
   MarkAreaComponent,
   VisualMapComponent,
 ]);
@@ -76,25 +78,31 @@ const optionGraph = ref(
   )
 );
 const optionState = ChartState("网络状态图", props.data.Connection);
-const optionSwitchList = props.data.Switch?.map((item, index) =>
-  ChartSwitch(
-    "工作状态曲线",
-    props.data.SwitchInfo ? props.data.SwitchInfo[index] : null,
-    item
+const optionSwitchList = ref(
+  props.data.Switch?.map((item, index) =>
+    ChartSwitch(
+      "工作状态曲线",
+      props.data.SwitchInfo ? props.data.SwitchInfo[index] : null,
+      item
+    )
   )
 );
-const optionSwitchPort = props.data.Switch?.map((item, index) =>
-  ChartPort(
-    "网口流量变化",
-    props.data.SwitchInfo ? props.data.SwitchInfo[index] : null,
-    item
+const optionSwitchPort = ref(
+  props.data.Switch?.map((item, index) =>
+    ChartPort(
+      "网口流量变化",
+      props.data.SwitchInfo ? props.data.SwitchInfo[index] : null,
+      item
+    )
   )
 );
-const optionHostList = props.data.Host?.map((item, index) =>
-  ChartStatus(
-    "工作状态曲线",
-    props.data.HostInfo ? props.data.HostInfo[index] : null,
-    item
+const optionHostList = ref(
+  props.data.Host?.map((item, index) =>
+    ChartStatus(
+      "工作状态曲线",
+      props.data.HostInfo ? props.data.HostInfo[index] : null,
+      item
+    )
   )
 );
 
@@ -109,6 +117,18 @@ const setRef = (
 PrintStore().AddPrintCallback((isPre: boolean) => {
   refList.forEach((item) => item?.resize());
   optionGraph.value.series[0].zoom = isPre ? 0.6 : 1;
+  optionSwitchList.value?.forEach((item) => {
+    const zoom = item.dataZoom as { show: boolean };
+    zoom.show = !isPre;
+  });
+  optionSwitchPort.value?.forEach((item) => {
+    const zoom = item.dataZoom as { show: boolean };
+    zoom.show = !isPre;
+  });
+  optionHostList.value?.forEach((item) => {
+    const zoom = item.dataZoom as { show: boolean };
+    zoom.show = !isPre;
+  });
 });
 
 const updateAxisPointer = (event: { dataIndex: number }) => {

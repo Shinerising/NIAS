@@ -103,6 +103,12 @@ export default (
       ],
       source: data,
     },
+    dataZoom: {
+      show: true,
+      realtime: false,
+      labelFormatter: (value: unknown) =>
+        format(fromUnixTime(value as number), "MM-dd HH:mm"),
+    },
     series: [
       {
         type: "line",
