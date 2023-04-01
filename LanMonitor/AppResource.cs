@@ -63,7 +63,15 @@ namespace LanMonitor
             Message_HostReconnect,
             Message_HostDisconnect,
             Message_LineReconnect,
-            Message_LineDisconnect
+            Message_LineDisconnect,
+            Message_SwitchCPUWarning,
+            Message_SwitchMemoryWarning,
+            Message_SwitchTemperatureWarning,
+            Message_SwitchPortWarning,
+            Message_SwitchPortReconnect,
+            Message_HostInspeedWarning,
+            Message_HostOutspeedWarning,
+            Message_HostLatencyWarning
         }
         public static string GetString(string key)
         {

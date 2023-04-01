@@ -63,6 +63,14 @@
     <system:String x:Key="Message_HostDisconnect">主机 [{0}] 的网络适配器 [{1}] 已断开连接！</system:String>
     <system:String x:Key="Message_LineReconnect">交换机 [{0}] 与交换机 [{1}] 已连接！</system:String>
     <system:String x:Key="Message_LineDisconnect">交换机 [{0}] 与交换机 [{1}] 之间的连接已断开！</system:String>
+    <system:String x:Key="Message_SwitchCPUWarning">交换机 [{0}] 的CPU占用率过高，请检查设备状态！</system:String>
+    <system:String x:Key="Message_SwitchMemoryWarning">交换机 [{0}] 的内存占用率过高，请检查设备状态！</system:String>
+    <system:String x:Key="Message_SwitchTemperatureWarning">交换机 [{0}] 的主板温度过高，请检查设备状态！</system:String>
+    <system:String x:Key="Message_SwitchPortWarning">交换机 [{0}] 的网口 [{1}] 已断开连接！</system:String>
+    <system:String x:Key="Message_SwitchPortReconnect">交换机 [{0}] 的网口 [{1}] 已连接新设备 ！</system:String>
+    <system:String x:Key="Message_HostInspeedWarning">主机 [{0}] 的网络适配器 [{1}] 的传入速度过高，请检查计算机状态！</system:String>
+    <system:String x:Key="Message_HostOutspeedWarning">主机 [{0}] 的网络适配器 [{1}] 的传出速度过高，请检查计算机状态！</system:String>
+    <system:String x:Key="Message_HostLatencyWarning">主机 [{0}] 的网络适配器 [{1}] 的网络延时过高，请检查计算机状态！</system:String>
     <system:String x:Key="Menu_Option">系统设置(&amp;O)</system:String>
     <system:String x:Key="Menu_Help">查看帮助(&amp;H)</system:String>
     <system:String x:Key="Menu_About">关于本系统(&amp;A)</system:String>
