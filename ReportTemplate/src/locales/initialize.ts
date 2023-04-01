@@ -3,14 +3,15 @@ import zhCN from "./zh-CN.json";
 import enUS from "./en-US.json";
 
 type MessageSchema = typeof zhCN;
-const i18n = createI18n<[MessageSchema], "zh-CN" | "en-US">({
+const messages = {
+  "zh-CN": zhCN,
+  "en-US": enUS,
+};
+export const i18n = createI18n<[MessageSchema], "zh-CN" | "en-US">({
   locale: window.navigator.language,
   fallbackLocale: "zh-CN",
   allowComposition: true,
-  messages: {
-    "zh-CN": zhCN,
-    "en-US": enUS,
-  },
+  globalInjection: true,
+  messages,
 });
-
 export default i18n;

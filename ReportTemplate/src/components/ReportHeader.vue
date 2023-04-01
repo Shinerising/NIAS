@@ -10,13 +10,11 @@ import IconText from "./icons/IconText.vue";
 import IconRefresh from "./icons/IconRefresh.vue";
 import IconFullsize from "./icons/IconFullsize.vue";
 import IconNormalsize from "./icons/IconNormalsize.vue";
-import loadI18n from "../locales/load";
+import __ from "../locales/load";
 
 defineProps<{
   data: ReportData;
 }>();
-
-const __ = loadI18n();
 
 const refreshPage = () => {
   document.location.reload();

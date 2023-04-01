@@ -6,10 +6,8 @@ import ReportHeader from "./components/ReportHeader.vue";
 import ReportStats from "./components/ReportStats.vue";
 import ReportGraph from "./components/ReportGraph.vue";
 import ReportLog from "./components/ReportLog.vue";
-import loadI18n from "./locales/load";
+import __ from "./locales/load";
 import { decompressSync, strFromU8 } from "fflate";
-
-const __ = loadI18n();
 
 PrintStore().initialize();
 
