@@ -1155,19 +1155,142 @@
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
                                         </Grid>
+                                        <Grid Visibility="{Binding IsListView, Converter={StaticResource BoolToVisibility}}" Margin="8">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="46"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="46"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="交换机详细参数列表" Margin="8,24,8,0"/>
+                                            <ItemsControl Grid.Row="1" ItemsSource="{Binding SwitchDeviceList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Margin="8" Padding="4" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Image Width="40" Height="40" Margin="10,0,10,6" VerticalAlignment="Top" Source="images/hub.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                                <Image Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                                    <Image.Style>
+                                                                        <Style TargetType="Image">
+                                                                            <Setter Property="Source" Value="images/idle.png"/>
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                    <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                                    <Setter Property="Source" Value="images/error.png"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Image.Style>
+                                                                </Image>
+                                                                <ItemsControl Grid.Column="2" Margin="2,0,8,0" VerticalAlignment="Center" ItemsSource="{Binding TipList}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <UniformGrid Rows="2" Columns="5"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Text="{Binding}" Foreground="{DynamicResource Color_Text}" Margin="4,3"/>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <TextBlock Grid.Row="2" Text="计算机详细参数列表" Margin="8,24,8,0"/>
+                                            <ItemsControl Grid.Row="3" ItemsSource="{Binding LanHostList}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Margin="8" Padding="4" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                </Grid.RowDefinitions>
+                                                                <Image Grid.RowSpan="2" Width="40" Height="40" Margin="10,0,10,6" VerticalAlignment="Top" Source="images/computer2.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                                <Image Grid.RowSpan="2" Width="18" Height="18" Margin="32,24,0,0" VerticalAlignment="Top" RenderOptions.BitmapScalingMode="HighQuality">
+                                                                    <Image.Style>
+                                                                        <Style TargetType="Image">
+                                                                            <Setter Property="Source" Value="images/idle.png"/>
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                    <Setter Property="Source" Value="images/checkmark.png"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding State}" Value="Offline">
+                                                                                    <Setter Property="Source" Value="images/error.png"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Image.Style>
+                                                                </Image>
+                                                                <ItemsControl Grid.Column="2" Margin="2,4,8,0" ItemsSource="{Binding TipList}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <UniformGrid Rows="1" Columns="5"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Text="{Binding}" Foreground="{DynamicResource Color_Text}" Margin="4,3"/>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                                <ItemsControl Grid.Row="2" Grid.Column="2" Margin="0,0,0,4" ItemsSource="{Binding AdapterList}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <StackPanel/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Border Margin="0,8,0,0" Padding="0,8,0,0" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="0,1,0,0">
+                                                                                <ItemsControl Grid.Column="2" Margin="2,0,8,0" VerticalAlignment="Center" ItemsSource="{Binding TipList}">
+                                                                                    <ItemsControl.ItemsPanel>
+                                                                                        <ItemsPanelTemplate>
+                                                                                            <UniformGrid Rows="2" Columns="5"/>
+                                                                                        </ItemsPanelTemplate>
+                                                                                    </ItemsControl.ItemsPanel>
+                                                                                    <ItemsControl.ItemTemplate>
+                                                                                        <DataTemplate>
+                                                                                            <TextBlock Text="{Binding}" Foreground="{DynamicResource Color_Text}" Margin="4,3"/>
+                                                                                        </DataTemplate>
+                                                                                    </ItemsControl.ItemTemplate>
+                                                                                </ItemsControl>
+                                                                            </Border>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Grid>
                                     </Grid>
                                 </ScrollViewer>
                             </Border>
                             <Border Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{DynamicResource Color_Card}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="4" Padding="4" Margin="24,12">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Style="{StaticResource Button_Tool}" ToolTip="常规视图" Tag="View_List" Click="Network_View_Click">
+                                    <Button Style="{StaticResource Button_Tool}" ToolTip="常规视图" Tag="View_Sheet" Click="Network_View_Click">
                                         <Image Source="images/list.png"/>
                                     </Button>
                                     <Button Style="{StaticResource Button_Tool}" ToolTip="拓扑视图" Tag="View_Graph" Click="Network_View_Click">
                                         <Image Source="images/graph.png"/>
                                     </Button>
                                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4,0" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" Width="1" Height="24"/>
-                                    <Button Style="{StaticResource Button_Tool}" ToolTip="数据视图">
+                                    <Button Style="{StaticResource Button_Tool}" ToolTip="数据视图" Tag="View_List" Click="Network_View_Click">
                                         <Image Source="images/table.png"/>
                                     </Button>
                                 </StackPanel>

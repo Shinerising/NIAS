@@ -1309,12 +1309,14 @@ namespace LanMonitor
             }
         }
         public bool IsSheetView { get; set; } = true;
-        public bool IsTopologyView { get; set; }
-        public void SetNetworkView(bool flag0, bool flag1)
+        public bool IsListView { get; set; } = false;
+        public bool IsTopologyView { get; set; } = false;
+        public void SetNetworkView(bool flag0, bool flag1, bool flag2)
         {
             IsSheetView = flag0;
             IsTopologyView = flag1;
-            Notify(new { IsSheetView, IsTopologyView });
+            IsListView = flag2;
+            Notify(new { IsSheetView, IsTopologyView, IsListView });
         }
         public List<TopologyInfo> TopologyDotList { get; set; }
         public List<TopologyInfo> TopologyLineList { get; set; }

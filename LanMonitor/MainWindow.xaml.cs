@@ -1,4 +1,5 @@
-﻿using NIASReport;
+﻿using Microsoft.Win32;
+using NIASReport;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -270,12 +271,21 @@ namespace LanMonitor
             switch (button.Tag?.ToString())
             {
                 case "View_List":
-                    networkManager.SetNetworkView(true, false);
+                    networkManager.SetNetworkView(false, false, true);
                     break;
                 case "View_Graph":
-                    networkManager.SetNetworkView(false, true);
+                    networkManager.SetNetworkView(false, true, false);
+                    break;
+                case "View_Sheet":
+                    networkManager.SetNetworkView(true, false, false);
                     break;
             }
+        }
+
+        private void ExportSheet_Click()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
         }
 
         private void Button_ReportView_Click(object sender, RoutedEventArgs e)

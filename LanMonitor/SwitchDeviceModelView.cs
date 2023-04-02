@@ -323,6 +323,7 @@ namespace LanMonitor
         /// Tooltip of the adapter
         /// </summary>
         public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Adapter), Environment.NewLine, IPAddress, MACAddress ?? (Host == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.MACAddress), MACVendor, SwitchDevice == null ? AppResource.GetString(AppResource.StringKey.Unknown) : SwitchDevice.Name, Host == null || Host.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.Port.Name, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Disconnected) : (State == DeviceState.Reserve ? AppResource.GetString(AppResource.StringKey.Reserve) : AppResource.GetString(AppResource.StringKey.Unknown))), Host?.Port?.InSpeed ?? "0B/s", Host?.Port?.OutSpeed ?? "0B/s", Latency);
+        public string[] TipList => Tip.Split(Environment.NewLine);
         /// <summary>
         /// Host of the adapter
         /// </summary>
@@ -369,7 +370,7 @@ namespace LanMonitor
         }
         public void Refresh()
         {
-            Notify(new { State, SwitchIPAddress, SwitchDevice, Host, Tip, IsAlert, AlertText, InRateGeometry, OutRateGeometry });
+            Notify(new { State, SwitchIPAddress, SwitchDevice, Host, Tip, TipList, IsAlert, AlertText, InRateGeometry, OutRateGeometry });
         }
         public LanHostAdapter(int id, string ip)
         {
@@ -415,6 +416,7 @@ namespace LanMonitor
         /// Active count of the host
         /// </summary>
         public string ActiveCount => string.Format("{0}/{1}", AdapterList.Where(item => item.State == DeviceState.Online).Count(), AdapterList.Count);
+        public string[] TipList => Tip.Split(Environment.NewLine);
         public bool IsHealthy { get; set; }
         public LanHostModelView(int id, string name, string iplist)
         {
@@ -438,7 +440,7 @@ namespace LanMonitor
         }
         public void Refresh()
         {
-            Notify(new { State, Tip });
+            Notify(new { State, Tip, TipList });
         }
     }
     public enum DeviceState
@@ -590,6 +592,7 @@ namespace LanMonitor
         public float Temperature { get; set; }
         public string UpTime { get; set; }
         public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_SwitchDevice), Environment.NewLine, Name, Address, MACAddress, MACVendor, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Online) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Offline) : AppResource.GetString(AppResource.StringKey.Unknown)), UpTime ?? AppResource.GetString(AppResource.StringKey.Unknown), CpuUsage, MemoryUsage, Temperature);
+        public string[] TipList => Tip.Split(Environment.NewLine);
         public List<SwitchPort> PortList { get; set; }
         /// <summary>
         /// List of the hosts of the device
@@ -666,7 +669,7 @@ namespace LanMonitor
         }
         public void Refresh()
         {
-            Notify(new { State, UpTime, Information, Tip });
+            Notify(new { State, UpTime, Information, Tip, TipList });
         }
         public static SwitchDeviceModelView GetPreviewInstance(string ip)
         {
