@@ -50,7 +50,8 @@
     <system:String x:Key="Tip_SwitchPort">网口号: {1}{0}接口名称: {2}{0}当前状态: {3}{0}传入速度: {4}{0}传出速度: {5}</system:String>
     <system:String x:Key="Tip_SwitchHost">IP地址: {1}{0}MAC地址: {2}{0}设备厂商: {3}{0}网口号: {4}{0}地址类型: {5}</system:String>
     <system:String x:Key="Tip_SwitchDevice">设备名称: {1}{0}通信IP地址: {2}{0}MAC地址: {3}{0}设备厂商: {4}{0}当前状态: {5}{0}运行时间: {6}{0}CPU占用率: {7}{0}内存占用率: {8}{0}主板温度: {9}</system:String>
-    <system:String x:Key="Tip_Adapter">IP地址: {1}{0}MAC地址: {2}{0}设备厂商: {3}{0}接入交换机: {4}{0}网口号: {5}{0}连接状态: {6}</system:String>
+    <system:String x:Key="Tip_Host">计算机名称：{1}{0}设备状态：{2}{0}上传速度：{3}{0}下载速度：{4}{0}网络延迟：{5}ms</system:String>
+    <system:String x:Key="Tip_Adapter">IP地址: {1}{0}MAC地址: {2}{0}设备厂商: {3}{0}接入交换机: {4}{0}网口号: {5}{0}连接状态: {6}{0}上传速度：{7}{0}下载速度：{8}{0}网络延迟：{9}ms</system:String>
     <system:String x:Key="Tip_SwitchConnection">连接方式: {1}{0}交换机连接: {2}{0}交换机对应网口: {3}{0}连接状态: {4}</system:String>
     <system:String x:Key="Status_Offline">网络不在线</system:String>
     <system:String x:Key="Status_LAN">局域网在线</system:String>
