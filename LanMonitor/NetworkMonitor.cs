@@ -1147,14 +1147,96 @@ namespace LanMonitor
         {
             foreach(var host in hostList)
             {
-
+                if (host == null)
+                {
+                    continue;
+                }
+                if (host.State != DeviceState.Online)
+                {
+                    host.IsHealthy = true;
+                    continue;
+                }
+                if (host.InSpeed >= 10485760)
+                {
+                    if (host.IsHealthy)
+                    {
+                        string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_HostInspeedWarning), host.Name);
+                        AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Warning, true);
+                        LogHelper.WriteAlarm("WARNING", message);
+                        host.IsHealthy = false;
+                    }
+                }
+                else if (host.OutSpeed >= 10485760)
+                {
+                    if (host.IsHealthy)
+                    {
+                        string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_HostOutspeedWarning), host.Name);
+                        AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Warning, true);
+                        LogHelper.WriteAlarm("WARNING", message);
+                        host.IsHealthy = false;
+                    }
+                }
+                else if (host.Latency >= 50)
+                {
+                    if (host.IsHealthy)
+                    {
+                        string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_HostLatencyWarning), host.Name);
+                        AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Warning, true);
+                        LogHelper.WriteAlarm("WARNING", message);
+                        host.IsHealthy = false;
+                    }
+                }
+                else
+                {
+                    host.IsHealthy = true;
+                }
             }
         }
 
-        public void CheckHealth(SwitchDeviceView switchDevice)
+        public void CheckHealth(SwitchDeviceModelView switchDevice)
         {
+            if (switchDevice == null)
+            {
+                return;
+            }
+            if (switchDevice.State != DeviceState.Online)
+            {
+                switchDevice.IsHealthy = true;
+                return;
+            }
             if (switchDevice.CpuUsage >= 80)
             {
+                if (switchDevice.IsHealthy)
+                {
+                    string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchCPUWarning), switchDevice.Name);
+                    AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Warning);
+                    LogHelper.WriteAlarm("WARNING", message);
+                    switchDevice.IsHealthy = false;
+                }
+            }
+            else if (switchDevice.MemoryUsage >= 80)
+            {
+                if (switchDevice.IsHealthy)
+                {
+                    string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchMemoryWarning), switchDevice.Name);
+                    AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Warning);
+                    LogHelper.WriteAlarm("WARNING", message);
+                    switchDevice.IsHealthy = false;
+                }
+            }
+            else if (switchDevice.Temperature >= 50)
+            {
+                if (switchDevice.IsHealthy)
+                {
+                    string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchTemperatureWarning), switchDevice.Name);
+                    AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Warning);
+                    LogHelper.WriteAlarm("WARNING", message);
+                    switchDevice.IsHealthy = false;
+                }
+            }
+            else
+            {
+                switchDevice.IsHealthy = true;
             }
         }
 

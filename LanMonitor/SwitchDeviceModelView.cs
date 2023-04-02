@@ -346,11 +346,11 @@ namespace LanMonitor
         /// <summary>
         /// Is the adapter alert
         /// </summary>
-        public bool IsAlert => AverageInRate > 50000000 || AverageOutRate > 50000000 || Latency > 50;
+        public bool IsAlert => AverageInRate > 10485760 || AverageOutRate > 10485760 || Latency > 50;
         /// <summary>
         /// Alert text of the adapter
         /// </summary>
-        public string AlertText => string.Join('\n', new string[] { AverageInRate > 50000000 ? "传入流量异常" : "", AverageOutRate > 50000000 ? "传出流量异常" : "", Latency > 50 ? "网络延迟异常" : "" }.Where(item => !string.IsNullOrEmpty(item)));
+        public string AlertText => string.Join('\n', new string[] { AverageInRate > 10485760 ? "传入流量异常" : "", AverageOutRate > 10485760 ? "传出流量异常" : "", Latency > 50 ? "网络延迟异常" : "" }.Where(item => !string.IsNullOrEmpty(item)));
 
         /// <summary>
         /// Is the adapter hover
@@ -406,10 +406,14 @@ namespace LanMonitor
         /// Adapter list of the host
         /// </summary>
         public List<LanHostAdapter> AdapterList { get; set; }
+        public long InSpeed => AdapterList.Sum(item => item.AverageOutRate ?? 0);
+        public long OutSpeed => AdapterList.Sum(item => item.AverageInRate ?? 0);
+        public int Latency => AdapterList.Max(item => item.Latency);
         /// <summary>
         /// Active count of the host
         /// </summary>
         public string ActiveCount => string.Format("{0}/{1}", AdapterList.Where(item => item.State == DeviceState.Online).Count(), AdapterList.Count);
+        public bool IsHealthy { get; set; }
         public LanHostModelView(int id, string name, string iplist)
         {
             Name = name;
@@ -593,6 +597,7 @@ namespace LanMonitor
         /// Count of the hosts of the device
         /// </summary>
         public int HostCount => HostList == null ? 0 : HostList.Count;
+        public bool IsHealthy { get; set; }
         public SwitchDeviceModelView(int id, string name, string ip)
         {
             ID = id;

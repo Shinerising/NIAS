@@ -8,9 +8,9 @@ namespace NIASReport
     public static class ReportUtility
     {
         private const string scriptTag = "<script id=\"rawData\" type=\"application/json\" {0}>{1}</script>";
-        private const int CPUThreshold = 60;
-        private const int MemoryThreshold = 60;
-        private const int TemperatureThreshold = 60;
+        private const int CPUThreshold = 80;
+        private const int MemoryThreshold = 80;
+        private const int TemperatureThreshold = 50;
         private const int LatencyThreshold = 50;
         private const int RateThreshold = 10485760;
         private const int NormalState = 2;
