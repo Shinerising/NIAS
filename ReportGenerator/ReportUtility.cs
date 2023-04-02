@@ -15,7 +15,7 @@ namespace NIASReport
         private const int RateThreshold = 10485760;
         private const int NormalState = 2;
 
-        private static bool IsCompressing = true;
+        private static readonly bool IsCompressing = true;
 
         public static async Task ApplyDataAndExport(string data, string template, string target) {
             string tempFile = Path.GetTempFileName();
@@ -34,13 +34,12 @@ namespace NIASReport
 
         public static async Task<string> CompressText(string text)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(text);
-            using MemoryStream memoryStream = new();
-            using (GZipStream gzipStream = new(memoryStream, CompressionMode.Compress)) {
-                await gzipStream.WriteAsync(bytes, 0, bytes.Length);
+            using MemoryStream outStream = new();
+            using (GZipStream gzipStream = new(outStream, CompressionMode.Compress)) {
+                await gzipStream.WriteAsync(Encoding.UTF8.GetBytes(text));
                 await gzipStream.FlushAsync();
             }
-            return Convert.ToBase64String(memoryStream.ToArray());
+            return Convert.ToBase64String(outStream.ToArray());
         }
 
         public static int[] GetHealthStats(List<ReportSwitch> list0, List<ReportHost> list1)
