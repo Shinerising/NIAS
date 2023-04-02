@@ -1293,6 +1293,9 @@
                                     <Button Style="{StaticResource Button_Tool}" ToolTip="数据视图" Tag="View_List" Click="Network_View_Click">
                                         <Image Source="images/table.png"/>
                                     </Button>
+                                    <Button Style="{StaticResource Button_Tool}" ToolTip="保存当前网络设备参数" Click="ExportSheet_Click">
+                                        <Image Source="images/export.png"/>
+                                    </Button>
                                 </StackPanel>
                                 <Border.Style>
                                     <Style TargetType="Border">

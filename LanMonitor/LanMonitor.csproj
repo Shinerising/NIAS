@@ -46,6 +46,7 @@
     <None Remove="images\about.png" />
     <None Remove="images\add.png" />
     <None Remove="images\delete.png" />
+    <None Remove="images\export.png" />
     <None Remove="images\file.png" />
     <None Remove="images\folder.png" />
     <None Remove="images\graph.png" />
@@ -94,6 +95,7 @@
     <Resource Include="images\about.png" />
     <Resource Include="images\add.png" />
     <Resource Include="images\delete.png" />
+    <Resource Include="images\export.png" />
     <Resource Include="images\file.png" />
     <Resource Include="images\folder.png" />
     <Resource Include="images\graph.png" />

@@ -54,9 +54,9 @@ namespace LanMonitor
                 if (listBox != null && listBox.ItemsSource != null)
                 {
                     this.listBox = listBox;
-                    if (listBox.ItemsSource is INotifyCollectionChanged)
+                    if (listBox.ItemsSource is INotifyCollectionChanged changed)
                     {
-                        ((INotifyCollectionChanged)listBox.ItemsSource).CollectionChanged += CollectionChanged;
+                        changed.CollectionChanged += CollectionChanged;
                     }
                 }
             }

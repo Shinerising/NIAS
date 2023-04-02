@@ -1648,6 +1648,27 @@ namespace LanMonitor
             }
             ToastCollection.Remove(toast);
         }
+
+        public string GetCSV()
+        {
+            var csv = new StringBuilder();
+            foreach (var switchDevice in SwitchDeviceList)
+            {
+                csv.AppendLine(string.Join(',', switchDevice.TipList));
+            }
+            csv.AppendLine();
+
+            foreach (var host in LanHostList)
+            {
+                csv.AppendLine(string.Join(',', host.TipList));
+                foreach (var adapter in host.AdapterList)
+                {
+                    csv.AppendLine(string.Join(',', adapter.TipList));
+                }
+                csv.AppendLine();
+            }
+            return csv.ToString();
+        }
     }
 
     public class ToastMessage

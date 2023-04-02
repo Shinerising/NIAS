@@ -282,10 +282,23 @@ namespace LanMonitor
             }
         }
 
-        private void ExportSheet_Click()
+        private void ExportSheet_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            SaveFileDialog dialog = new()
+            {
+                Title = "保存当前网络设备参数",
+                Filter = "CSV文件 (*.csv)|*.csv",
+                FileName = "网络设备参数.csv"
+            };
 
+            if (dialog.ShowDialog() == true)
+            {
+                string text = networkManager.GetCSV();
+                using var fs = new FileStream(dialog.FileName, FileMode.Create);
+                using var sw = new StreamWriter(fs, new System.Text.UTF8Encoding(true));
+                sw.Write(text);
+                sw.Flush();
+            }
         }
 
         private void Button_ReportView_Click(object sender, RoutedEventArgs e)
