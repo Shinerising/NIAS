@@ -242,7 +242,7 @@ namespace LanMonitor
             public double Top { get; set; }
             public double Length { get; set; }
             public double Offset { get; set; }
-            public override bool Equals([NotNullWhen(true)] object obj)
+            public override readonly bool Equals([NotNullWhen(true)] object obj)
             {
                 if (obj is not LineVector)
                 {
@@ -251,7 +251,7 @@ namespace LanMonitor
                 var other = (LineVector)obj;
                 return Left == other.Left && Top == other.Top && Length == other.Length && Offset == other.Offset;
             }
-            public override int GetHashCode()
+            public override readonly int GetHashCode()
             {
                 return base.GetHashCode();
             }
@@ -322,7 +322,7 @@ namespace LanMonitor
         /// <summary>
         /// Tooltip of the adapter
         /// </summary>
-        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Adapter), Environment.NewLine, IPAddress, MACAddress ?? (Host == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.MACAddress), MACVendor, SwitchDevice == null ? AppResource.GetString(AppResource.StringKey.Unknown) : SwitchDevice.Name, Host == null || Host.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.Port.Name, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Disconnected) : (State == DeviceState.Reserve ? AppResource.GetString(AppResource.StringKey.Reserve) : AppResource.GetString(AppResource.StringKey.Unknown))));
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Adapter), Environment.NewLine, IPAddress, MACAddress ?? (Host == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.MACAddress), MACVendor, SwitchDevice == null ? AppResource.GetString(AppResource.StringKey.Unknown) : SwitchDevice.Name, Host == null || Host.Port == null ? AppResource.GetString(AppResource.StringKey.Unknown) : Host.Port.Name, State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : (State == DeviceState.Offline ? AppResource.GetString(AppResource.StringKey.Disconnected) : (State == DeviceState.Reserve ? AppResource.GetString(AppResource.StringKey.Reserve) : AppResource.GetString(AppResource.StringKey.Unknown))), Host?.Port?.InSpeed ?? "0B/s", Host?.Port?.OutSpeed ?? "0B/s", Latency);
         /// <summary>
         /// Host of the adapter
         /// </summary>
@@ -335,6 +335,8 @@ namespace LanMonitor
         /// Latency of the adapter
         /// </summary>
         public int Latency { get; set; }
+        public Geometry InRateGeometry => Host?.Port?.OutRateGeometry;
+        public Geometry OutRateGeometry => Host?.Port?.InRateGeometry;
         /// <summary>
         /// Average in rate of the adapter
         /// </summary>
@@ -367,7 +369,7 @@ namespace LanMonitor
         }
         public void Refresh()
         {
-            Notify(new { State, SwitchIPAddress, SwitchDevice, Host, Tip, IsAlert, AlertText });
+            Notify(new { State, SwitchIPAddress, SwitchDevice, Host, Tip, IsAlert, AlertText, InRateGeometry, OutRateGeometry });
         }
         public LanHostAdapter(int id, string ip)
         {
@@ -384,7 +386,7 @@ namespace LanMonitor
     /// <summary>
     /// Modelview of the host in LAN
     /// </summary>
-    public class LanHostModelView
+    public class LanHostModelView : CustomINotifyPropertyChanged
     {
         /// <summary>
         /// ID of the host
@@ -397,11 +399,11 @@ namespace LanMonitor
         /// <summary>
         /// Tooltip of the host
         /// </summary>
-        public string Tip { get; set; }
+        public string Tip => string.Format(AppResource.GetString(AppResource.StringKey.Tip_Host), Environment.NewLine, Name, State == DeviceState.Unknown ? AppResource.GetString(AppResource.StringKey.Unknown) : (State == DeviceState.Online ? AppResource.GetString(AppResource.StringKey.Connected) : AppResource.GetString(AppResource.StringKey.Disconnected)), NetworkAdapter.GetSpeedString(OutSpeed), NetworkAdapter.GetSpeedString(InSpeed), Latency);
         /// <summary>
         /// State of the host
         /// </summary>
-        public DeviceState State { get; set; }
+        public DeviceState State => AdapterList.Count(item => item.State == DeviceState.Online) > 1 ? DeviceState.Online : DeviceState.Unknown;
         /// <summary>
         /// Adapter list of the host
         /// </summary>
@@ -433,6 +435,10 @@ namespace LanMonitor
                     return new LanHostAdapter(index, ip);
                 }
             }).ToList();
+        }
+        public void Refresh()
+        {
+            Notify(new { State, Tip });
         }
     }
     public enum DeviceState

@@ -51,6 +51,7 @@ namespace LanMonitor
             Tip_SwitchPort,
             Tip_SwitchHost,
             Tip_SwitchDevice,
+            Tip_Host,
             Tip_Adapter,
             Tip_SwitchConnection,
             Status_Offline,

@@ -917,7 +917,7 @@
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Border Margin="8" Padding="8,4" VerticalAlignment="Top" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3">
+                                                        <Border Margin="8" Padding="8,4" VerticalAlignment="Top" Background="{DynamicResource Color_ButtonBack}" BorderBrush="{DynamicResource Color_BorderLight}" BorderThickness="1" CornerRadius="3" ToolTip="{Binding Tip}">
                                                             <Grid>
                                                                 <Grid.RowDefinitions>
                                                                     <RowDefinition Height="Auto"/>
@@ -984,7 +984,33 @@
                                                                         </ItemsControl.ItemsPanel>
                                                                         <ItemsControl.ItemTemplate>
                                                                             <DataTemplate>
-                                                                                <Grid Margin="2,6" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" ToolTip="{Binding Tip}">
+                                                                                <Grid Margin="2,6" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave">
+                                                                                    <Grid.Style>
+                                                                                        <Style TargetType="Grid">
+                                                                                            <Setter Property="ToolTip" Value="{Binding Tip}"/>
+                                                                                            <Style.Triggers>
+                                                                                                <DataTrigger Binding="{Binding State}" Value="Online">
+                                                                                                    <Setter Property="ToolTip">
+                                                                                                        <Setter.Value>
+                                                                                                            <Grid>
+                                                                                                                <Grid.RowDefinitions>
+                                                                                                                    <RowDefinition Height="Auto"/>
+                                                                                                                    <RowDefinition Height="Auto"/>
+                                                                                                                    <RowDefinition Height="Auto"/>
+                                                                                                                </Grid.RowDefinitions>
+                                                                                                                <TextBlock Text="{Binding Tip}"/>
+                                                                                                                <TextBlock Grid.Row="1" Text="流量曲线:"/>
+                                                                                                                <Grid Grid.Row="2" MinWidth="160" Height="32" Margin="0,8,0,2">
+                                                                                                                    <Path Data="{Binding InRateGeometry}" Stretch="Fill" Fill="#80039BE5" Stroke="#C0039BE5" StrokeThickness="1" StrokeLineJoin="Bevel"/>
+                                                                                                                    <Path Data="{Binding OutRateGeometry}" Stretch="Fill" Fill="#8043A047" Stroke="#C043A047" StrokeThickness="1" StrokeLineJoin="Bevel"/>
+                                                                                                                </Grid>
+                                                                                                            </Grid>
+                                                                                                        </Setter.Value>
+                                                                                                    </Setter>
+                                                                                                </DataTrigger>
+                                                                                            </Style.Triggers>
+                                                                                        </Style>
+                                                                                    </Grid.Style>
                                                                                     <Border x:Name="Border" Background="{DynamicResource Color_Label}" BorderBrush="{DynamicResource Color_Line}" BorderThickness="1" CornerRadius="2"/>
                                                                                     <Border Padding="6" MinWidth="72">
                                                                                         <TextBlock Text="{Binding IPAddress}" HorizontalAlignment="Center" Height="15"/>
@@ -1317,7 +1343,7 @@
                                 <TextBlock Text="系统日志记录"/>
                                 <TextBlock Text="{Binding LogCollection.Count, StringFormat=({0})}" Margin="4,0,0,0"/>
                             </StackPanel>
-                            <ListView Grid.Row="1" Margin="0,0,0,6" AlternationCount="2" ItemsSource="{Binding LogCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}">
+                            <ListView Grid.Row="1" Margin="0,0,0,6" AlternationCount="2" ItemsSource="{Binding LogCollection}" d:DataContext="{x:Static local:NetworkManager_Test.Instance}" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" local:ListBoxBehavior.ScrollOnNewItem="True">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border x:Name="Border" Margin="6,0" CornerRadius="6" Background="Transparent" ToolTip="{Binding Content}">

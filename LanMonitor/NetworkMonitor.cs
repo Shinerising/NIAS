@@ -747,6 +747,30 @@ namespace LanMonitor
 
                                 }
 
+                                if (switchDevice.PortList != null && switchDevice.PortList.Count == list.Count)
+                                {
+                                    for (int i = 0; i < list.Count; i += 1)
+                                    {
+                                        if (switchDevice.PortList[i].IsUp == list[i].IsUp)
+                                        {
+                                            continue;
+                                        }
+
+                                        if (list[i].IsUp)
+                                        {
+                                            string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchPortReconnect), switchDevice.Name, switchDevice.PortList[i].Name);
+                                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Info, true);
+                                            LogHelper.WriteLog("INFO", message);
+                                        }
+                                        else
+                                        {
+                                            string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchPortWarning), switchDevice.Name, switchDevice.PortList[i].Name);
+                                            AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Info, true);
+                                            LogHelper.WriteLog("INFO", message);
+                                        }
+                                    }
+                                }
+
                                 switchDevice.RefreshPortList(list);
                             }
 
@@ -874,6 +898,12 @@ namespace LanMonitor
                                     string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchDisconnect), switchDevice.Address, switchDevice.Name);
                                     AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message);
                                     LogHelper.WriteLog("ERROR", message);
+                                }
+                                else if (switchDevice.State == DeviceState.Unknown)
+                                {
+                                    string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchDisconnect), switchDevice.Address, switchDevice.Name);
+                                    AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Warning, true);
+                                    LogHelper.WriteLog("WARNING", message);
                                 }
                                 switchDevice.SetIdle();
                             }
@@ -1059,6 +1089,8 @@ namespace LanMonitor
 
                         list[i].Refresh();
                     }
+
+                    host.Refresh();
                 }
 
                 foreach (SwitchConnectonModelView connection in ConnectionList)
@@ -1210,7 +1242,7 @@ namespace LanMonitor
                 {
                     string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchCPUWarning), switchDevice.Name);
                     AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Warning);
-                    LogHelper.WriteAlarm("WARNING", message);
+                    LogHelper.WriteAlarm("ERROR", message);
                     switchDevice.IsHealthy = false;
                 }
             }
@@ -1220,7 +1252,7 @@ namespace LanMonitor
                 {
                     string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchMemoryWarning), switchDevice.Name);
                     AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Warning);
-                    LogHelper.WriteAlarm("WARNING", message);
+                    LogHelper.WriteAlarm("ERROR", message);
                     switchDevice.IsHealthy = false;
                 }
             }
@@ -1230,7 +1262,7 @@ namespace LanMonitor
                 {
                     string message = string.Format(AppResource.GetString(AppResource.StringKey.Message_SwitchTemperatureWarning), switchDevice.Name);
                     AddToast(AppResource.GetString(AppResource.StringKey.Message_Title), message, ToastMessage.ToastType.Warning);
-                    LogHelper.WriteAlarm("WARNING", message);
+                    LogHelper.WriteAlarm("ERROR", message);
                     switchDevice.IsHealthy = false;
                 }
             }
