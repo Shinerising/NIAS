@@ -8,12 +8,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
-    <IsAotCompatible>False</IsAotCompatible>
+    <IsAotCompatible>True</IsAotCompatible>
     <IsTrimmable>False</IsTrimmable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <IsAotCompatible>False</IsAotCompatible>
+    <IsAotCompatible>True</IsAotCompatible>
     <IsTrimmable>False</IsTrimmable>
   </PropertyGroup>
 

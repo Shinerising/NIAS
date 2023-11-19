@@ -1,5 +1,10 @@
-﻿namespace NIASReport
+﻿using System.Numerics;
+using System.Text.Json.Serialization;
+
+namespace NIASReport
 {
+    [JsonSerializable(typeof(ReportData))]
+    public partial class ReportDataContext : JsonSerializerContext { }
     public class ReportData
     {
         public string? Title { get; set; }
