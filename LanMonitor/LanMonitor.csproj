@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <OutputType>WinExe</OutputType>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -28,7 +28,7 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <StartupObject>LanMonitor.App</StartupObject>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <RuntimeIdentifiers>win10-arm64;win10-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-arm64;win-x64</RuntimeIdentifiers>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     <SignAssembly>False</SignAssembly>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -37,6 +37,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>readme_CN.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Shinerising/NIAS</RepositoryUrl>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -69,6 +70,12 @@
     <None Remove="images\table.png" />
     <None Remove="images\view.png" />
     <None Remove="images\warning.png" />
+    <None Remove="manuf.dat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="manuf.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\icon.png">
@@ -81,9 +88,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Update="manuf.dat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -145,7 +149,7 @@
     <Resource Include="images\info.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Management.Infrastructure" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Management.Infrastructure" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReportGenerator\ReportGenerator.csproj" />
