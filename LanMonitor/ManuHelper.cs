@@ -9,6 +9,8 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO.Compression;
 using System.Net.NetworkInformation;
+using System.Reflection;
+using System.Windows;
 
 namespace LanMonitor
 {
@@ -100,10 +102,10 @@ namespace LanMonitor
             IsInitialized = true;
         }
 
-        public async Task Init(string path)
+        public async Task Init(string name)
         {
-            using FileStream fs = new(path, FileMode.Open);
-            using GZipStream decompressionStream = new(fs, CompressionMode.Decompress);
+            using Stream stream = Application.GetResourceStream(new Uri("pack://application:,,,/" + name)).Stream;
+            using GZipStream decompressionStream = new(stream, CompressionMode.Decompress);
             using MemoryStream ms = new();
             decompressionStream.CopyTo(ms);
             ms.Position = 0;

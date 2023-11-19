@@ -73,9 +73,9 @@
     <None Remove="manuf.dat" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="manuf.dat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="manuf.dat">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\icon.png">
